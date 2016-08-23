@@ -2,7 +2,7 @@
 
 
 
-import "2StandardToken.sol";
+import "StandardToken.sol";
 
 /**
  *
