@@ -20,6 +20,10 @@ contract TokenInterface {
      *  @return the value of balance 
      */                               
     function balanceOf(address owner) constant returns (uint256 balance);
+    
+    function getTotalSupply() constant returns (uint256 totalSupply){
+        return totalSupply;
+    } 
 
     function transfer(address to, uint256 value) returns (bool success);
 
