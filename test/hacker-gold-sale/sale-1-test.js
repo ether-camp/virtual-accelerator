@@ -59,9 +59,7 @@ it('init', function() {
         
         .then(function(){
             
-            workbench.setTimestamp('20-nov-2016');
-            return workbench.mine(1);
-            
+            return workbench.rollTimeTo('20-nov-2016');
         })
         
         .then(function(){
