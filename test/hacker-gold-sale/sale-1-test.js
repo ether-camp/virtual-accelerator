@@ -32,7 +32,7 @@ it('init', function() {
         
         .then(function(){
             
-            workbench.sendTransaction({
+            return workbench.sendTransaction({
               from: '0xcc49bea5129ef2369ff81b0c0200885893979b77',
               to: hackerGold.address,
               gas: 200000,
@@ -40,21 +40,20 @@ it('init', function() {
             }).then(function (txHash) {
         
                   return workbench.waitForReceipt(txHash);          
+
             });
 
-                        
-            return true;
+                                 
         })
         
         .then(function(){
             
-           var balance = hackerGold.balanceOf('0xcc49bea5129ef2369ff81b0c0200885893979b77').toNumber(); 
-            
+           var balance    = hackerGold.balanceOf('0xcc49bea5129ef2369ff81b0c0200885893979b77').toNumber(); 
            var totalSuply = hackerGold.getTotalSupply().toNumber();
+                       
+           assert.equal(balance, 400000)
+           assert.equal(totalSuply, 400000)
            
-           log(balance);
-           log(totalSuply);
-            
            return true;  
         });
                 

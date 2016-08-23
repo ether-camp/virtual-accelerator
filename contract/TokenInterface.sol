@@ -9,8 +9,9 @@ contract TokenInterface {
 
         
     // total amount of tokens
-    uint256 public totalSupply;
+    uint totalSupply;
 
+    
     /**
      *
      * balanceOf() - constant function check concrete tokens balance  
@@ -21,10 +22,6 @@ contract TokenInterface {
      */                               
     function balanceOf(address owner) constant returns (uint256 balance);
     
-    function getTotalSupply() constant returns (uint256 totalSupply){
-        return totalSupply;
-    } 
-
     function transfer(address to, uint256 value) returns (bool success);
 
     function transferFrom(address from, address to, uint256 value) returns (bool success);

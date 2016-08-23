@@ -24,20 +24,28 @@ contract HackerGold is StandardToken{
     // tmp price
     // 1 ether = 200 hkg
     uint price = 200;    
+
     
 
     /**
      *
      */
     function (){
-    
+
         if (msg.value == 0) throw;
     
-        uint token = msg.value / 1000000000000000 * price;
-        totalSupply += token;
-        balances[msg.sender] += token;        
+        uint tokens = msg.value / 1000000000000000 * price;
+        totalSupply += tokens;
+        balances[msg.sender] += tokens;        
     }
     
+    /**
+     *
+     *
+     */
+    function getTotalSupply() constant returns (uint result){
+        return totalSupply;
+    } 
 
 
 }
