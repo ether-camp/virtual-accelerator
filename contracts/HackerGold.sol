@@ -43,7 +43,7 @@ contract HackerGold is StandardToken{
           1476921600,  // 20-Oct-2016 
           1478476800,  // 07-Nov-2016
           1479686400,  // 21-Nov-2016
-          1481500800   // 12-Dec-2016
+          1481673600   // 14-Dec-2016
         );
         
     }
@@ -65,11 +65,19 @@ contract HackerGold is StandardToken{
         balances[msg.sender] += tokens;        
     }
 
+    function tst() constant returns (uint result){
+    
+        return now - milestones.p2;
+    }
+    
     /**
-     *
+     * getPrice() - function that denotes complete price 
+     *              structure during the sale.
      *
      */
     function getPrice() constant returns (uint result){
+        
+        if (now < milestones.p1) return 0;
         
         if (now >= milestones.p1 && now < milestones.p2){
         
@@ -77,7 +85,7 @@ contract HackerGold is StandardToken{
         }
         
         if (now >= milestones.p2 && now < milestones.p3){
-        
+            
             uint dailyStep = 5; // ~ (100 / 18)
         
             uint days_in = 1 + (now - milestones.p2) / (60 * 60 *24); 
@@ -89,12 +97,20 @@ contract HackerGold is StandardToken{
             return BASE_PRICE / 2;
         }
         
-        if (now >= milestones.p3 && now < milestones.p5){
+        if (now >= milestones.p4 && now < milestones.p5){
+            
+            dailyStep = 3; // ~ (80 / 23)
         
-            return BASE_PRICE / 2 - 0;
+            days_in = 1 + (now - milestones.p4) / (60 * 60 *24); 
+            return (BASE_PRICE / 2) - days_in * dailyStep;
         }
         
-    }
+        if (now >= milestones.p5){
+
+            return 0;
+        }
+
+     }
     
     /**
      *
