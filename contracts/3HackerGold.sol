@@ -1,0 +1,43 @@
+
+
+
+
+import "2StandardToken.sol";
+
+/**
+ *
+ * Hacker gold is the official token of 
+ * the <hack.ether.camp> hackathon. 
+ *
+ * todo: brief explained
+ *
+ * todo: white paper link
+ *
+ */
+contract HackerGold is StandardToken{
+
+
+    // todo sale period : before / after
+
+    // scale param for number of tokens per ether 
+
+    // tmp price
+    // 1 ether = 200 hkg
+    uint price = 200;    
+    
+
+    /**
+     *
+     */
+    function (){
+    
+        if (msg.value == 0) throw;
+    
+        uint token = msg.value / 1000000000000000 * price;
+        totalSupply += token;
+        balances[msg.sender] += token;        
+    }
+    
+
+
+}
