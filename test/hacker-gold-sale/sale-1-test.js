@@ -51,20 +51,21 @@ it('init', function() {
            var balance    = hackerGold.balanceOf('0xcc49bea5129ef2369ff81b0c0200885893979b77').toNumber(); 
            var totalSuply = hackerGold.getTotalSupply().toNumber();
                        
-           assert.equal(balance, 400000)
-           assert.equal(totalSuply, 400000)
+           assert.equal(balance, 0)
+           assert.equal(totalSuply, 0)
            
            return true;  
         })
         
         .then(function(){
             
-            return workbench.rollTimeTo('20-nov-2016');
+            return true
+            //workbench.rollTimeTo('20-nov-2016');
         })
         
         .then(function(){
-            
-            var now = hackerGold.getNow().toNumber();
+           
+            var now = hackerGold.getNow().toNumber();            
             log(now);
             
             return true; 
