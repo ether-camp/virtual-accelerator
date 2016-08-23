@@ -1,9 +1,9 @@
 
 
 
-import "2StandardToken.sol";
-import "4EventInfo.sol";
-import "3HackerGold.sol";
+import "StandardToken.sol";
+import "EventInfo.sol";
+import "HackerGold.sol";
 
 /*
  * DSTContract - DST stands for decentralized standard team.
