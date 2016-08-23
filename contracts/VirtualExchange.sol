@@ -1,7 +1,7 @@
 
-import "3HackerGold.sol";
-import "4EventInfo.sol";
-import "5DSTContract.sol";
+import "HackerGold.sol";
+import "EventInfo.sol";
+import "DSTContract.sol";
 
 /**
  *    The exchange is valid system 
