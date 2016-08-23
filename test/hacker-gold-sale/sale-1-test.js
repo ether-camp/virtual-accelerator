@@ -55,9 +55,23 @@ it('init', function() {
            assert.equal(totalSuply, 400000)
            
            return true;  
+        })
+        
+        .then(function(){
+            
+            return workbench.setTimestamp('20-nov-2016');
+            
+        })
+        
+        .then(function(){
+            
+            var now = hackerGold.getNow().toNumber();
+            log(now);
+            
+            return true; 
         });
-                
 
+        
         
         
     });

@@ -47,5 +47,9 @@ contract HackerGold is StandardToken{
         return totalSupply;
     } 
 
+    
+    function getNow() constant returns (uint result) {
+        return now;
+    }
 
 }
