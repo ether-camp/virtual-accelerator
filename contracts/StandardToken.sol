@@ -7,7 +7,7 @@
  *         https://github.com/eth ereum/EIPs/issues/20
  */
 
-import "1TokenInterface.sol";
+import "TokenInterface.sol";
 
 contract StandardToken is TokenInterface {
 
