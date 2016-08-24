@@ -71,15 +71,15 @@ contract DSTContract is StandardToken{
      *  Set date for early adapters
      *
      */ 
-    function DSTContract(EventInfo eventInfoAddr, address hkgAddress,  bytes32 dstName){
+    function DSTContract(EventInfo eventInfoAddr, bytes32 dstName){
     
       selfAddress = this; 
       executive   = msg.sender;  
       name        = dstName;
 
       eventInfo  = EventInfo(eventInfoAddr);
-      hackerGold = HackerGold(hkgAddress); 
     }
+    
 
     function(){
         

@@ -8,12 +8,12 @@
  */
 contract EventInfo{
     
+    
     uint constant HACKATHON_5_WEEKS = 60 * 60 * 24 * 7 * 5;
 
     uint eventStart = 1478512800;
     uint eventEnd = eventStart + HACKATHON_5_WEEKS;
     
-
     function getEventStart() constant returns (uint result){
         
        return eventStart;
@@ -23,7 +23,17 @@ contract EventInfo{
         
        return eventEnd;
     } 
+    
 
+
+    function getNow() constant returns (uint result){
+        
+       return now;
+    } 
     
-    
+    function getNow2() constant returns (uint result){
+        
+       return now;
+    } 
+
 }

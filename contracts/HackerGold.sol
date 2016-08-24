@@ -1,7 +1,4 @@
 
-
-
-
 import "StandardToken.sol";
 
 /**
@@ -16,12 +13,10 @@ import "StandardToken.sol";
  */
 contract HackerGold is StandardToken{
 
+    // todo: 
+    // token name readable in mist
+    
 
-    // todo sale period : before / after
-
-    // scale param for number of tokens per ether 
-
-    // tmp price
     // 1 ether = 200 hkg
     uint BASE_PRICE = 200;    
 
