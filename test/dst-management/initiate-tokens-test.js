@@ -9,7 +9,7 @@ var workbench = new Workbench({
   }
 });
 
-workbench.startTesting(['DSTContract', 'VirtualExchange', 'EventInfo'],  function(contracts) {
+workbench.startTesting(['EventInfo', 'DSTContract', 'VirtualExchange'],  function(contracts) {
 
 var sandbox = workbench.sandbox;
 
@@ -129,6 +129,45 @@ it('dst-contract-2-init', function() {
           return true;        
     });        
 });
+
+
+it('enlist-dst', function() {
+
+    return virtualExchange.enlist(dstContract1.address, 
+    {
+       from : '0xcc49bea5129ef2369ff81b0c0200885893979b77',       
+    })
+       
+   .then(function(txHash) {
+      
+      // we are waiting for blockchain to accept the transaction 
+      return workbench.waitForReceipt(txHash);
+    })
+    
+   .then(function() {
+   
+      exec = dstContract1.getExecutive();
+      log(exec);
+   
+      name2 = dstContract2.getDSTName();
+      log(name2); 
+   
+   
+      name1 = dstContract1.getDSTName();
+      log(name1); 
+       
+      exist = virtualExchange.isExistByString(name1); 
+      log(exist);
+
+      exist = virtualExchange.isExistByString(name2); 
+      log(exist);
+
+      return true;
+    })
+    
+    
+});
+
 
 
 it('trade-dst-for-hkg', function() {

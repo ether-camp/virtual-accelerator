@@ -45,12 +45,26 @@ contract VirtualExchange{
         return now;
     }
     
+
     /**
      * Check if company already enlisted 
      */
-    function isExist(bytes32 companyName) constant returns (bool result) {
+    function isExistByBytes(bytes32 companyNameBytes) constant returns (bool result) {
+            
+        if (dstListed[companyNameBytes] == 0x0) 
+            return false;
+        else 
+            return true;                  
+    }
+
+    /**
+     * Check if company already enlisted 
+     */
+    function isExistByString(string companyName) constant returns (bool result) {
+        
+        bytes32 companyNameBytes = convert(companyName);
     
-        if (dstListed[companyName] == 0x0) 
+        if (dstListed[companyNameBytes] == 0x0) 
             return false;
         else 
             return true;                  
@@ -70,13 +84,14 @@ contract VirtualExchange{
         DSTContract dstContract = DSTContract(dstAddress);
 
         /* Don't enlist 2 with the same name */
-        if (isExist(dstContract.getDSTName())) throw;
+        if (isExistByBytes(dstContract.getDSTNameBytes())) throw;
 
         // Only owner of the DST can deploy the DST 
         if (dstContract.getExecutive() != msg.sender) throw;
 
         // All good enlist the company
-        dstListed[dstContract.getDSTName()] = dstAddress;
+        bytes32 nameBytes = dstContract.getDSTNameBytes();
+        dstListed[nameBytes] = dstAddress;
         
         // Indicate to DST which Virtual Exchange is enlisted
         dstContract.setVirtualExchange(address(this));
@@ -108,13 +123,15 @@ contract VirtualExchange{
      * @param hkg - the ammount of hkg to spend for aquastion 
      *
      */
-    function buy(bytes32 companyName, uint hkg) returns (bool success) {
+    function buy(string companyName, uint hkg) returns (bool success) {
+        
+        bytes32 companyNameBytes = convert(companyName);
         
         // check DST exist 
-        if (!isExist(companyName)) throw;
+        if (!isExistByBytes(companyNameBytes)) throw;
         
         // validate availability  
-        DSTContract dstContract = DSTContract(dstListed[companyName]);
+        DSTContract dstContract = DSTContract(dstListed[companyNameBytes]);
         uint tokensQty = hkg * dstContract.getHKGPrice();
 
         // todo: check that hkg is available        
@@ -146,6 +163,15 @@ contract VirtualExchange{
     // sell();
     // regPlayer();
     
+    function convert(string key) returns (bytes32 ret) {
+            if (bytes(key).length > 32) {
+                throw;
+            }      
+
+            assembly {
+                ret := mload(add(key, 32))
+            }
+    }    
     
     
     modifier onlyOwner()    { if (msg.sender != owner)        throw; _ }

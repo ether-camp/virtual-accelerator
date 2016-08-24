@@ -29,7 +29,7 @@ contract DSTContract is StandardToken{
     uint hkgPrice;
     
     
-    bytes32 name; 
+    string name; 
     
     uint preferedQtySold;
     
@@ -71,7 +71,7 @@ contract DSTContract is StandardToken{
      *  Set date for early adapters
      *
      */ 
-    function DSTContract(EventInfo eventInfoAddr, bytes32 dstName){
+    function DSTContract(EventInfo eventInfoAddr, string dstName){
     
       selfAddress = this; 
       executive   = msg.sender;  
@@ -296,14 +296,28 @@ contract DSTContract is StandardToken{
         return hkgPrice;
     }
 
-    function getDSTName() constant returns(bytes32 result){
-        return bytes32(name);
-    }
+    function getDSTName() constant returns(string result){
+        return name;
+    }    
     
+    function getDSTNameBytes() constant returns(bytes32 result){
+        return convert(name);
+    }    
+
     function getAddress() constant returns (address result) {
         return selfAddress;
     }
     
+    
+    function convert(string key) returns (bytes32 ret) {
+            if (bytes(key).length > 32) {
+                throw;
+            }      
+
+            assembly {
+                ret := mload(add(key, 32))
+            }
+    }    
  
     modifier onlyBeforeEnd() { if (now  >= eventInfo.getEventEnd()) throw; _ }
     modifier onlyAfterEnd()  { if (now  <= eventInfo.getEventEnd()) throw; _ }
