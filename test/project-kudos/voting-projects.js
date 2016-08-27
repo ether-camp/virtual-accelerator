@@ -178,16 +178,84 @@ it('vote-for-project-2', function() {
 
    .then(function() {
       
-      projectKudos = projectKudos.getProjectKudos('0xaaab1b6e61e475ace9bf13ae79373ddb419b5aaa').toNumber();
-      assert.equal(projectKudos, 10);
+      kudosForProject = projectKudos.getProjectKudos('0xaaab1b6e61e475ace9bf13ae79373ddb419b5aaa').toNumber();
+      assert.equal(kudosForProject, 10);
       
       return true;
-   })          
+   });
+   
    
 });
 
+    
+
+it('vote-for-project-3', function() {
+
+    return projectKudos.giveKudos('0xbbb31b6e61e475ace9bf13ae79373ddb419b5bb', 200, 
+    {
+       from : '0x211b1b6e61e475ace9bf13ae79373ddb419b5f72',       
+    })
+       
+   .then(function(txHash) {
+      
+      // we are waiting for blockchain to accept the transaction 
+      return workbench.waitForReceipt(txHash);
+    })
+
+   .then(function() {
+      
+      kudosLeft = projectKudos.getKudosLeft('0x211b1b6e61e475ace9bf13ae79373ddb419b5f72').toNumber();
+      assert.equal(kudosLeft, 790);
+      
+      return true;
+   })
+
+   .then(function() {
+      
+      kudosForProject = projectKudos.getProjectKudos('0xbbb31b6e61e475ace9bf13ae79373ddb419b5bb').toNumber();
+      assert.equal(kudosForProject, 200);
+      
+      return true;
+   });
   
+});
+
+it('end-the-voting', function() {
+    return workbench.rollTimeTo('12-Dec-2016 10:00');
+});
+
+
+it('vote-for-project-4', function() {
+
+    return projectKudos.giveKudos('0xbbb31b6e61e475ace9bf13ae79373ddb419b5bb', 200, 
+    {
+       from : '0x211b1b6e61e475ace9bf13ae79373ddb419b5f72',       
+    })
+       
+   .then(function(txHash) {
+      
+      // we are waiting for blockchain to accept the transaction 
+      return workbench.waitForReceipt(txHash);
+    })
+
+   .then(function() {
+      
+      kudosLeft = projectKudos.getKudosLeft('0x211b1b6e61e475ace9bf13ae79373ddb419b5f72').toNumber();
+      assert.equal(kudosLeft, 790);
+      
+      return true;
+   })
+
+   .then(function() {
+      
+      kudosForProject = projectKudos.getProjectKudos('0xbbb31b6e61e475ace9bf13ae79373ddb419b5bb').toNumber();
+      assert.equal(kudosForProject, 200);
+      
+      return true;
+   });
   
+});
+
     
   
 });  
