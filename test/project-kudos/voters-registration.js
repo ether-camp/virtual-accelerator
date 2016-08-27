@@ -9,7 +9,7 @@ var workbench = new Workbench({
   }
 });
 
-workbench.startTesting('ProjectKudos', function(contracts) {
+workbench.startTesting(['EventInfo', 'ProjectKudos'], function(contracts) {
 
 var sandbox = workbench.sandbox;
 var projectKudos;
