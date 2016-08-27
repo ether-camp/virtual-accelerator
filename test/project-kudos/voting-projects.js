@@ -119,7 +119,7 @@ it('register-judge', function() {
 
 it('vote-for-project-1', function() {
 
-    return projectKudos.giveKudos('0xaaab1b6e61e475ace9bf13ae79373ddb419b5f72', 10, 
+    return projectKudos.giveKudos('0xaaab1b6e61e475ace9bf13ae79373ddb419b5aaa', 10, 
     {
        from : '0x211b1b6e61e475ace9bf13ae79373ddb419b5f72',       
     })
@@ -191,7 +191,7 @@ it('vote-for-project-2', function() {
 
 it('vote-for-project-3', function() {
 
-    return projectKudos.giveKudos('0xbbb31b6e61e475ace9bf13ae79373ddb419b5bb', 200, 
+    return projectKudos.giveKudos('0xbbb031b6e61e475ace9bf13ae79373ddb419b5bb', 200, 
     {
        from : '0x211b1b6e61e475ace9bf13ae79373ddb419b5f72',       
     })
@@ -212,7 +212,7 @@ it('vote-for-project-3', function() {
 
    .then(function() {
       
-      kudosForProject = projectKudos.getProjectKudos('0xbbb31b6e61e475ace9bf13ae79373ddb419b5bb').toNumber();
+      kudosForProject = projectKudos.getProjectKudos('0xbbb031b6e61e475ace9bf13ae79373ddb419b5bb').toNumber();
       assert.equal(kudosForProject, 200);
       
       return true;
@@ -227,7 +227,7 @@ it('end-the-voting', function() {
 
 it('vote-for-project-4', function() {
 
-    return projectKudos.giveKudos('0xbbb31b6e61e475ace9bf13ae79373ddb419b5bb', 200, 
+    return projectKudos.giveKudos('0xbbb031b6e61e475ace9bf13ae79373ddb419b5bb', 200, 
     {
        from : '0x211b1b6e61e475ace9bf13ae79373ddb419b5f72',       
     })
@@ -248,14 +248,33 @@ it('vote-for-project-4', function() {
 
    .then(function() {
       
-      kudosForProject = projectKudos.getProjectKudos('0xbbb31b6e61e475ace9bf13ae79373ddb419b5bb').toNumber();
+      kudosForProject = projectKudos.getProjectKudos('0xbbb031b6e61e475ace9bf13ae79373ddb419b5bb').toNumber();
       assert.equal(kudosForProject, 200);
       
       return true;
+
+    })
+   
+   .then(function() {
+      
+      result = projectKudos.getKudosPerProject('0x211b1b6e61e475ace9bf13ae79373ddb419b5f72');
+      
+      projects = result[0];
+      votes    = result[1];
+      
+      assert.equal(projects[0], '0xaaab1b6e61e475ace9bf13ae79373ddb419b5aaa');
+      assert.equal(projects[1], '0xbbb031b6e61e475ace9bf13ae79373ddb419b5bb');
+      
+      assert.equal(votes[0], 10);
+      assert.equal(votes[1], 200);
+      
+      return true;
    });
-  
+
+   
 });
 
+  
     
   
 });  
