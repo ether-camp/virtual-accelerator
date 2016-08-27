@@ -13,11 +13,44 @@ workbench.startTesting('ProjectKudos', function(contracts) {
 
 var sandbox = workbench.sandbox;
 var projectKudos;
+var eventInfo;
 
+
+it('set-time', function() {
+
+    return workbench.rollTimeTo('01-Sep-2016');
+});
+
+it('event-info-init', function() {
+    
+    return contracts.EventInfo.new()
+
+        .then(function(contract) {
+          
+          if (contract.address){
+            eventInfo = contract;
+          } else {
+            throw new Error('No contract address');
+          }        
+          
+          return true;        
+        })
+        
+        .then(function() {
+            
+           now = eventInfo.getNow().toNumber();
+           var date = new Date(now * 1000);
+           
+           log('Date now: ' + date + '\n');
+           
+           return true;
+        });
+    
+});
 
 it('deploy', function() {
 
-    return contracts.ProjectKudos.new()
+    return contracts.ProjectKudos.new(eventInfo.address)
 
         .then(function(contract) {
           

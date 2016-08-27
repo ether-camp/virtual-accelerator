@@ -71,6 +71,7 @@ contract util is abstract {
         }
 }
 
+import "EventInfo.sol";
 
 /**
  * ProjectKudos - 
@@ -113,26 +114,21 @@ contract ProjectKudos is owned, named("ProjectKudos") {
                 mapping(address => uint) kudosIdx;
         }
 
-        Status status;
+        
+        EventInfo eventInfo;
+        
         mapping(address => ProjectInfo) projects;
         mapping(address => UserInfo)    users;
         mapping(address => UserIndex)   usersIndex;
 
         
         
-        function ProjectKudos() {
-                status = Status.NotStarted;
+        function ProjectKudos(EventInfo _eventInfo) {
+            eventInfo = _eventInfo; 
         }
 
         
-        function moveStatus() onlyowner{
         
-            if (status == Status.NotStarted) 
-             {status = Status.InProgress; return; }
-         
-            if (status == Status.InProgress) 
-             {status = Status.Finished; return; }       
-        }
         
         
         
@@ -168,8 +164,9 @@ contract ProjectKudos is owned, named("ProjectKudos") {
          */
         function giveKudos(address projectAddr, uint kudos) {
             
-                // todo: check if the status of event is started by time
-                if (status != Status.InProgress) throw;
+                // check if the status of event is started 
+                // and the voting is open by time
+                if (now < eventInfo.getVotingStart()) throw;
 
                 UserInfo giver = users[msg.sender];
 
@@ -237,13 +234,14 @@ contract ProjectKudos is owned, named("ProjectKudos") {
        // *   Constant Calls  * //
        // ********************* //
         
-        // Status.NotStarted
         
-       function getStatus() constant returns (uint result) {
+       function getStatus() constant returns (string result) {
            
-           if (status == Status.NotStarted) return 0;
-           if (status == Status.InProgress) return 1;
-           return 2;
+           if (now < eventInfo.getEventStart()) return "NOT_STARTED";
+           if (now >= eventInfo.getEventStart()     && now < eventInfo.getVotingStart()) return "EVENT_STARTED";
+           if (now >= eventInfo.getVotingStart()  && now < eventInfo.getEventEnd()) return "VOTING_STARTED";
+           
+           return "EVENT_ENDED";           
        } 
         
        function getProjectKudos(address projectAddr) constant returns(uint) {
