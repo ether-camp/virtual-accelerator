@@ -110,6 +110,10 @@ contract VirtualExchange{
         // +. only by owner of the DSG
     }
 
+    string token;
+    function tst() constant returns (string result){
+        return token;
+    }
 
     /**
      *
@@ -124,11 +128,12 @@ contract VirtualExchange{
      *
      */
     function buy(string companyName, uint hkg) returns (bool success) {
-        
+
         bytes32 companyNameBytes = convert(companyName);
-        
+
         // check DST exist 
-        if (!isExistByBytes(companyNameBytes)) throw;
+        if (!isExistByString(companyName)) throw;
+
         
         // validate availability  
         DSTContract dstContract = DSTContract(dstListed[companyNameBytes]);
@@ -153,7 +158,9 @@ contract VirtualExchange{
         
         // Transfer on DSTContract tokens 
         dstContract.transferFrom(dstContract.getExecutive(), veAddress, tokensQty);
-        dstContract.transfer(msg.sender, tokensQty);         
+        dstContract.transfer(msg.sender, tokensQty);        
+
+token = 'here';
     }
     
     

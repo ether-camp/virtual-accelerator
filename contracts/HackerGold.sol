@@ -48,10 +48,9 @@ contract HackerGold is StandardToken{
      * Default function : called on ether sent
      */
     function (){
-        
-
-    
-        if (now < milestones.p1) throw;
+            
+        if (now <  milestones.p1) throw;
+        if (now >= milestones.p2) throw;
         if (msg.value == 0) throw;
     
     

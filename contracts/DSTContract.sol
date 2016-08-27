@@ -15,6 +15,10 @@ contract DSTContract is StandardToken{
     address   selfAddress;
 
     address   executive; 
+    
+    // todo: 
+    mapping (address => bool) executiveTeam; 
+    
     EventInfo eventInfo;
     
     // Indicateds where the DST is threaded
@@ -308,6 +312,9 @@ contract DSTContract is StandardToken{
         return selfAddress;
     }
     
+    function getTotalSupply()constant returns (uint result) {
+        return totalSupply;
+    } 
     
     function convert(string key) returns (bytes32 ret) {
             if (bytes(key).length > 32) {
@@ -322,7 +329,8 @@ contract DSTContract is StandardToken{
     modifier onlyBeforeEnd() { if (now  >= eventInfo.getEventEnd()) throw; _ }
     modifier onlyAfterEnd()  { if (now  <= eventInfo.getEventEnd()) throw; _ }
     
-    modifier onlyExecutive()     { if (msg.sender != executive)        throw; _ }
+    modifier onlyExecutive()     { if (msg.sender != executive && 
+                                       executiveTeam[msg.sender] == false)   throw; _ }
     
 }
 

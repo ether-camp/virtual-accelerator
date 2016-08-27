@@ -35,8 +35,28 @@
         "default": false
       },
 
+      "0x29805ff5b946e7a7c5871c1fb071f740f767cf41": {
+        "balance": "0x100000000000000000000",
+        "nonce": "1",
+        "pkey": "buyer1",
+        "default": false
+      },
        
+      "0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d": {
+        "balance": "0x100000000000000000000",
+        "nonce": "1",
+        "pkey": "buyer2",
+        "default": false
+      },
 
+      "0x696ba93ef4254da47ff05b6caa88190db335f1c3": {
+        "balance": "0x100000000000000000000",
+        "nonce": "1",
+        "pkey": "buyer3",
+        "default": false
+      },
+
+      
       "0xdedb49385ad5b94a16f236a6890cf9e0b1e30392": {
         "balance": 1000000000000000000000000000000000000000000000000000000 ,
         "nonce": "0x1cf",
