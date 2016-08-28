@@ -20,13 +20,21 @@ var virtualExchange;
 var dstContract1;
 var dstContract2;
 
+function printDate(){
+   now = eventInfo.getNow().toNumber();
+   var date = new Date(now*1000);
+   
+   log('Date now: ' + date + '\n');    
+}
+
+
 /**
  *
  * Testing for hackathon period: 
  *  
  *     1. Enlist the DST 
  *     2. Offer tokens for HKG for prefered period
- *     3. 
+ *     3. Trade DST tokens for HKG
  *
  */
 
@@ -380,14 +388,6 @@ it('trade-dst-for-hkg-2', function() {
     })
 });
 
-
-
-function printDate(){
-   now = eventInfo.getNow().toNumber();
-   var date = new Date(now*1000);
-   
-   log('Date now: ' + date + '\n');    
-}
 
 });
 
