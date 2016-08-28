@@ -114,7 +114,10 @@ contract DSTContract is StandardToken{
      *                       tain special rights
      * 
      */
-    function issuePreferedTokens(uint qtyForOneHKG, uint qtyToEmit) onlyExecutive onlyBeforeEnd {
+    function issuePreferedTokens(uint qtyForOneHKG, 
+                                 uint qtyToEmit) onlyExecutive 
+                                                 onlyBeforeEnd
+                                                 onlyAfterTradingStart {
         
         // if part of prefered tokens was already 
         // sold prevent issuence
@@ -139,42 +142,39 @@ contract DSTContract is StandardToken{
      * buyForHackerGold - on the hack event this function is available 
      *                    the buyer for hacker gold will gain votes to 
      *                    influence future proposals on the DST
-     *                    
+     *    
+     *  @param hkgValue - qty of this DST tokens for 1 HKG     
      * 
      */
-    function buyForHackerGold(uint hkgValue) onlyBeforeEnd returns (bool success) {
+    function buyForHackerGold(uint hkgValue) onlyBeforeEnd 
+                                             returns (bool success) {
     
 
       // Validate that the caller is official accelerator HKG Exchange
       if (msg.sender != virtualExchangeAddress) throw;
       
+      // todo: reduce issued tokens from total
       
-      // 1. transfer token 
+      // todo: preferedQtySold +=...
+    
+    
+      // Transfer token 
       address sender = tx.origin;
       
       uint tokensQty = hkgValue * hkgPrice;
 
 
-      // 2. gain some voting rights
+      // Gain voting rights
       votingRights[sender] +=tokensQty;
-      
       preferedQtySold += tokensQty;
       
-      // todo: change the price during the event
       
-      
-      // todo: reduce issued tokens from total
-      
-      // todo: preferedQtySold +=...
-      
-
-      
+                
       transferFrom(executive, 
                    virtualExchangeAddress, tokensQty);
       transfer(sender, tokensQty);        
       
       return true;
-
     }
     
     
@@ -344,8 +344,10 @@ contract DSTContract is StandardToken{
             }
     }    
  
-    modifier onlyBeforeEnd() { if (now  >= eventInfo.getEventEnd()) throw; _ }
-    modifier onlyAfterEnd()  { if (now  <= eventInfo.getEventEnd()) throw; _ }
+    modifier onlyBeforeEnd() { if (now  >=  eventInfo.getEventEnd()) throw; _ }
+    modifier onlyAfterEnd()  { if (now  <   eventInfo.getEventEnd()) throw; _ }
+    
+    modifier onlyAfterTradingStart()  { if (now  < eventInfo.getTradingStart()) throw; _ }
     
     modifier onlyExecutive()     { if (msg.sender != executive && 
                                        executiveTeam[msg.sender] == false)   throw; _ }

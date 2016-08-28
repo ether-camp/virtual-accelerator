@@ -129,7 +129,7 @@ contract VirtualExchange{
      * @param hkg - the ammount of hkg to spend for aquastion 
      *
      */
-    function buy(string companyName, uint hkg) returns (bool success) {
+    function buy(string companyName, uint hkg)  returns (bool success) {
 
         bytes32 companyNameBytes = convert(companyName);
 
@@ -183,6 +183,8 @@ contract VirtualExchange{
     modifier onlyOwner()    { if (msg.sender != owner)        throw; _ }
     modifier eventInfoSet() { if (eventInfo  == address(0))   throw; _ }
     
+    modifier onlyBeforeEnd() { if (now  >= eventInfo.getEventEnd()) throw; _ }
+    modifier onlyAfterEnd()  { if (now  <  eventInfo.getEventEnd()) throw; _ }
     
     
     // events notifications

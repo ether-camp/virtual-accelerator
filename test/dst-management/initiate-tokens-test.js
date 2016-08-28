@@ -53,11 +53,7 @@ it('event-info-init', function() {
         
         .then(function() {
             
-           now = eventInfo.getNow().toNumber();
-           var date = new Date(now*1000);
-           
-           log('Date now: ' + date + '\n');
-           
+           printDate();           
            return true;
         });
     
@@ -197,9 +193,18 @@ it('dst-contract-2-init', function() {
 });
 
 
-it('start-hkg-sale', function() {
+it('start-hkg-event', function() {
 
-    return workbench.rollTimeTo('07-Nov-2016 10:00');
+    return workbench.rollTimeTo('07-Nov-2016 10:00')
+    
+    .then(function (){  log("\n HACKATHON starts"); printDate(); return true; })
+});
+
+it('start-token-trading', function() {
+
+    return workbench.rollTimeTo('14-Nov-2016 10:00')
+    
+    .then(function (){  log("\n Tokens trading starts");  printDate(); return true; })
 });
 
 
@@ -217,22 +222,14 @@ it('enlist-dst', function() {
     })
     
    .then(function() {
-   
-      exec = dstContract1.getExecutive();
-      log(exec);
-   
-      name2 = dstContract2.getDSTName();
-      log(name2); 
-   
-   
-      name1 = dstContract1.getDSTName();
-      log(name1); 
-       
-      exist = virtualExchange.isExistByString(name1); 
-      log(exist);
+          
+      log();
+      
+      exist = virtualExchange.isExistByString(dstContract1.getDSTName()); 
+      log("MK3: enlisted: " + exist);
 
-      exist = virtualExchange.isExistByString(name2); 
-      log(exist);
+      exist = virtualExchange.isExistByString(dstContract2.getDSTName()); 
+      log("CRB: enlisted: " + exist);
 
       return true;
     })
@@ -242,7 +239,7 @@ it('enlist-dst', function() {
 it('issue-dst-tokens-1', function() {
     log("");
 
-    return dstContract1.issuePreferedTokens(500, 10000000, 
+    return dstContract1.issuePreferedTokens(500, 10000000000, 
     {
        from : '0xcc49bea5129ef2369ff81b0c0200885893979b77',       
     })
@@ -384,6 +381,13 @@ it('trade-dst-for-hkg-2', function() {
 });
 
 
+
+function printDate(){
+   now = eventInfo.getNow().toNumber();
+   var date = new Date(now*1000);
+   
+   log('Date now: ' + date + '\n');    
+}
 
 });
 

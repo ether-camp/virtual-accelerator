@@ -29,6 +29,10 @@ contract EventInfo{
         return eventStart+ T_1_WEEK;
     }
 
+    function getTradingStart() constant returns (uint result){
+        return eventStart+ T_1_WEEK;
+    }
+
     function getNow() constant returns (uint result){
         
        return now;
