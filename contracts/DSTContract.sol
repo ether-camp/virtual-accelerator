@@ -131,6 +131,9 @@ contract DSTContract is StandardToken{
         approve(virtualExchangeAddress, qtyToEmit );
     }
 
+    
+    
+    
     /**
      * 
      * buyForHackerGold - on the hack event this function is available 
@@ -149,11 +152,13 @@ contract DSTContract is StandardToken{
       // 1. transfer token 
       address sender = tx.origin;
       
-      
+      uint tokensQty = hkgValue * hkgPrice;
+
+
       // 2. gain some voting rights
-      uint price = 20; // todo: real price for hkg 
-      votingRights[msg.sender] = hkgValue * price;
-      balances[msg.sender] = hkgValue;
+      votingRights[sender] +=tokensQty;
+      
+      preferedQtySold += tokensQty;
       
       // todo: change the price during the event
       
@@ -161,6 +166,15 @@ contract DSTContract is StandardToken{
       // todo: reduce issued tokens from total
       
       // todo: preferedQtySold +=...
+      
+
+      
+      transferFrom(executive, 
+                   virtualExchangeAddress, tokensQty);
+      transfer(sender, tokensQty);        
+      
+      return true;
+
     }
     
     
@@ -282,6 +296,10 @@ contract DSTContract is StandardToken{
     
     function votingRightsOf(address _owner) constant returns (uint256 result) {
         result = votingRights[_owner];
+    }
+    
+    function getPreferedQtySold() constant returns (uint result){
+        return preferedQtySold;
     }
     
     function setVirtualExchange(address virtualExchangeAddr){

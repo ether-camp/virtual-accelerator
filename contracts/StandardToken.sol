@@ -52,6 +52,7 @@ contract StandardToken is TokenInterface {
     }
     
     
+
     
     /**
      * transferFrom() - 
@@ -63,16 +64,17 @@ contract StandardToken is TokenInterface {
      *  @return 
      */
     function transferFrom(address from, address to, uint256 value) returns (bool success) {
-        
-
+    
         if ( balances[from] >= value && 
              allowed[from][msg.sender] >= value && 
              value > 0) {
-
+                                          
+    
             // do the actual transfer
-            balances[to]   += value;
-            balances[from] -= value;
+            balances[from] -= value;    
+            balances[to] =+ value;            
             
+
             // addjust the permision, after part of 
             // permited to spend value was used
             allowed[from][msg.sender] -= value;

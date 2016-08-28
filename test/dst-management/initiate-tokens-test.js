@@ -9,7 +9,7 @@ var workbench = new Workbench({
   }
 });
 
-workbench.startTesting(['EventInfo', 'DSTContract', 'VirtualExchange'],  function(contracts) {
+workbench.startTesting(['StandardToken', 'EventInfo', 'DSTContract', 'VirtualExchange'],  function(contracts) {
 
 var sandbox = workbench.sandbox;
 
@@ -240,6 +240,7 @@ it('enlist-dst', function() {
 });
 
 it('issue-dst-tokens-1', function() {
+    log("");
 
     return dstContract1.issuePreferedTokens(500, 10000000, 
     {
@@ -249,18 +250,19 @@ it('issue-dst-tokens-1', function() {
     .then(function () {
     
         dst1Total = dstContract1.getTotalSupply().toNumber();
-        log("CRB total: " + dst1Total);
+        log("MK3 total: " + dst1Total);
 
         veTokens = dstContract1.allowance('0xcc49bea5129ef2369ff81b0c0200885893979b77', 
                                           virtualExchange.address).toNumber();
-        log("CRB total on exchnage: " + veTokens);
+        log("MK3 total on exchnage: " + veTokens);
 
         
         return true;
     })
 });
 
-it('approve-hkg-spend-on-exchange', function() {
+it('approve-hkg-spend-on-exchange-1', function() {
+    log("");
 
     return hackerGold.approve(virtualExchange.address, 1000000, 
     {
@@ -277,19 +279,44 @@ it('approve-hkg-spend-on-exchange', function() {
 
         veTokens = hackerGold.allowance('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d', 
                                           virtualExchange.address).toNumber();
-        log("HKG total on exchnage: " + veTokens);
+        log("[0x3a7e] HKG total on exchnage: " + veTokens);
+        
+        return true;
+    })
+});
+
+it('approve-hkg-spend-on-exchange-2', function() {
+    log("");
+
+    return hackerGold.approve(virtualExchange.address, 1000000, 
+    {
+       from : '0x29805ff5b946e7a7c5871c1fb071f740f767cf41',       
+    })
+
+    .then(function (txHash) {
+
+          return workbench.waitForReceipt(txHash);          
+
+    })    
+    
+    .then(function () {
+
+        veTokens = hackerGold.allowance('0x29805ff5b946e7a7c5871c1fb071f740f767cf41', 
+                                          virtualExchange.address).toNumber();
+        log("[0x2980] HKG total on exchnage: " + veTokens);
         
         return true;
     })
 });
 
 
-it('trade-dst-for-hkg', function() {
+it('trade-dst-for-hkg-1', function() {
+    log("");
     
     return virtualExchange.buy('MK3', 300, 
     {
        from : '0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d',   
-       gas: 200000,
+       gas: 250000,
     })
 
     .then(function (txHash) {
@@ -301,14 +328,61 @@ it('trade-dst-for-hkg', function() {
     .then(function () {
 
         dst1Total = dstContract1.balanceOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d').toNumber();
-        log("[0x3a7e] CRB total: " + dst1Total);
+        log("[0x3a7e] MK3 total: " + dst1Total);
         
-        out = virtualExchange.tst();
-        log(out);
+        value  = dstContract1.getPreferedQtySold();
+        voting = dstContract1.votingRightsOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d');
+        
+        log ("totalPrefered: " + value + " [0x3a7e] voting: " + voting);
         
         return true;
     })
 });
+
+
+
+it('trade-dst-for-hkg-2', function() {
+    log("");
+    
+    return virtualExchange.buy('MK3', 7000, 
+    {
+       from : '0x29805ff5b946e7a7c5871c1fb071f740f767cf41',   
+       gas: 250000,
+    })
+
+    .then(function (txHash) {
+
+          return workbench.waitForReceipt(txHash);          
+
+    })    
+    
+    .then(function () {
+
+        
+        value  = dstContract1.getPreferedQtySold();
+        voting = dstContract1.votingRightsOf('0x29805ff5b946e7a7c5871c1fb071f740f767cf41');
+        
+        log ("totalPrefered: " + value + " [0x2980] voting: " + voting + " share: " + (voting / value * 100).toFixed(2) + "%" );
+
+
+        value  = dstContract1.getPreferedQtySold();
+        voting = dstContract1.votingRightsOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d');
+        
+        log ("totalPrefered: " + value + " [0x3a7e] voting: " + voting + " share: " + (voting / value * 100).toFixed(2) + "%" );
+        
+        tokens = dstContract1.balanceOf("0xcc49bea5129ef2369ff81b0c0200885893979b77");
+        qtyFor1HKG = dstContract1.getHKGPrice();
+        
+        log("MK3 left tokens for sale: " + tokens + ":  1 HKG = " + qtyFor1HKG + "MK3");
+        
+        hkgTokens = hackerGold.balanceOf(dstContract1.address).toNumber();
+        
+        log("MK3 owns: " + hkgTokens + " HKG");
+        
+        return true;
+    })
+});
+
 
 
 });

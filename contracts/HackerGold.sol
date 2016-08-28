@@ -59,10 +59,6 @@ contract HackerGold is StandardToken{
         balances[msg.sender] += tokens;        
     }
 
-    function tst() constant returns (uint result){
-    
-        return now - milestones.p2;
-    }
     
     /**
      * getPrice() - function that denotes complete price 

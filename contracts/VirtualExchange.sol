@@ -96,10 +96,16 @@ contract VirtualExchange{
         // Indicate to DST which Virtual Exchange is enlisted
         dstContract.setVirtualExchange(address(this));
 
+        token =  address(this);   
+        
         // rise Enlisted event
         Enlisted(dstAddress);
     }
     
+    address token;
+    function tst() constant returns (address result){
+        return token;
+    }
     
     
     /**
@@ -110,10 +116,6 @@ contract VirtualExchange{
         // +. only by owner of the DSG
     }
 
-    string token;
-    function tst() constant returns (string result){
-        return token;
-    }
 
     /**
      *
@@ -155,12 +157,9 @@ contract VirtualExchange{
         // Transfer to dstCotract ownership
         hackerGold.transfer(dstContract.getAddress(), hkg);         
         
-        
-        // Transfer on DSTContract tokens 
-        dstContract.transferFrom(dstContract.getExecutive(), veAddress, tokensQty);
-        dstContract.transfer(msg.sender, tokensQty);        
 
-token = 'here';
+        dstContract.buyForHackerGold(hkg);    
+        
     }
     
     
