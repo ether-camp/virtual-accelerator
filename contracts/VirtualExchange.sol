@@ -95,16 +95,9 @@ contract VirtualExchange{
         
         // Indicate to DST which Virtual Exchange is enlisted
         dstContract.setVirtualExchange(address(this));
-
-        token =  address(this);   
         
         // rise Enlisted event
         Enlisted(dstAddress);
-    }
-    
-    address token;
-    function tst() constant returns (address result){
-        return token;
     }
     
     
@@ -116,6 +109,10 @@ contract VirtualExchange{
         // +. only by owner of the DSG
     }
 
+uint token;
+function tst() constant returns (uint result){
+    return token; 
+}
 
     /**
      *
@@ -145,12 +142,15 @@ contract VirtualExchange{
         // todo: check that tokens are available
         
         address veAddress = address(this);        
+        
         // ensure that there is HKG token allowed to be spend
-        uint valueAvailbeOnExchange = hackerGold.allowance(veAddress, msg.sender);
-        
-        // if (valueAvailbeOnExchange < hkg) throw;
+        uint valueAvailbeOnExchange = hackerGold.allowance(msg.sender, veAddress);
+        if (valueAvailbeOnExchange < hkg) throw;
 
-        
+        // ensure there is DST tokens for sale
+        uint dstTokens = dstContract.allowance(dstContract.getExecutive(), veAddress);
+        if (dstTokens < hkg * dstContract.getHKGPrice()) throw;    
+                        
         // Transfer HKG to Virtual Exchange account  
         hackerGold.transferFrom(msg.sender, veAddress, hkg);
 

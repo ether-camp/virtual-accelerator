@@ -363,6 +363,7 @@ it('trade-dst-for-hkg-2', function() {
     
     .then(function () {
 
+        out = virtualExchange.tst().toNumber();
         
         value  = dstContract1.getPreferedQtySold();
         voting = dstContract1.votingRightsOf('0x29805ff5b946e7a7c5871c1fb071f740f767cf41');
