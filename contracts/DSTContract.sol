@@ -32,8 +32,10 @@ contract DSTContract is StandardToken{
     // 1 - HKG => DST qty; tokens for 1 HKG
     uint hkgPrice;
     
+    string public name = "...";                   
+    uint8  public decimals = 2;                 
+    string public symbol = "...";
     
-    string name; 
     
     uint preferedQtySold;
     

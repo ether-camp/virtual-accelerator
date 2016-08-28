@@ -128,6 +128,8 @@ function tst() constant returns (uint result){
      */
     function buy(string companyName, uint hkg)  returns (bool success) {
 
+        /* ~~~ todo: decimal point of HKG */
+    
         bytes32 companyNameBytes = convert(companyName);
 
         // check DST exist 

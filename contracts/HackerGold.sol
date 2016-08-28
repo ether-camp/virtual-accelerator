@@ -16,7 +16,10 @@ contract HackerGold is StandardToken{
     // todo: 
     // token name readable in mist
     
-
+    string public name = "HackerGold";                   
+    uint8  public decimals = 3;                 
+    string public symbol = "HKG";
+    
     // 1 ether = 200 hkg
     uint BASE_PRICE = 200;    
 
