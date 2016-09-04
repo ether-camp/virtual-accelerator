@@ -53,6 +53,8 @@ contract DSTContract is StandardToken{
         string urlDetails;
         
         uint votesObjecting;
+        
+        address submitter;
     }
     uint counterProposals;
     uint timeOfLastProposal;
@@ -235,9 +237,9 @@ contract DSTContract is StandardToken{
         bytes32 id = sha3(msg.data, now);
         uint timeEnds = now + 2 weeks; 
         
-        Proposal memory newProposal = Proposal(id, value, timeEnds, url, 0);
+        Proposal memory newProposal = Proposal(id, value, timeEnds, url, 0, msg.sender);
         proposals[id] = newProposal;
-        listProposals.push (newProposal);
+        listProposals.push(newProposal);
         
         
         // todo: Rise Event
@@ -273,7 +275,15 @@ contract DSTContract is StandardToken{
       * 
       * 
       */
-     function redeemProposalFunds(uint256 id) onlyExecutive {
+     function redeemProposalFunds(bytes32 id) onlyExecutive {
+         
+         Proposal memory proposal = proposals[id];
+         
+         if (proposal.id == 0) throw;
+         if (proposal.submitter != msg.sender) throw;
+         
+         
+         bool success = msg.sender.send(proposal.value);
          
      }
     

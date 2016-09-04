@@ -20,6 +20,8 @@ var virtualExchange;
 var dstContract1;
 var dstContract2;
 
+var proposal_1_id;
+
 function printDate(){
    now = eventInfo.getNow().toNumber();
    var date = new Date(now*1000);
@@ -466,8 +468,19 @@ it('submit-funding-proposal-to-big-share', function() {
 it('roll-some-time', function() {
 
     log("");
+    var web3 = workbench.sandbox.web3;
     
-    return workbench.rollTimeTo('17-Jan-2017 19:00');
+    return workbench.rollTimeTo('17-Jan-2017 19:00')
+    
+    .then(function() {
+        
+       balance = web3.eth.getBalance('0xcc49bea5129ef2369ff81b0c0200885893979b77');
+       log("[0xcc49].balance = " + web3.fromWei(balance).toFixed(0));
+
+       // todo: check that after gas spending the rounded down balance should be 99
+        
+       return true; 
+    });
     
 });
 
@@ -502,21 +515,64 @@ it('submit-correct-funding-proposal', function() {
         value = dstContract1.getCounterProposals().toNumber();
         assert.equal(value, 1);
         
-        out = dstContract1.getProposalIdByIndex(0);
-        log(out);
+        proposal_1_id = dstContract1.getProposalIdByIndex(0);
         
         return true;
     })
     
+    
+});
 
 
+
+/**
+ * redeem-funding-proposal-1
+ * 
+ * Preconditions: 
+ *   - there is a correct proposal
+ *   - 2 weeks from submission time is passed
+ *   - no 75% objection is collected
+ */
+it('redeem-funding-proposal-1', function() {
+    
+    var web3 = workbench.sandbox.web3;
+    log('');
+    
+
+    return dstContract1.redeemProposalFunds(proposal_1_id, 
+    {
+       from : '0xcc49bea5129ef2369ff81b0c0200885893979b77',    
+       gas: 500000,       
+    })
+
+    .then(function (txHash) {
+
+          return workbench.waitForReceipt(txHash);          
+    })    
+
+    .then(function () {
+
+           balance = web3.eth.getBalance('0xcc49bea5129ef2369ff81b0c0200885893979b77');
+           log("[0xcc49].balance = " + web3.fromWei(balance).toFixed(0)); 
+
+           // todo: check that after gas spending the rounded down balance should be 102
+
+
+           return true;          
+    })    
+
+    
     
 });
 
 
 
 
+
 });
 
 
+ 
+ 
+ 
  
