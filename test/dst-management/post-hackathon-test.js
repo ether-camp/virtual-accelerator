@@ -418,7 +418,7 @@ it('sale-hkg-from-dst-for-ether', function() {
 
     .then(function (){
         
-          value = dstContract1.getValue().toNumber();
+          value = dstContract1.getTotalValue().toNumber();
           assert.equal(value, sandbox.web3.toWei(20, 'ether'));
           
         
@@ -429,6 +429,89 @@ it('sale-hkg-from-dst-for-ether', function() {
 
 // todo: ^^^^ for this test
 // todo: very important to ensure that some of DST was also sold for this ether
+
+
+
+it('submit-funding-proposal-to-big-share', function() {
+
+    log("");
+    
+
+    return dstContract1.submitProposal((sandbox.web3.toWei(10, 'ether')), "http://pastebin.com/raw/3JUfk5JA", 
+    {
+       from : '0xcc49bea5129ef2369ff81b0c0200885893979b77',       
+    })
+
+    .then(function (txHash) {
+
+          return workbench.waitForReceipt(txHash);          
+
+    })    
+    
+    .then(function () {
+        
+        value = dstContract1.getCounterProposals().toNumber();
+        assert.equal(value, 0);
+        
+        return true;
+    })
+    
+
+
+    
+});
+
+
+
+it('roll-some-time', function() {
+
+    log("");
+    
+    return workbench.rollTimeTo('17-Jan-2017 19:00');
+    
+});
+
+it('submit-correct-funding-proposal', function() {
+
+    log("");
+    
+
+    return dstContract1.submitProposal((sandbox.web3.toWei(3, 'ether')), "http://pastebin.com/raw/3JUfk5JA", 
+    {
+       from : '0xcc49bea5129ef2369ff81b0c0200885893979b77',    
+       gas: 500000,       
+    })
+
+    .then(function (txHash) {
+
+          return workbench.waitForReceipt(txHash);          
+    })    
+    
+    .then(function (receipt) {
+
+      // todo how to get retValue
+      var result = receipt.returnValue;
+
+      log("here: " + result);
+      
+      return true;
+    })
+    
+    .then(function () {
+    
+        value = dstContract1.getCounterProposals().toNumber();
+        assert.equal(value, 1);
+        
+        out = dstContract1.getProposalIdByIndex(0);
+        log(out);
+        
+        return true;
+    })
+    
+
+
+    
+});
 
 
 

@@ -40,12 +40,13 @@ contract DSTContract is StandardToken{
     uint preferedQtySold;
     
     
-    // Proposaal of the funds spending
-    mapping (uint => Proposal) proposals;
+    // Proposal of the funds spending
+    mapping (bytes32 => Proposal) proposals;
+    
     
     struct Proposal{
         
-        uint256 id;
+        bytes32 id;
         uint value;
         uint votindEndTS;
         
@@ -53,6 +54,10 @@ contract DSTContract is StandardToken{
         
         uint votesObjecting;
     }
+    uint counterProposals;
+    uint timeOfLastProposal;
+    
+    Proposal[] listProposals;
     
     /**
      * Impeachment process proposals
@@ -201,6 +206,7 @@ contract DSTContract is StandardToken{
     }
      
      
+     
     /**
      * 
      * 
@@ -209,16 +215,39 @@ contract DSTContract is StandardToken{
      */
     function submitProposal(uint value, string url) onlyAfterEnd 
                                                     onlyExecutive 
-                                                    returns (uint result){
+                                                    returns (bytes32 resultId, bool resultSucces){
+        // todo: check the time since last proposal
         
         // validate the ammount is legit
+        // first 5 proposals should be P.value =< total * 20% 
+        if (counterProposals < 5 ){
+            
+            uint totalBalance = getTotalValue();
+            uint fundingShare = totalBalance / value;
+            
+            if (fundingShare < 5) return (0, false);  
+            
+        }
         
         // set id of the proposal
         // submit proposal to the map
+       
+        bytes32 id = sha3(msg.data, now);
+        uint timeEnds = now + 2 weeks; 
         
-        // Rise Event
+        Proposal memory newProposal = Proposal(id, value, timeEnds, url, 0);
+        proposals[id] = newProposal;
+        listProposals.push (newProposal);
         
-        // return id
+        
+        // todo: Rise Event
+        
+        
+        ++counterProposals;
+        timeOfLastProposal = now;
+        
+        
+        return (id, true);
     }  
     
     
@@ -332,9 +361,22 @@ contract DSTContract is StandardToken{
         return selfAddress;
     }
     
-    function getTotalSupply()constant returns (uint result) {
+    function getTotalSupply() constant returns (uint result) {
         return totalSupply;
     } 
+    
+    function getTotalValue() constant returns (uint results) {
+        
+        return this.balance;
+    }
+    
+    function getCounterProposals() constant returns (uint result){
+        return counterProposals;
+    }
+        
+    function getProposalIdByIndex(uint i) constant returns (bytes32 result){
+        return listProposals[i].id;
+    }    
     
     function convert(string key) returns (bytes32 ret) {
             if (bytes(key).length > 32) {
