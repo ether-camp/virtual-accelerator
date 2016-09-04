@@ -283,8 +283,13 @@ contract DSTContract is StandardToken{
          if (proposal.submitter != msg.sender) throw;
          
          
+         // todo: 1. check time
+         // todo: 2. check votes objection
+         // todo: 3. check already redeemed
+         // todo: 4. mark the proposal as redeemed
+
          bool success = msg.sender.send(proposal.value);
-         
+      
      }
     
     
