@@ -475,9 +475,10 @@ it('roll-some-time', function() {
     .then(function() {
         
        balance = web3.eth.getBalance('0xcc49bea5129ef2369ff81b0c0200885893979b77');
-       log("[0xcc49].balance = " + web3.fromWei(balance).toFixed(0));
-
-       // todo: check that after gas spending the rounded down balance should be 99
+       balance = web3.fromWei(balance).toFixed(0);
+       
+       log("[0xcc49].balance = " + balance);
+       assert.equal(99, balance);
         
        return true; 
     });
@@ -553,9 +554,10 @@ it('redeem-funding-proposal-1', function() {
     .then(function () {
 
            balance = web3.eth.getBalance('0xcc49bea5129ef2369ff81b0c0200885893979b77');
-           log("[0xcc49].balance = " + web3.fromWei(balance).toFixed(0)); 
-
-           // todo: check that after gas spending the rounded down balance should be 102
+           balance = web3.fromWei(balance).toFixed(0);
+           
+           log("[0xcc49].balance = " + balance);
+           assert.equal(102, balance);
 
 
            return true;          
@@ -565,7 +567,72 @@ it('redeem-funding-proposal-1', function() {
     
 });
 
+var proposal_2_id;
+it('submit-correct-funding-proposal-2', function() {
 
+    log("");
+    
+
+    return dstContract1.submitProposal((sandbox.web3.toWei(3, 'ether')), "http://pastebin.com/raw/kJPAhDEQ", 
+    {
+       from : '0xcc49bea5129ef2369ff81b0c0200885893979b77',    
+       gas: 500000,       
+    })
+
+    .then(function (txHash) {
+
+          return workbench.waitForReceipt(txHash);          
+    })    
+    
+    .then(function (receipt) {
+
+      // todo how to get retValue
+      var result = receipt.returnValue;
+
+      return true;
+    })
+    
+    .then(function () {
+    
+        value = dstContract1.getCounterProposals().toNumber();
+        assert.equal(value, 2);
+        
+        proposal_2_id = dstContract1.getProposalIdByIndex(1);
+        log("proposal_2_id: " + proposal_2_id);
+        
+        return true;
+    })
+    
+    
+});
+
+
+it('object-funding-proposal-2', function() {
+
+    log("");
+    
+
+    return dstContract1.objectProposal(proposal_2_id, 
+    {
+       from : '0x29805ff5b946e7a7c5871c1fb071f740f767cf41',    
+       gas: 500000,       
+    })
+
+    .then(function (txHash) {
+
+          return workbench.waitForReceipt(txHash);          
+    })    
+    
+    .then(function () {
+    
+        var objection = dstContract1.getProposalObjectionByIndex(1);
+        log("objection: " + objection);
+        
+        return true;
+    })
+    
+    
+});
 
 
 

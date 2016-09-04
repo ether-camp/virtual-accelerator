@@ -259,13 +259,32 @@ contract DSTContract is StandardToken{
      * 
      * 
      */
-     function objectProposal(uint256 id){
+     function objectProposal(bytes32 id){
          
-         // check that time for voting isn't over
+         Proposal memory proposal = proposals[id];
          
-         // calculate voting weight of the voter
+         if (proposal.id == 0) throw;
+         
+         // todo: check that time for voting isn't over
+         // todo: check that the voted can't vote anymore   
+
+         uint votes = votingRights[msg.sender];
+         
          // submit votes
+         proposal.votesObjecting += votes;
+         proposals[id] = proposal;
          
+         uint idx = getIndexByProposalId(id);
+         listProposals[idx] = proposal;     
+            
+         
+     }
+     
+     function getIndexByProposalId(bytes32 id) returns (uint result){
+         
+         for (uint i = 0; i < listProposals.length; ++i){
+             if (id == listProposals[i].id) return i;
+         }
      }
     
     
@@ -282,9 +301,14 @@ contract DSTContract is StandardToken{
          if (proposal.id == 0) throw;
          if (proposal.submitter != msg.sender) throw;
          
-         
          // todo: 1. check time
-         // todo: 2. check votes objection
+         
+         // check votes objection => 67 / 50 = 1.34
+         // x * 1.34 => ensures 75% of preferedQtySold
+         uint objectionRatio = proposal.votesObjecting * 67 / 50;         
+
+         if (objectionRatio  > preferedQtySold) throw;
+         
          // todo: 3. check already redeemed
          // todo: 4. mark the proposal as redeemed
 
@@ -392,6 +416,11 @@ contract DSTContract is StandardToken{
     function getProposalIdByIndex(uint i) constant returns (bytes32 result){
         return listProposals[i].id;
     }    
+
+    function getProposalObjectionByIndex(uint i) constant returns (uint result){
+        return listProposals[i].votesObjecting;
+    }    
+    
     
     function convert(string key) returns (bytes32 ret) {
             if (bytes(key).length > 32) {
