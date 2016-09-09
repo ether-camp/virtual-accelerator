@@ -99,7 +99,7 @@ contract ProjectKudos is owned, named("ProjectKudos") {
 
                 ProjectInfo project = projects[projectCode];
                 
-                if (giver.kudosGiven < giver.kudosLimit) {
+                if (giver.kudosGiven + kudos < giver.kudosLimit) {
                     
                     giver.kudosGiven   += kudos;
                     project.kudosTotal += kudos;

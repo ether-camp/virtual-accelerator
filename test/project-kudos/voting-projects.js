@@ -13,7 +13,10 @@ workbench.startTesting( ['EventInfo', 'ProjectKudos'], function(contracts) {
 
 var sandbox = workbench.sandbox;
 var projectKudos;
+var currentKudos;
+var kudosGiven;
 var eventInfo;
+var kudosLeft;
 
 
 
@@ -135,13 +138,16 @@ it('vote-for-project-1', function() {
       kudosLeft = projectKudos.getKudosLeft('0x211b1b6e61e475ace9bf13ae79373ddb419b5f72').toNumber();
       assert.equal(kudosLeft, 1000);
       
+      
+      
       return true;
    })
+   
 
    .then(function() {
       
-      kudosLeft = projectKudos.getProjectKudos('0xaaab1b6e61e475ace9bf13ae79373ddb419b5aaa').toNumber();
-      assert.equal(kudosLeft, 0);
+      currentKudos = projectKudos.getProjectKudos('0xaaab1b6e61e475ace9bf13ae79373ddb419b5aaa').toNumber();
+      assert.equal(currentKudos, 0);
       
       return true;
    })          
@@ -192,6 +198,37 @@ it('vote-for-project-2', function() {
 it('vote-for-project-3', function() {
 
     return projectKudos.giveKudos('0xbbb031b6e61e475ace9bf13ae79373ddb419b5bb', 200, 
+    {
+       from : '0x211b1b6e61e475ace9bf13ae79373ddb419b5f72',       
+    })
+       
+   .then(function(txHash) {
+      
+      // we are waiting for blockchain to accept the transaction 
+      return workbench.waitForReceipt(txHash);
+    })
+
+   .then(function() {
+      
+      kudosLeft = projectKudos.getKudosLeft('0x211b1b6e61e475ace9bf13ae79373ddb419b5f72').toNumber();
+      assert.equal(kudosLeft, 790);
+      
+      return true;
+   })
+
+   .then(function() {
+      
+      kudosForProject = projectKudos.getProjectKudos('0xbbb031b6e61e475ace9bf13ae79373ddb419b5bb').toNumber();
+      assert.equal(kudosForProject, 200);
+      
+      return true;
+   });
+  
+});
+
+it('vote-for-project-too-much', function() {
+
+    return projectKudos.giveKudos('0xbbb031b6e61e475ace9bf13ae79373ddb419b5bb', 1790, 
     {
        from : '0x211b1b6e61e475ace9bf13ae79373ddb419b5f72',       
     })
