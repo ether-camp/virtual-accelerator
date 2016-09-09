@@ -12,7 +12,6 @@ contract ProjectKudos is owned, named("ProjectKudos") {
         uint KUDOS_LIMIT_JUDGE = 1000;
         uint KUDOS_LIMIT_USER  = 10;
 
-
         enum Status {
                 NotStarted,
                 InProgress,
@@ -39,26 +38,26 @@ contract ProjectKudos is owned, named("ProjectKudos") {
         }
 
         struct UserIndex {
-                address[] projects;
+                string[] projects;
                 uint[]    kudos;
-                mapping(address => uint) kudosIdx;
+                mapping(string => uint) kudosIdx;
         }
-
         
         EventInfo eventInfo;
         
-        mapping(address => ProjectInfo) projects;
+        mapping(string => ProjectInfo) projects;
         mapping(address => UserInfo)    users;
         mapping(address => UserIndex)   usersIndex;
-
         
+        event Vote(
+            string indexed projectCode,
+            uint indexed count
+        );
         
         function ProjectKudos(EventInfo _eventInfo) {
             eventInfo = _eventInfo; 
         }
 
-        
-        
         /**
          * register - voter to the event
          *
@@ -81,15 +80,13 @@ contract ProjectKudos is owned, named("ProjectKudos") {
                 users[userAddres] = user;
         }
         
-        
-
         /**
          * giveKudos - give votes to concrete project                
          *
-         *  @param projectAddr - address of the project.
+         *  @param projectCode - code of the project.
          *  @param kudos - kudos to give.
          */
-        function giveKudos(address projectAddr, uint kudos) {
+        function giveKudos(string projectCode, uint kudos) {
             
                 // check if the status of event is started 
                 // and the voting is open by time
@@ -100,8 +97,8 @@ contract ProjectKudos is owned, named("ProjectKudos") {
 
                 if (giver.kudosLimit == 0) throw;
 
-                ProjectInfo project = projects[projectAddr];
-
+                ProjectInfo project = projects[projectCode];
+                
                 if (giver.kudosGiven < giver.kudosLimit) {
                     
                     giver.kudosGiven   += kudos;
@@ -110,20 +107,21 @@ contract ProjectKudos is owned, named("ProjectKudos") {
 
                     // save index of user voting history
                     UserIndex idx = usersIndex[msg.sender];
-                    uint i = idx.kudosIdx[projectAddr];
+                    uint i = idx.kudosIdx[projectCode];
                     
                     if (i == 0) {
                         i = idx.projects.length;
                         idx.projects.length += 1;
                         idx.kudos.length    += 1;
-                        idx.projects[i] = projectAddr;
-                        idx.kudosIdx[projectAddr] = i + 1;
+                        idx.projects[i] = projectCode;
+                        idx.kudosIdx[projectCode] = i + 1;
                     } else {
                             i -= 1;
                     }
 
                     idx.kudos[i] = project.kudosGiven[msg.sender];
-                }
+                    Vote(projectCode, kudos);
+               }
         }
 
             
@@ -174,8 +172,8 @@ contract ProjectKudos is owned, named("ProjectKudos") {
            return "EVENT_ENDED";           
        } 
         
-       function getProjectKudos(address projectAddr) constant returns(uint) {
-                ProjectInfo project = projects[projectAddr];
+       function getProjectKudos(string projectCode) constant returns(uint) {
+                ProjectInfo project = projects[projectCode];
                 return project.kudosTotal;
        }
 
@@ -188,14 +186,14 @@ contract ProjectKudos is owned, named("ProjectKudos") {
        function getKudosGiven(address addr) constant returns(uint) {
                 UserInfo user = users[addr];
                 return user.kudosGiven;
-       }        
-        
-       function getKudosPerProject(address giver) constant returns(address[] projects, uint[] kudos) {
-           UserIndex idx = usersIndex[giver];
-
-           projects = idx.projects;
-           kudos = idx.kudos;
        }
+        
+    //   function getKudosPerProject(address giver) constant returns(string[] projects, uint[] kudos) {
+    //       UserIndex idx = usersIndex[giver];
+
+    //       projects = idx.projects;
+    //       kudos = idx.kudos;
+    //   }
 
        function grantUintToReason(uint reason) constant returns (GrantReason result){
            if (reason == 0)  return GrantReason.Facebook;
@@ -213,7 +211,3 @@ contract ProjectKudos is owned, named("ProjectKudos") {
        
         
 }
-
-
-
-
