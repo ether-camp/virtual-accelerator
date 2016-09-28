@@ -13,8 +13,6 @@ import "StandardToken.sol";
  */
 contract HackerGold is StandardToken{
 
-    // todo: 
-    // token name readable in mist
     
     string public name = "HackerGold";                   
     uint8  public decimals = 3;                 
@@ -29,6 +27,7 @@ contract HackerGold is StandardToken{
       uint p3;
       uint p4;
       uint p5;
+      uint p6;
     }
     milestones_struct milestones;
     
@@ -37,13 +36,16 @@ contract HackerGold is StandardToken{
     
         // set time periods for sale
         milestones = milestones_struct(
-          1475712000,  // 06-Oct-2016
-          1476921600,  // 20-Oct-2016 
-          1478476800,  // 07-Nov-2016
-          1479686400,  // 21-Nov-2016
-          1481673600   // 14-Dec-2016
-        );
         
+          1476972000,  // P1: GMT: 20-Oct-2016 14:00  => The Sale Starts
+          1478181600,  // P2: GMT: 03-Nov-2016 14:00  => 1st Price Ladder 
+          1479391200,  // P3: GMT: 17-Nov-2016 14:00  => Price Stable, 
+                       //                                Hackathon Starts
+          1480600800,  // P4: GMT: 01-Dec-2016 14:00  => 2nd Price Ladder
+          1481810400,  // P5: GMT: 15-Dec-2016 14:00  => Price Stable
+          1482415200   // P6: GMT: 22-Dec-2016 14:00  => Sale Ends, Hackathon Ends
+        );
+                
     }
     
     
@@ -52,8 +54,8 @@ contract HackerGold is StandardToken{
      */
     function (){
             
-        if (now <  milestones.p1) throw;
-        if (now >= milestones.p2) throw;
+        if (now < milestones.p1) throw;
+        if (now > milestones.p6) throw;
         if (msg.value == 0) throw;
     
     
@@ -79,26 +81,28 @@ contract HackerGold is StandardToken{
         
         if (now >= milestones.p2 && now < milestones.p3){
             
-            uint dailyStep = 5; // ~ (100 / 18)
         
             uint days_in = 1 + (now - milestones.p2) / (60 * 60 *24); 
-            return BASE_PRICE - days_in * dailyStep;
+            return BASE_PRICE - days_in * 25 / 7;  // daily decrease 3.5
         }
 
         if (now >= milestones.p3 && now < milestones.p4){
         
-            return BASE_PRICE / 2;
+            return BASE_PRICE / 4 * 3;
         }
         
         if (now >= milestones.p4 && now < milestones.p5){
             
-            dailyStep = 3; // ~ (80 / 23)
-        
             days_in = 1 + (now - milestones.p4) / (60 * 60 *24); 
-            return (BASE_PRICE / 2) - days_in * dailyStep;
+            return (BASE_PRICE / 4 * 3) - days_in * 25 / 7;  // daily decrease 3.5
+        }
+
+        if (now >= milestones.p5 && now < milestones.p6){
+        
+            return BASE_PRICE / 2;
         }
         
-        if (now >= milestones.p5){
+        if (now >= milestones.p6){
 
             return 0;
         }
