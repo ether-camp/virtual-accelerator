@@ -29,7 +29,7 @@
       },
 
       "0x211b1b6e61e475ace9bf13ae79373ddb419b5f72": {
-        "balance": "0x100000000000000000000",
+        "balance": "0x100000000000000000000000000",
         "nonce": "1",
         "pkey": "roman2",
         "default": false

@@ -58,10 +58,12 @@ contract HackerGold is StandardToken{
         if (now > milestones.p6) throw;
         if (msg.value == 0) throw;
     
+        // safety cap
+        if (getValue() > 4000000 ether) throw; 
     
         uint tokens = msg.value / 1000000000000000 * getPrice();
         totalSupply += tokens;
-        balances[msg.sender] += tokens;        
+        balances[msg.sender] += tokens;
     }
 
     
@@ -122,4 +124,8 @@ contract HackerGold is StandardToken{
         return now;
     }
 
+    function getValue() constant returns (uint result){
+        return address(this).balance ;  
+    }
+    
 }
