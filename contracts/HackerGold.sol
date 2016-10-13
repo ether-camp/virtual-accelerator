@@ -10,14 +10,17 @@ pragma solidity ^0.4.0;
  *
  * todo: brief explained
  *
- * todo: white paper link
+ * Whitepaper https://hack.ether.camp/whitepaper
  *
  */
+ /// @title Hacker Gold
 contract HackerGold is StandardToken {
 
     
-    string public name = "HackerGold";                   
-    uint8  public decimals = 3;                 
+    string public name = "HackerGold";
+
+    /// digits number after the point
+    uint8  public decimals = 3;          
     string public symbol = "HKG";
     
     // 1 ether = 200 hkg
@@ -39,7 +42,11 @@ contract HackerGold is StandardToken {
     }
     milestones_struct milestones;
     
-
+    /**
+     * Constructor
+     * 
+     * @param multisig address of MultiSig wallet which will hold the value
+     */
     function HackerGold(address multisig) {
         
         wallet = multisig;
@@ -60,7 +67,7 @@ contract HackerGold is StandardToken {
     
     
     /**
-     * Default function : called on ether sent
+     * Fallback function: called on ether sent
      */
     function () payable {
         createHKG(msg.sender);
@@ -90,9 +97,9 @@ contract HackerGold is StandardToken {
     }
     
     /**
-     * getPrice() - function that denotes complete price 
-     *              structure during the sale.
+     * Denotes complete price structure during the sale.
      *
+     * @return HKG amount per 1 ETH considering current moment in time
      */
     function getPrice() constant returns (uint result){
         
@@ -134,18 +141,24 @@ contract HackerGold is StandardToken {
      }
     
     /**
-     *
-     *
+     * Returns total HKG fractions amount (HKG amount * 1000)
+     * Pay attention to decimals variable defining number of digis after the point
+     * 
+     * @return result HKG fractions amount
      */
     function getTotalSupply() constant returns (uint result){
         return totalSupply;
     } 
 
-    
     function getNow() constant returns (uint result) {
         return now;
     }
 
+    /**
+     * Returns total value passed through the contract
+     * 
+     * @return result total value in wei
+     */
     function getTotalValue() constant returns (uint result) {
         return totalValue;  
     }
