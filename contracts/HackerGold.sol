@@ -1,6 +1,8 @@
 
 import "StandardToken.sol";
 
+pragma solidity ^0.4.0;
+
 /**
  *
  * Hacker gold is the official token of 
@@ -11,7 +13,7 @@ import "StandardToken.sol";
  * todo: white paper link
  *
  */
-contract HackerGold is StandardToken{
+contract HackerGold is StandardToken {
 
     
     string public name = "HackerGold";                   
@@ -19,9 +21,15 @@ contract HackerGold is StandardToken{
     string public symbol = "HKG";
     
     // 1 ether = 200 hkg
-    uint BASE_PRICE = 200;    
+    uint BASE_PRICE = 200;
+    
+    // total value in wei
+    uint totalValue;
+    
+    // multisig holding the value
+    address wallet;
 
-    struct milestones_struct{
+    struct milestones_struct {
       uint p1;
       uint p2; 
       uint p3;
@@ -32,8 +40,10 @@ contract HackerGold is StandardToken{
     milestones_struct milestones;
     
 
-    function HackerGold(){
-    
+    function HackerGold(address multisig) {
+        
+        wallet = multisig;
+
         // set time periods for sale
         milestones = milestones_struct(
         
@@ -52,20 +62,32 @@ contract HackerGold is StandardToken{
     /**
      * Default function : called on ether sent
      */
-    function (){
-            
+    function () payable {
+        createHKG(msg.sender);
+    }
+    
+    /**
+     * Creates HKG tokens
+     * 
+     * @param holder token holder
+     */
+    function createHKG(address holder) payable {
+        
         if (now < milestones.p1) throw;
         if (now > milestones.p6) throw;
         if (msg.value == 0) throw;
     
         // safety cap
-        if (getValue() > 4000000 ether) throw; 
+        if (getTotalValue() + msg.value > 4000000 ether) throw; 
     
         uint tokens = msg.value / 1000000000000000 * getPrice();
-        totalSupply += tokens;
-        balances[msg.sender] += tokens;
-    }
 
+        totalSupply += tokens;
+        balances[holder] += tokens;
+        totalValue += msg.value;
+        
+        if (!wallet.send(msg.value)) throw;
+    }
     
     /**
      * getPrice() - function that denotes complete price 
@@ -124,8 +146,7 @@ contract HackerGold is StandardToken{
         return now;
     }
 
-    function getValue() constant returns (uint result){
-        return address(this).balance ;  
+    function getTotalValue() constant returns (uint result) {
+        return totalValue;  
     }
-    
 }

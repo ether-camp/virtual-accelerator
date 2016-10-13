@@ -1,3 +1,8 @@
+
+import "TokenInterface.sol";
+
+pragma solidity ^0.4.2;
+
 /*
  * StandardToken - is a smart contract  
  * for managing common functionality of 
@@ -6,9 +11,6 @@
  * ERC.20 Token standard: 
  *         https://github.com/eth ereum/EIPs/issues/20
  */
-
-import "TokenInterface.sol";
-
 contract StandardToken is TokenInterface {
 
 

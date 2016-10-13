@@ -1,3 +1,6 @@
+
+pragma solidity ^0.4.0;
+
 /*
  * Token - is a smart contract interface 
  * for managing common functionality of 

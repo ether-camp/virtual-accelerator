@@ -6,7 +6,8 @@ var Workbench = require('ethereum-sandbox-workbench');
 var workbench = new Workbench({
   defaults: {
     from: '0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826'
-  }
+  },
+  solcVersion: '0.4.2'
 });
 
 workbench.startTesting('HackerGold', function(contracts) {
@@ -28,7 +29,7 @@ var hackerGold;
  */
 it('price-periods', function() {
 
-    return contracts.HackerGold.new()
+    return contracts.HackerGold.new('0x71d0fc7d1c570b1ed786382b551a09391c91e33d')
 
         .then(function(contract) {
           
@@ -58,7 +59,7 @@ it('price-periods', function() {
             return true;                                 
         })
 
-        .then(function (){ return workbench.rollTimeTo('20-Oct-2016 13:59');  })
+        .then(function (){ return workbench.rollTimeTo('20-Oct-2016 13:59 UTC+00');  })
         
         .then(function(){
             
@@ -75,7 +76,7 @@ it('price-periods', function() {
             return true;                                 
         })
         
-        .then(function (){ return workbench.rollTimeTo('20-Oct-2016 14:00');  })
+        .then(function (){ return workbench.rollTimeTo('20-Oct-2016 14:00 UTC+00');  })
         
         .then(function(){
             
@@ -91,7 +92,7 @@ it('price-periods', function() {
             return true;                                 
         })
         
-        .then(function (){ return workbench.rollTimeTo('03-Nov-2016 13:59');  })
+        .then(function (){ return workbench.rollTimeTo('03-Nov-2016 13:59 UTC+00');  })
         
         .then(function(){
             
@@ -107,7 +108,7 @@ it('price-periods', function() {
             return true;                                 
         })
 
-        .then(function (){ return workbench.rollTimeTo('03-Nov-2016 14:00');  })
+        .then(function (){ return workbench.rollTimeTo('03-Nov-2016 14:00 UTC+00');  })
         
         .then(function(){
             
@@ -123,7 +124,7 @@ it('price-periods', function() {
             return true;                                 
         })
 
-        .then(function (){ return workbench.rollTimeTo('04-Nov-2016 14:00');  })
+        .then(function (){ return workbench.rollTimeTo('04-Nov-2016 14:00 UTC+00');  })
         
         .then(function(){
             
@@ -140,7 +141,7 @@ it('price-periods', function() {
         })
 
 
-        .then(function (){ return workbench.rollTimeTo('10-Nov-2016 14:00');  })
+        .then(function (){ return workbench.rollTimeTo('10-Nov-2016 14:00 UTC+00');  })
         
         .then(function(){
             
@@ -156,7 +157,7 @@ it('price-periods', function() {
             return true;                                 
         })
                 
-        .then(function (){ return workbench.rollTimeTo('17-Nov-2016 14:00');  })
+        .then(function (){ return workbench.rollTimeTo('17-Nov-2016 14:00 UTC+00');  })
         
         .then(function(){
             
@@ -172,7 +173,7 @@ it('price-periods', function() {
             return true;                                 
         })
         
-        .then(function (){ return workbench.rollTimeTo('19-Nov-2016 14:00');  })
+        .then(function (){ return workbench.rollTimeTo('19-Nov-2016 14:00 UTC+00');  })
         
         .then(function(){
             
@@ -188,7 +189,7 @@ it('price-periods', function() {
             return true;                                 
         })
 
-        .then(function (){ return workbench.rollTimeTo('01-Dec-2016 13:59');  })
+        .then(function (){ return workbench.rollTimeTo('01-Dec-2016 13:59 UTC+00');  })
         
         .then(function(){
             
@@ -204,7 +205,7 @@ it('price-periods', function() {
             return true;                                 
         })
 
-        .then(function (){ return workbench.rollTimeTo('01-Dec-2016 14:00');  })
+        .then(function (){ return workbench.rollTimeTo('01-Dec-2016 14:00 UTC+00');  })
         
         .then(function(){
             
@@ -221,7 +222,7 @@ it('price-periods', function() {
         })
 
 
-        .then(function (){ return workbench.rollTimeTo('02-Dec-2016 14:00');  })
+        .then(function (){ return workbench.rollTimeTo('02-Dec-2016 14:00 UTC+00');  })
         
         .then(function(){
             
@@ -238,7 +239,7 @@ it('price-periods', function() {
         })
 
 
-        .then(function (){ return workbench.rollTimeTo('14-Dec-2016 13:59');  })
+        .then(function (){ return workbench.rollTimeTo('14-Dec-2016 13:59 UTC+00');  })
         
         .then(function(){
             
@@ -255,7 +256,7 @@ it('price-periods', function() {
         })
 
 
-        .then(function (){ return workbench.rollTimeTo('15-Dec-2016 14:00');  })
+        .then(function (){ return workbench.rollTimeTo('15-Dec-2016 14:00 UTC+00');  })
         
         .then(function(){
             
@@ -271,7 +272,7 @@ it('price-periods', function() {
             return true;                                 
         })
         
-        .then(function (){ return workbench.rollTimeTo('16-Dec-2016 14:00');  })
+        .then(function (){ return workbench.rollTimeTo('16-Dec-2016 14:00 UTC+00');  })
         
         .then(function(){
             
@@ -287,7 +288,7 @@ it('price-periods', function() {
             return true;                                 
         })
 
-        .then(function (){ return workbench.rollTimeTo('22-Dec-2016 13:59');  })
+        .then(function (){ return workbench.rollTimeTo('22-Dec-2016 13:59 UTC+00');  })
         
         .then(function(){
             
@@ -303,7 +304,7 @@ it('price-periods', function() {
             return true;                                 
         })
 
-        .then(function (){ return workbench.rollTimeTo('22-Dec-2016 14:00');  })
+        .then(function (){ return workbench.rollTimeTo('22-Dec-2016 14:00 UTC+00');  })
         
         .then(function(){
             
@@ -319,7 +320,7 @@ it('price-periods', function() {
             return true;                                 
         })
 
-        .then(function (){ return workbench.rollTimeTo('01-Jan-2017 00:00');  })
+        .then(function (){ return workbench.rollTimeTo('01-Jan-2017 00:00 UTC+00');  })
         
         .then(function(){
             
