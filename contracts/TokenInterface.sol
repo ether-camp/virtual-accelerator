@@ -44,11 +44,11 @@ contract TokenInterface {
 
     /**
      *
-     * allowance() - constant function to check how mouch is 
-     *               permited to spend to 3rd person from owner balance
+     * allowance() - constant function to check how much is 
+     *               permitted to spend to 3rd person from owner balance
      *
      *  @param owner   - owner of the balance
-     *  @param spender - permited to spend from this balance person 
+     *  @param spender - permitted to spend from this balance person 
      *  
      *  @return - remaining right to spend 
      * 

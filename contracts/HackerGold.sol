@@ -5,22 +5,23 @@ pragma solidity ^0.4.0;
 
 /**
  *
- * Hacker gold is the official token of 
- * the <hack.ether.camp> hackathon. 
- *
- * todo: brief explained
+ * @title Hacker Gold
+ * 
+ * The official token powering the hack.ether.camp virtual accelerator.
+ * This is the only way to acquire tokens from startups during the event.
+ * Over time the contract will reflect the intrinsic value of the Virtual Accelerator itself.
  *
  * Whitepaper https://hack.ether.camp/whitepaper
  *
  */
- /// @title Hacker Gold
 contract HackerGold is StandardToken {
 
-    
+    // Name of the token    
     string public name = "HackerGold";
 
-    // digits number after the point
-    uint8  public decimals = 3;          
+    // Decimal places
+    uint8  public decimals = 3;
+    // Token abbreviation        
     string public symbol = "HKG";
     
     // 1 ether = 200 hkg
@@ -29,17 +30,18 @@ contract HackerGold is StandardToken {
     uint MID_PRICE = 150;
     // 1 ether = 100 hkg
     uint FIN_PRICE = 100;
-    // safety cap
+    // Safety cap
     uint SAFETY_LIMIT = 4000000 ether;
-    // zeros after the point
+    // Zeros after the point
     uint DECIMAL_ZEROS = 1000;
     
-    // total value in wei
+    // Total value in wei
     uint totalValue;
     
-    // multisig holding the value
+    // Address of multisig wallet holding ether from sale
     address wallet;
 
+    // Structure of sale increase milestones
     struct milestones_struct {
       uint p1;
       uint p2; 
@@ -48,10 +50,14 @@ contract HackerGold is StandardToken {
       uint p5;
       uint p6;
     }
+    // Milestones instance
     milestones_struct milestones;
     
     /**
-     * Constructor
+     * Constructor of the contract.
+     * 
+     * Passes address of the account holding the value.
+     * HackerGold contract itself does not hold any value
      * 
      * @param multisig address of MultiSig wallet which will hold the value
      */
@@ -75,14 +81,25 @@ contract HackerGold is StandardToken {
     
     
     /**
-     * Fallback function: called on ether sent
+     * Fallback function: called on ether sent.
+     * 
+     * It calls to createHKG function with msg.sender 
+     * as a value for holder argument
      */
     function () payable {
         createHKG(msg.sender);
     }
     
     /**
-     * Creates HKG tokens
+     * Creates HKG tokens.
+     * 
+     * Runs sanity checks including safety cap
+     * Then calculates current price by getPrice() function, creates HKG tokens
+     * Finally sends a value of transaction to the wallet
+     * 
+     * Note: due to lack of floating point types in Solidity,
+     * contract assumes that last 3 digits in tokens amount are stood after the point.
+     * It means that if stored HKG balance is 100000, then its real value is 100 HKG
      * 
      * @param holder token holder
      */
@@ -107,7 +124,7 @@ contract HackerGold is StandardToken {
     /**
      * Denotes complete price structure during the sale.
      *
-     * @return HKG amount per 1 ETH considering current moment in time
+     * @return HKG amount per 1 ETH for the current moment in time
      */
     function getPrice() constant returns (uint result) {
         
@@ -148,15 +165,24 @@ contract HackerGold is StandardToken {
      }
     
     /**
-     * Returns total HKG fractions amount (HKG amount * 1000)
-     * Pay attention to decimals variable defining number of digis after the point
+     * Returns total stored HKG amount.
      * 
-     * @return result HKG fractions amount
+     * Contract assumes that last 3 digits of this value are behind the decimal place. i.e. 10001 is 10.001
+     * Thus, result of this function should be divided by 1000 to get HKG value
+     * 
+     * @return result stored HKG amount
      */
-    function getTotalSupply() constant returns (uint result){
+    function getTotalSupply() constant returns (uint result) {
         return totalSupply;
     } 
 
+    /**
+     * It is used for test purposes.
+     * 
+     * Returns the result of 'now' statement of Solidity language
+     * 
+     * @return unix timestamp for current moment in time
+     */
     function getNow() constant returns (uint result) {
         return now;
     }
