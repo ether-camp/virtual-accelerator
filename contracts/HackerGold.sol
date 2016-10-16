@@ -19,12 +19,20 @@ contract HackerGold is StandardToken {
     
     string public name = "HackerGold";
 
-    /// digits number after the point
+    // digits number after the point
     uint8  public decimals = 3;          
     string public symbol = "HKG";
     
     // 1 ether = 200 hkg
     uint BASE_PRICE = 200;
+    // 1 ether = 150 hkg
+    uint MID_PRICE = 150;
+    // 1 ether = 100 hkg
+    uint FIN_PRICE = 100;
+    // safety cap
+    uint SAFETY_LIMIT = 4000000 ether;
+    // zeros after the point
+    uint DECIMAL_ZEROS = 1000;
     
     // total value in wei
     uint totalValue;
@@ -85,9 +93,9 @@ contract HackerGold is StandardToken {
         if (msg.value == 0) throw;
     
         // safety cap
-        if (getTotalValue() + msg.value > 4000000 ether) throw; 
+        if (getTotalValue() + msg.value > SAFETY_LIMIT) throw; 
     
-        uint tokens = msg.value / 1000000000000000 * getPrice();
+        uint tokens = msg.value * getPrice() * DECIMAL_ZEROS / 1 ether;
 
         totalSupply += tokens;
         balances[holder] += tokens;
@@ -101,36 +109,35 @@ contract HackerGold is StandardToken {
      *
      * @return HKG amount per 1 ETH considering current moment in time
      */
-    function getPrice() constant returns (uint result){
+    function getPrice() constant returns (uint result) {
         
         if (now < milestones.p1) return 0;
         
-        if (now >= milestones.p1 && now < milestones.p2){
+        if (now >= milestones.p1 && now < milestones.p2) {
         
             return BASE_PRICE;
         }
         
-        if (now >= milestones.p2 && now < milestones.p3){
+        if (now >= milestones.p2 && now < milestones.p3) {
             
-        
-            uint days_in = 1 + (now - milestones.p2) / (60 * 60 *24); 
+            uint days_in = 1 + (now - milestones.p2) / 1 days; 
             return BASE_PRICE - days_in * 25 / 7;  // daily decrease 3.5
         }
 
-        if (now >= milestones.p3 && now < milestones.p4){
+        if (now >= milestones.p3 && now < milestones.p4) {
         
-            return BASE_PRICE / 4 * 3;
+            return MID_PRICE;
         }
         
-        if (now >= milestones.p4 && now < milestones.p5){
+        if (now >= milestones.p4 && now < milestones.p5) {
             
-            days_in = 1 + (now - milestones.p4) / (60 * 60 *24); 
-            return (BASE_PRICE / 4 * 3) - days_in * 25 / 7;  // daily decrease 3.5
+            days_in = 1 + (now - milestones.p4) / 1 days; 
+            return MID_PRICE - days_in * 25 / 7;  // daily decrease 3.5
         }
 
-        if (now >= milestones.p5 && now < milestones.p6){
+        if (now >= milestones.p5 && now < milestones.p6) {
         
-            return BASE_PRICE / 2;
+            return FIN_PRICE;
         }
         
         if (now >= milestones.p6){
