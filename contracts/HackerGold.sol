@@ -9,7 +9,6 @@ pragma solidity ^0.4.0;
  * 
  * The official token powering the hack.ether.camp virtual accelerator.
  * This is the only way to acquire tokens from startups during the event.
- * Over time the contract will reflect the intrinsic value of the Virtual Accelerator itself.
  *
  * Whitepaper https://hack.ether.camp/whitepaper
  *
