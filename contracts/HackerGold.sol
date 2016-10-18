@@ -105,7 +105,7 @@ contract HackerGold is StandardToken {
     function createHKG(address holder) payable {
         
         if (now < milestones.p1) throw;
-        if (now > milestones.p6) throw;
+        if (now >= milestones.p6) throw;
         if (msg.value == 0) throw;
     
         // safety cap

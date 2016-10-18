@@ -14,6 +14,7 @@ workbench.startTesting('HackerGold', function(contracts) {
 
 var sandbox = workbench.sandbox;
 var hackerGold;
+var value;
 
 it('check-create-hkg-init', function() {
 
@@ -182,6 +183,36 @@ it('check-create-hkg-with-non-zero-value', function() {
 
         assert.equal(balance1 / 1000, 200);
         assert.equal(balance2 / 1000, 0.2);
+        return true;
+    })
+
+    // milestones.p6
+    .then(function() { return workbench.rollTimeTo('22-Dec-2016 14:00 UTC+00'); })
+
+    .then(function() {
+
+        value  = hackerGold.getTotalValue().toNumber();
+        
+        return workbench.sendTransaction({
+          from: '0x211b1b6e61e475ace9bf13ae79373ddb419b5f72',
+          to: hackerGold.address,
+          gas: 200000,
+          value: sandbox.web3.toWei(1, 'ether')
+        }).then(function (txHash) { 
+            return workbench.waitForReceipt(txHash); 
+        })
+    })
+
+    .then(function() {
+
+        updatedValue = hackerGold.getTotalValue();
+        balance = hackerGold.balanceOf('0x211b1b6e61e475ace9bf13ae79373ddb419b5f72').toNumber();
+
+        assert.equal(0, updatedValue - value);
+
+        // remove decimals
+        assert.equal(balance / 1000, 0.2);
+        
         return true;
     })
 
