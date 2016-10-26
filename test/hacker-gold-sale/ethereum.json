@@ -29,7 +29,7 @@
       },
 
       "0x211b1b6e61e475ace9bf13ae79373ddb419b5f72": {
-        "balance": "0x100000000000000000000",
+        "balance": "0x100000000000000000000000000",
         "nonce": "1",
         "pkey": "roman2",
         "default": false
@@ -42,8 +42,15 @@
         "nonce": "0x1cf",
         "pkey": "0x974f963ee4571e86e5f9bc3b493e453db9c15e5bd19829a4ef9a790de0da0015", 
         "default": false
-      }
+      },
       
+
+      "0x71d0fc7d1c570b1ed786382b551a09391c91e33d": {
+        "balance": "0x0",
+        "nonce": "1",
+        "pkey": "wallet",
+        "default": false
+      }
 
     }
   }

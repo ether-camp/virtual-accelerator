@@ -6,7 +6,8 @@ var Workbench = require('ethereum-sandbox-workbench');
 var workbench = new Workbench({
   defaults: {
     from: '0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826'
-  }
+  },
+  solcVersion: '0.4.2'
 });
 
 workbench.startTesting('HackerGold', function(contracts) {
@@ -17,7 +18,7 @@ var hackerGold;
 
 it('init', function() {
 
-    return contracts.HackerGold.new()
+    return contracts.HackerGold.new('0x71d0fc7d1c570b1ed786382b551a09391c91e33d')
 
         .then(function(contract) {
           
@@ -29,6 +30,8 @@ it('init', function() {
           
           return true;        
         })
+
+        .then(function (){ return workbench.rollTimeTo('23-aug-2016');  })
         
         .then(function(){
             

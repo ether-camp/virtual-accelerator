@@ -20,6 +20,8 @@ var virtualExchange;
 var dstContract1;
 var dstContract2;
 
+var proposal_1_id;
+
 function printDate(){
    now = eventInfo.getNow().toNumber();
    var date = new Date(now*1000);
@@ -418,7 +420,7 @@ it('sale-hkg-from-dst-for-ether', function() {
 
     .then(function (){
         
-          value = dstContract1.getValue().toNumber();
+          value = dstContract1.getTotalValue().toNumber();
           assert.equal(value, sandbox.web3.toWei(20, 'ether'));
           
         
@@ -432,8 +434,212 @@ it('sale-hkg-from-dst-for-ether', function() {
 
 
 
+it('submit-funding-proposal-to-big-share', function() {
+
+    log("");
+    
+
+    return dstContract1.submitProposal((sandbox.web3.toWei(10, 'ether')), "http://pastebin.com/raw/3JUfk5JA", 
+    {
+       from : '0xcc49bea5129ef2369ff81b0c0200885893979b77',       
+    })
+
+    .then(function (txHash) {
+
+          return workbench.waitForReceipt(txHash);          
+
+    })    
+    
+    .then(function () {
+        
+        value = dstContract1.getCounterProposals().toNumber();
+        assert.equal(value, 0);
+        
+        return true;
+    })
+    
+
+
+    
+});
+
+
+
+it('roll-some-time', function() {
+
+    log("");
+    var web3 = workbench.sandbox.web3;
+    
+    return workbench.rollTimeTo('17-Jan-2017 19:00')
+    
+    .then(function() {
+        
+       balance = web3.eth.getBalance('0xcc49bea5129ef2369ff81b0c0200885893979b77');
+       balance = web3.fromWei(balance).toFixed(0);
+       
+       log("[0xcc49].balance = " + balance);
+       assert.equal(99, balance);
+        
+       return true; 
+    });
+    
+});
+
+it('submit-correct-funding-proposal', function() {
+
+    log("");
+    
+
+    return dstContract1.submitProposal((sandbox.web3.toWei(3, 'ether')), "http://pastebin.com/raw/3JUfk5JA", 
+    {
+       from : '0xcc49bea5129ef2369ff81b0c0200885893979b77',    
+       gas: 500000,       
+    })
+
+    .then(function (txHash) {
+
+          return workbench.waitForReceipt(txHash);          
+    })    
+    
+    .then(function (receipt) {
+
+      // todo how to get retValue
+      var result = receipt.returnValue;
+
+      log("here: " + result);
+      
+      return true;
+    })
+    
+    .then(function () {
+    
+        value = dstContract1.getCounterProposals().toNumber();
+        assert.equal(value, 1);
+        
+        proposal_1_id = dstContract1.getProposalIdByIndex(0);
+        
+        return true;
+    })
+    
+    
+});
+
+
+
+/**
+ * redeem-funding-proposal-1
+ * 
+ * Preconditions: 
+ *   - there is a correct proposal
+ *   - 2 weeks from submission time is passed
+ *   - no 75% objection is collected
+ */
+it('redeem-funding-proposal-1', function() {
+    
+    var web3 = workbench.sandbox.web3;
+    log('');
+    
+
+    return dstContract1.redeemProposalFunds(proposal_1_id, 
+    {
+       from : '0xcc49bea5129ef2369ff81b0c0200885893979b77',    
+       gas: 500000,       
+    })
+
+    .then(function (txHash) {
+
+          return workbench.waitForReceipt(txHash);          
+    })    
+
+    .then(function () {
+
+           balance = web3.eth.getBalance('0xcc49bea5129ef2369ff81b0c0200885893979b77');
+           balance = web3.fromWei(balance).toFixed(0);
+           
+           log("[0xcc49].balance = " + balance);
+           assert.equal(102, balance);
+
+
+           return true;          
+    })    
+
+    
+    
+});
+
+var proposal_2_id;
+it('submit-correct-funding-proposal-2', function() {
+
+    log("");
+    
+
+    return dstContract1.submitProposal((sandbox.web3.toWei(3, 'ether')), "http://pastebin.com/raw/kJPAhDEQ", 
+    {
+       from : '0xcc49bea5129ef2369ff81b0c0200885893979b77',    
+       gas: 500000,       
+    })
+
+    .then(function (txHash) {
+
+          return workbench.waitForReceipt(txHash);          
+    })    
+    
+    .then(function (receipt) {
+
+      // todo how to get retValue
+      var result = receipt.returnValue;
+
+      return true;
+    })
+    
+    .then(function () {
+    
+        value = dstContract1.getCounterProposals().toNumber();
+        assert.equal(value, 2);
+        
+        proposal_2_id = dstContract1.getProposalIdByIndex(1);
+        log("proposal_2_id: " + proposal_2_id);
+        
+        return true;
+    })
+    
+    
+});
+
+
+it('object-funding-proposal-2', function() {
+
+    log("");
+    
+
+    return dstContract1.objectProposal(proposal_2_id, 
+    {
+       from : '0x29805ff5b946e7a7c5871c1fb071f740f767cf41',    
+       gas: 500000,       
+    })
+
+    .then(function (txHash) {
+
+          return workbench.waitForReceipt(txHash);          
+    })    
+    
+    .then(function () {
+    
+        var objection = dstContract1.getProposalObjectionByIndex(1);
+        log("objection: " + objection);
+        
+        return true;
+    })
+    
+    
+});
+
+
 
 });
 
 
+ 
+ 
+ 
  
