@@ -1,3 +1,4 @@
+pragma solidity ^0.4.0;
 
 import "helper.sol";
 import "EventInfo.sol";
@@ -50,6 +51,7 @@ contract ProjectKudos is owned, named("ProjectKudos") {
         mapping(address => UserIndex)   usersIndex;
         
         event Vote(
+            address indexed voter,
             string indexed projectCode,
             uint indexed count
         );
@@ -90,7 +92,7 @@ contract ProjectKudos is owned, named("ProjectKudos") {
             
                 // check if the status of event is started 
                 // and the voting is open by time
-                if (now <  eventInfo.getVotingStart()) throw;
+                if (now < eventInfo.getVotingStart()) throw;
                 if (now >= eventInfo.getEventEnd()) throw;
 
                 UserInfo giver = users[msg.sender];
@@ -120,7 +122,7 @@ contract ProjectKudos is owned, named("ProjectKudos") {
                     }
 
                     idx.kudos[i] = project.kudosGiven[msg.sender];
-                    Vote(projectCode, kudos);
+                    Vote(msg.sender, projectCode, kudos);
                }
         }
 
@@ -170,8 +172,8 @@ contract ProjectKudos is owned, named("ProjectKudos") {
            if (now >= eventInfo.getVotingStart()  && now < eventInfo.getEventEnd())    return "VOTING_STARTED";
            
            return "EVENT_ENDED";           
-       } 
-        
+       }
+       
        function getProjectKudos(string projectCode) constant returns(uint) {
                 ProjectInfo project = projects[projectCode];
                 return project.kudosTotal;
@@ -188,14 +190,18 @@ contract ProjectKudos is owned, named("ProjectKudos") {
                 return user.kudosGiven;
        }
         
-    //   function getKudosPerProject(address giver) constant returns(string[] projects, uint[] kudos) {
-    //       UserIndex idx = usersIndex[giver];
-
-    //       projects = idx.projects;
-    //       kudos = idx.kudos;
-    //   }
-
-       function grantUintToReason(uint reason) constant returns (GrantReason result){
+       function getUserKudosForProject(string projectCode, address[] userAddresses) constant returns(uint[] kudos) {
+           ProjectInfo idx = projects[projectCode];
+           mapping(address => uint) kudosGiven = idx.kudosGiven;
+           uint[] memory userKudos = new uint[](userAddresses.length);
+           for (uint i = 0; i < userAddresses.length; i++) {
+                userKudos[i] = kudosGiven[userAddresses[i]];    
+           }
+           
+           kudos = userKudos;
+       }
+       
+       function grantUintToReason(uint reason) constant returns (GrantReason result) {
            if (reason == 0)  return GrantReason.Facebook;
            if (reason == 1)  return GrantReason.Twitter;
            return GrantReason.Fake;
@@ -207,7 +213,4 @@ contract ProjectKudos is owned, named("ProjectKudos") {
            if (reason == GrantReason.Twitter)  return 1;
            return 3;
        }
-       
-       
-        
 }

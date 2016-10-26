@@ -1,10 +1,9 @@
+pragma solidity ^0.4.0;
 
 //
 // Helper contracts
 //
-contract abstract {}
-
-contract owned is abstract {
+contract owned {
         address owner;
 
         function owned() {
@@ -14,30 +13,31 @@ contract owned is abstract {
         function changeOwner(address newOwner) onlyowner {
                 owner = newOwner;
         }
+        
         modifier onlyowner() {
-                if (msg.sender == owner) _
+                if (msg.sender == owner) _;
         }
 }
 
-contract mortal is abstract, owned {
+contract mortal is owned {
         function kill() onlyowner {
                 if (msg.sender == owner) suicide(owner);
         }
 }
 
-contract NameReg is abstract {
-        function register(bytes32 name) {}
+contract NameReg {
+        function register(bytes32 name);
 
-        function unregister() {}
+        function unregister();
 
-        function addressOf(bytes32 name) constant returns(address addr) {}
+        function addressOf(bytes32 name) constant returns(address addr);
 
-        function nameOf(address addr) constant returns(bytes32 name) {}
+        function nameOf(address addr) constant returns(bytes32 name);
 
-        function kill() {}
+        function kill();
 }
 
-contract nameRegAware is abstract {
+contract nameRegAware {
         function nameRegAddress() returns(address) {
                 // return 0x0860a8008298322a142c09b528207acb5ab7effc;
 
@@ -49,14 +49,14 @@ contract nameRegAware is abstract {
         }
 }
 
-contract named is abstract, nameRegAware {
+contract named is nameRegAware {
         function named(bytes32 name) {
                 NameReg(nameRegAddress()).register(name);
         }
 }
 
 // contract with util functions
-contract util is abstract {
+contract util {
         // Converts 'string' to 'bytes32'
         function s2b(string s) internal returns(bytes32) {
                 bytes memory b = bytes(s);
