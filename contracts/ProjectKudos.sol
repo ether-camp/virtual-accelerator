@@ -1,7 +1,6 @@
 pragma solidity ^0.4.0;
 
 import "helper.sol";
-import "EventInfo.sol";
 
 /**
  * ProjectKudos - plain voting system for the 
@@ -19,7 +18,7 @@ contract ProjectKudos is owned, named("ProjectKudos") {
             Finished
         }
         
-        enum GrantReason{
+        enum GrantReason {
             Facebook,
             Twitter, 
             Fake
@@ -31,9 +30,9 @@ contract ProjectKudos is owned, named("ProjectKudos") {
         }
 
         struct UserInfo {
-            uint  kudosLimit;
-            uint  kudosGiven;
-            bool  isJudge;
+            uint kudosLimit;
+            uint kudosGiven;
+            bool isJudge;
             mapping(uint => bool) grant;
         }
 
@@ -43,8 +42,13 @@ contract ProjectKudos is owned, named("ProjectKudos") {
             mapping(string => uint) kudosIdx;
         }
         
-        EventInfo eventInfo;
+        struct VotePeriod {
+            uint start;
+            uint end;
+        }
         
+        VotePeriod votePeriod;
+
         mapping(address => UserInfo) users;
         mapping(address => UserIndex) usersIndex;
         mapping(string => ProjectInfo) projects;
@@ -55,8 +59,12 @@ contract ProjectKudos is owned, named("ProjectKudos") {
             uint indexed count
         );
         
-        function ProjectKudos(EventInfo _eventInfo) {
-            eventInfo = _eventInfo; 
+        function ProjectKudos() {
+            
+            votePeriod = VotePeriod(
+                1479996000,     // Voting starts, 1st Hackathon week passed
+                1482415200      // Voting ends, Hackathon ends
+            );
         }
 
         /**
@@ -87,13 +95,8 @@ contract ProjectKudos is owned, named("ProjectKudos") {
          *  @param projectCode - code of the project.
          *  @param kudos - kudos to give.
          */
-        function giveKudos(string projectCode, uint kudos) {
+        function giveKudos(string projectCode, uint kudos) duringVote {
             
-            // check if the status of event is started 
-            // and the voting is open by time
-            if (now < eventInfo.getVotingStart()) throw;
-            if (now >= eventInfo.getEventEnd()) throw;
-
             UserInfo giver = users[msg.sender];
 
             if (giver.kudosLimit == 0) throw;
@@ -102,7 +105,7 @@ contract ProjectKudos is owned, named("ProjectKudos") {
             
             if (giver.kudosGiven + kudos < giver.kudosLimit) {
                 
-                giver.kudosGiven   += kudos;
+                giver.kudosGiven += kudos;
                 project.kudosTotal += kudos;
                 project.kudosGiven[msg.sender] += kudos;
 
@@ -113,7 +116,7 @@ contract ProjectKudos is owned, named("ProjectKudos") {
                 if (i == 0) {
                     i = idx.projects.length;
                     idx.projects.length += 1;
-                    idx.kudos.length    += 1;
+                    idx.kudos.length += 1;
                     idx.projects[i] = projectCode;
                     idx.kudosIdx[projectCode] = i + 1;
                 } else {
@@ -163,16 +166,6 @@ contract ProjectKudos is owned, named("ProjectKudos") {
         // *   Constant Calls  * //
         // ********************* //
         
-        
-        function getStatus() constant returns (string result) {
-           
-            if (now < eventInfo.getEventStart()) return "NOT_STARTED";
-            if (now >= eventInfo.getEventStart()   && now < eventInfo.getVotingStart()) return "EVENT_STARTED";
-            if (now >= eventInfo.getVotingStart()  && now < eventInfo.getEventEnd())    return "VOTING_STARTED";
-           
-            return "EVENT_ENDED";           
-        }
-       
         function getProjectKudos(string projectCode) constant returns(uint) {
             ProjectInfo project = projects[projectCode];
             return project.kudosTotal;
@@ -182,7 +175,6 @@ contract ProjectKudos is owned, named("ProjectKudos") {
             UserInfo user = users[addr];
             return user.kudosLimit - user.kudosGiven;
         }
-
 
         function getKudosGiven(address addr) constant returns(uint) {
             UserInfo user = users[addr];
@@ -210,5 +202,17 @@ contract ProjectKudos is owned, named("ProjectKudos") {
             if (reason == GrantReason.Facebook) return 0;
             if (reason == GrantReason.Twitter)  return 1;
             return 3;
+        }
+        
+        // ********************* //
+        // *     Modifiers     * //
+        // ********************* //
+        
+        modifier duringVote() {
+            
+            if (now < votePeriod.start) throw;
+            if (now >= votePeriod.end) throw;
+            
+            _;
         }
 }
