@@ -14,41 +14,40 @@ contract ProjectKudos is owned, named("ProjectKudos") {
         uint KUDOS_LIMIT_USER  = 10;
 
         enum Status {
-                NotStarted,
-                InProgress,
-                Finished
+            NotStarted,
+            InProgress,
+            Finished
         }
         
         enum GrantReason{
-                Facebook,
-                Twitter, 
-                Fake
+            Facebook,
+            Twitter, 
+            Fake
         }
 
         struct ProjectInfo {
-                mapping(address => uint) kudosGiven;
-                uint kudosTotal;
+            mapping(address => uint) kudosGiven;
+            uint kudosTotal;
         }
 
         struct UserInfo {
-                uint  kudosLimit;
-                uint  kudosGiven;
-                bool  isJudge;
-                mapping(uint => bool) grant; 
-                
+            uint  kudosLimit;
+            uint  kudosGiven;
+            bool  isJudge;
+            mapping(uint => bool) grant;
         }
 
         struct UserIndex {
-                string[] projects;
-                uint[]    kudos;
-                mapping(string => uint) kudosIdx;
+            string[] projects;
+            uint[]    kudos;
+            mapping(string => uint) kudosIdx;
         }
         
         EventInfo eventInfo;
         
+        mapping(address => UserInfo) users;
+        mapping(address => UserIndex) usersIndex;
         mapping(string => ProjectInfo) projects;
-        mapping(address => UserInfo)    users;
-        mapping(address => UserIndex)   usersIndex;
         
         event Vote(
             address indexed voter,
@@ -68,18 +67,18 @@ contract ProjectKudos is owned, named("ProjectKudos") {
          */
         function register(address userAddres, bool isJudge) onlyowner {
                                 
-                UserInfo user = users[userAddres];
+            UserInfo user = users[userAddres];
 
-                if (user.kudosLimit > 0) throw;
+            if (user.kudosLimit > 0) throw;
 
-                if (isJudge)
-                    user.kudosLimit = KUDOS_LIMIT_JUDGE;
-                else 
-                    user.kudosLimit = KUDOS_LIMIT_USER;
-                
-                user.isJudge = isJudge;
-                
-                users[userAddres] = user;
+            if (isJudge)
+                user.kudosLimit = KUDOS_LIMIT_JUDGE;
+            else 
+                user.kudosLimit = KUDOS_LIMIT_USER;
+            
+            user.isJudge = isJudge;
+            
+            users[userAddres] = user;
         }
         
         /**
@@ -90,40 +89,40 @@ contract ProjectKudos is owned, named("ProjectKudos") {
          */
         function giveKudos(string projectCode, uint kudos) {
             
-                // check if the status of event is started 
-                // and the voting is open by time
-                if (now < eventInfo.getVotingStart()) throw;
-                if (now >= eventInfo.getEventEnd()) throw;
+            // check if the status of event is started 
+            // and the voting is open by time
+            if (now < eventInfo.getVotingStart()) throw;
+            if (now >= eventInfo.getEventEnd()) throw;
 
-                UserInfo giver = users[msg.sender];
+            UserInfo giver = users[msg.sender];
 
-                if (giver.kudosLimit == 0) throw;
+            if (giver.kudosLimit == 0) throw;
 
-                ProjectInfo project = projects[projectCode];
+            ProjectInfo project = projects[projectCode];
+            
+            if (giver.kudosGiven + kudos < giver.kudosLimit) {
                 
-                if (giver.kudosGiven + kudos < giver.kudosLimit) {
-                    
-                    giver.kudosGiven   += kudos;
-                    project.kudosTotal += kudos;
-                    project.kudosGiven[msg.sender] += kudos;
+                giver.kudosGiven   += kudos;
+                project.kudosTotal += kudos;
+                project.kudosGiven[msg.sender] += kudos;
 
-                    // save index of user voting history
-                    UserIndex idx = usersIndex[msg.sender];
-                    uint i = idx.kudosIdx[projectCode];
-                    
-                    if (i == 0) {
-                        i = idx.projects.length;
-                        idx.projects.length += 1;
-                        idx.kudos.length    += 1;
-                        idx.projects[i] = projectCode;
-                        idx.kudosIdx[projectCode] = i + 1;
-                    } else {
-                            i -= 1;
-                    }
+                // save index of user voting history
+                UserIndex idx = usersIndex[msg.sender];
+                uint i = idx.kudosIdx[projectCode];
+                
+                if (i == 0) {
+                    i = idx.projects.length;
+                    idx.projects.length += 1;
+                    idx.kudos.length    += 1;
+                    idx.projects[i] = projectCode;
+                    idx.kudosIdx[projectCode] = i + 1;
+                } else {
+                    i -= 1;
+                }
 
-                    idx.kudos[i] = project.kudosGiven[msg.sender];
-                    Vote(msg.sender, projectCode, kudos);
-               }
+                idx.kudos[i] = project.kudosGiven[msg.sender];
+                Vote(msg.sender, projectCode, kudos);
+            }
         }
 
             
@@ -134,7 +133,7 @@ contract ProjectKudos is owned, named("ProjectKudos") {
          *                      votes for social proof
          * @param reason      - reason for granting 
          */         
-        function grantKudos(address userToGrant, uint reason) onlyowner{
+        function grantKudos(address userToGrant, uint reason) onlyowner {
         
             UserInfo user = users[userToGrant];
         
@@ -160,57 +159,56 @@ contract ProjectKudos is owned, named("ProjectKudos") {
         }
         
         
-       // ********************* //
-       // *   Constant Calls  * //
-       // ********************* //
+        // ********************* //
+        // *   Constant Calls  * //
+        // ********************* //
         
         
-       function getStatus() constant returns (string result) {
+        function getStatus() constant returns (string result) {
            
-           if (now < eventInfo.getEventStart()) return "NOT_STARTED";
-           if (now >= eventInfo.getEventStart()   && now < eventInfo.getVotingStart()) return "EVENT_STARTED";
-           if (now >= eventInfo.getVotingStart()  && now < eventInfo.getEventEnd())    return "VOTING_STARTED";
+            if (now < eventInfo.getEventStart()) return "NOT_STARTED";
+            if (now >= eventInfo.getEventStart()   && now < eventInfo.getVotingStart()) return "EVENT_STARTED";
+            if (now >= eventInfo.getVotingStart()  && now < eventInfo.getEventEnd())    return "VOTING_STARTED";
            
-           return "EVENT_ENDED";           
-       }
+            return "EVENT_ENDED";           
+        }
        
-       function getProjectKudos(string projectCode) constant returns(uint) {
-                ProjectInfo project = projects[projectCode];
-                return project.kudosTotal;
-       }
+        function getProjectKudos(string projectCode) constant returns(uint) {
+            ProjectInfo project = projects[projectCode];
+            return project.kudosTotal;
+        }
 
-       function getKudosLeft(address addr) constant returns(uint) {
-                UserInfo user = users[addr];
-                return user.kudosLimit - user.kudosGiven;
-       }
+        function getKudosLeft(address addr) constant returns(uint) {
+            UserInfo user = users[addr];
+            return user.kudosLimit - user.kudosGiven;
+        }
 
 
-       function getKudosGiven(address addr) constant returns(uint) {
-                UserInfo user = users[addr];
-                return user.kudosGiven;
-       }
+        function getKudosGiven(address addr) constant returns(uint) {
+            UserInfo user = users[addr];
+            return user.kudosGiven;
+        }
         
-       function getUserKudosForProject(string projectCode, address[] userAddresses) constant returns(uint[] kudos) {
-           ProjectInfo idx = projects[projectCode];
-           mapping(address => uint) kudosGiven = idx.kudosGiven;
-           uint[] memory userKudos = new uint[](userAddresses.length);
-           for (uint i = 0; i < userAddresses.length; i++) {
+        function getUserKudosForProject(string projectCode, address[] userAddresses) constant returns(uint[] kudos) {
+            ProjectInfo idx = projects[projectCode];
+            mapping(address => uint) kudosGiven = idx.kudosGiven;
+            uint[] memory userKudos = new uint[](userAddresses.length);
+            for (uint i = 0; i < userAddresses.length; i++) {
                 userKudos[i] = kudosGiven[userAddresses[i]];    
-           }
-           
-           kudos = userKudos;
-       }
+            }
+            
+            kudos = userKudos;
+        }
        
-       function grantUintToReason(uint reason) constant returns (GrantReason result) {
-           if (reason == 0)  return GrantReason.Facebook;
-           if (reason == 1)  return GrantReason.Twitter;
-           return GrantReason.Fake;
-       }
+        function grantUintToReason(uint reason) constant returns (GrantReason result) {
+            if (reason == 0)  return GrantReason.Facebook;
+            if (reason == 1)  return GrantReason.Twitter;
+            return GrantReason.Fake;
+        }
         
-       
-       function grantReasonToUint(GrantReason reason) constant returns (uint result){
-           if (reason == GrantReason.Facebook) return 0;
-           if (reason == GrantReason.Twitter)  return 1;
-           return 3;
-       }
+        function grantReasonToUint(GrantReason reason) constant returns (uint result) {
+            if (reason == GrantReason.Facebook) return 0;
+            if (reason == GrantReason.Twitter)  return 1;
+            return 3;
+        }
 }
