@@ -2,7 +2,7 @@ pragma solidity ^0.4.0;
 
 /**
  * ProjectKudos - plain voting system for the 
- *                VirtualAcelerator events, includes
+ *                VirtualAccelerator events, includes
  *                judges and fans voting.
  */
 contract ProjectKudos {
@@ -189,11 +189,30 @@ contract ProjectKudos {
             uint[] memory userKudos = new uint[](userAddresses.length);
             for (uint i = 0; i < userAddresses.length; i++) {
                 userKudos[i] = kudosGiven[userAddresses[i]];    
-            }
-            
-            kudos = userKudos;
-        }
+           }
+           
+           kudos = userKudos;
+       }
 
+       function getUserKudos(address userAddress, bytes projectCodesArray, uint pageSize) constant returns(uint[] kudos) {
+          UserIndex idx = usersIndex[userAddress];
+          mapping(string => uint) kudosGiven = idx.kudosIdx;
+          string[] memory projectCodes = new string[](pageSize);
+          uint[] memory projectsKudos = new uint[](projectCodes.length);
+          uint j = 0;
+          for (uint i = 0; i < pageSize; i++) {
+                projectCodes[i] = getProjectCode(projectCodesArray, j, 3);
+                j += 3;
+          }
+           
+          for (uint z = 0; z < projectCodes.length; z++) {
+                projectsKudos[z] = kudosGiven[projectCodes[z]];    
+          }
+           
+          kudos = projectsKudos;
+      }
+       
+       
         // ********************* //
         // *   Internal Calls  * //
         // ********************* //
@@ -208,6 +227,16 @@ contract ProjectKudos {
             if (reason == GrantReason.Facebook) return 0;
             if (reason == GrantReason.Twitter)  return 1;
             return 3;
+        }
+        
+        function getProjectCode(bytes projectCodesArray, uint startIndex, uint codeLength) internal constant returns(string code) {
+            bytes memory toConvert = new bytes(codeLength);
+            for (uint i = 0; i < codeLength; i++) {
+                  toConvert[i] = projectCodesArray[startIndex + i];   
+            }
+           
+            string memory codeString = string(toConvert);
+            code = codeString;
         }
 
         
