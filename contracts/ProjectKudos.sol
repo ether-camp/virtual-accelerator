@@ -1,13 +1,11 @@
 pragma solidity ^0.4.0;
 
-import "helper.sol";
-
 /**
  * ProjectKudos - plain voting system for the 
  *                VirtualAcelerator events, includes
  *                judges and fans voting.
  */
-contract ProjectKudos is owned, named("ProjectKudos") {
+contract ProjectKudos {
 
         uint KUDOS_LIMIT_JUDGE = 1000;
         uint KUDOS_LIMIT_USER  = 10;
@@ -47,6 +45,8 @@ contract ProjectKudos is owned, named("ProjectKudos") {
             uint end;
         }
         
+        address owner;
+        
         VotePeriod votePeriod;
 
         mapping(address => UserInfo) users;
@@ -61,6 +61,8 @@ contract ProjectKudos is owned, named("ProjectKudos") {
         
         function ProjectKudos() {
             
+            owner = msg.sender;
+            
             votePeriod = VotePeriod(
                 1479996000,     // Voting starts, 1st Hackathon week passed
                 1482415200      // Voting ends, Hackathon ends
@@ -73,7 +75,7 @@ contract ProjectKudos is owned, named("ProjectKudos") {
          *  @param userAddres - user to register
          *  @param isJudge - true / false 
          */
-        function register(address userAddres, bool isJudge) onlyowner {
+        function register(address userAddres, bool isJudge) onlyOwner {
                                 
             UserInfo user = users[userAddres];
 
@@ -136,7 +138,7 @@ contract ProjectKudos is owned, named("ProjectKudos") {
          *                      votes for social proof
          * @param reason      - reason for granting 
          */         
-        function grantKudos(address userToGrant, uint reason) onlyowner {
+        function grantKudos(address userToGrant, uint reason) onlyOwner {
         
             UserInfo user = users[userToGrant];
         
@@ -212,6 +214,13 @@ contract ProjectKudos is owned, named("ProjectKudos") {
             
             if (now < votePeriod.start) throw;
             if (now >= votePeriod.end) throw;
+            
+            _;
+        }
+        
+        modifier onlyOwner { 
+            
+            if (msg.sender != owner) throw;
             
             _;
         }
