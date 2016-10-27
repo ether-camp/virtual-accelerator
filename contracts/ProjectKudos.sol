@@ -193,18 +193,23 @@ contract ProjectKudos {
             
             kudos = userKudos;
         }
-       
-        function grantUintToReason(uint reason) constant returns (GrantReason result) {
+
+        // ********************* //
+        // *   Internal Calls  * //
+        // ********************* //
+        
+        function grantUintToReason(uint reason) internal returns (GrantReason result) {
             if (reason == 0)  return GrantReason.Facebook;
             if (reason == 1)  return GrantReason.Twitter;
             return GrantReason.Fake;
         }
         
-        function grantReasonToUint(GrantReason reason) constant returns (uint result) {
+        function grantReasonToUint(GrantReason reason) internal returns (uint result) {
             if (reason == GrantReason.Facebook) return 0;
             if (reason == GrantReason.Twitter)  return 1;
             return 3;
         }
+
         
         // ********************* //
         // *     Modifiers     * //
