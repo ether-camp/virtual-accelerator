@@ -10,12 +10,6 @@ contract ProjectKudos {
         uint KUDOS_LIMIT_JUDGE = 1000;
         uint KUDOS_LIMIT_USER  = 10;
 
-        enum Status {
-            NotStarted,
-            InProgress,
-            Finished
-        }
-        
         enum GrantReason {
             Facebook,
             Twitter, 
@@ -23,7 +17,7 @@ contract ProjectKudos {
         }
 
         struct ProjectInfo {
-            mapping(address => uint) kudosGiven;
+            mapping(address => uint) kudosByUser;
             uint kudosTotal;
         }
 
@@ -35,9 +29,9 @@ contract ProjectKudos {
         }
 
         struct UserIndex {
-            string[] projects;
-            uint[]    kudos;
-            mapping(string => uint) kudosIdx;
+            bytes32[] projects;
+            uint[] kudos;
+            mapping(bytes32 => uint) kudosIdx;
         }
         
         struct VotePeriod {
@@ -51,7 +45,7 @@ contract ProjectKudos {
 
         mapping(address => UserInfo) users;
         mapping(address => UserIndex) usersIndex;
-        mapping(string => ProjectInfo) projects;
+        mapping(bytes32 => ProjectInfo) projects;
         
         event Vote(
             address indexed voter,
@@ -64,8 +58,8 @@ contract ProjectKudos {
             owner = msg.sender;
             
             votePeriod = VotePeriod(
-                1479996000,     // Voting starts, 1st Hackathon week passed
-                1482415200      // Voting ends, Hackathon ends
+                1479996000,     // GMT: 24-Nov-2016 14:00, Voting starts, 1st week passed
+                1482415200      // GMT: 22-Dec-2016 14:00, Voting ends, Hackathon ends
             );
         }
 
@@ -101,36 +95,21 @@ contract ProjectKudos {
             
             UserInfo giver = users[msg.sender];
 
-            if (giver.kudosLimit == 0) throw;
-
-            ProjectInfo project = projects[projectCode];
+            if (giver.kudosGiven + kudos < giver.kudosLimit) throw;
             
-            if (giver.kudosGiven + kudos < giver.kudosLimit) {
-                
-                giver.kudosGiven += kudos;
-                project.kudosTotal += kudos;
-                project.kudosGiven[msg.sender] += kudos;
+            bytes32 code = strToBytes(projectCode);
+            ProjectInfo project = projects[code];
 
-                // save index of user voting history
-                UserIndex idx = usersIndex[msg.sender];
-                uint i = idx.kudosIdx[projectCode];
-                
-                if (i == 0) {
-                    i = idx.projects.length;
-                    idx.projects.length += 1;
-                    idx.kudos.length += 1;
-                    idx.projects[i] = projectCode;
-                    idx.kudosIdx[projectCode] = i + 1;
-                } else {
-                    i -= 1;
-                }
+            giver.kudosGiven += kudos;
+            project.kudosTotal += kudos;
+            project.kudosByUser[msg.sender] += kudos;
 
-                idx.kudos[i] = project.kudosGiven[msg.sender];
-                Vote(msg.sender, projectCode, kudos);
-            }
+            // save index of user voting history
+            updateUsersIndex(code, project.kudosByUser[msg.sender]);
+            
+            Vote(msg.sender, projectCode, kudos);
         }
 
-            
         /**
          * grantKudos - grant extra kudos for identity proof 
          *
@@ -160,7 +139,6 @@ contract ProjectKudos {
             
             // mark reason 
             user.grant[reason] = true;
-            
         }
         
         
@@ -169,8 +147,27 @@ contract ProjectKudos {
         // ********************* //
         
         function getProjectKudos(string projectCode) constant returns(uint) {
-            ProjectInfo project = projects[projectCode];
+            bytes32 code = strToBytes(projectCode);
+            ProjectInfo project = projects[code];
             return project.kudosTotal;
+        }
+
+        function getProjectKudosByUsers(string projectCode, address[] users) constant returns(uint[]) {
+            bytes32 code = strToBytes(projectCode);
+            ProjectInfo project = projects[code];
+            mapping(address => uint) kudosByUser = project.kudosByUser;
+            uint[] memory userKudos = new uint[](users.length);
+            for (uint i = 0; i < users.length; i++) {
+                userKudos[i] = kudosByUser[users[i]];    
+           }
+           
+           return userKudos;
+        }
+
+        function getKudosPerProject(address giver) constant returns (bytes32[] projects, uint[] kudos) {
+            UserIndex idx = usersIndex[giver];
+            projects = idx.projects;
+            kudos = idx.kudos;
         }
 
         function getKudosLeft(address addr) constant returns(uint) {
@@ -182,40 +179,28 @@ contract ProjectKudos {
             UserInfo user = users[addr];
             return user.kudosGiven;
         }
-        
-        function getUserKudosForProject(string projectCode, address[] userAddresses) constant returns(uint[] kudos) {
-            ProjectInfo idx = projects[projectCode];
-            mapping(address => uint) kudosGiven = idx.kudosGiven;
-            uint[] memory userKudos = new uint[](userAddresses.length);
-            for (uint i = 0; i < userAddresses.length; i++) {
-                userKudos[i] = kudosGiven[userAddresses[i]];    
-           }
-           
-           kudos = userKudos;
-       }
 
-       function getUserKudos(address userAddress, bytes projectCodesArray, uint pageSize) constant returns(uint[] kudos) {
-          UserIndex idx = usersIndex[userAddress];
-          mapping(string => uint) kudosGiven = idx.kudosIdx;
-          string[] memory projectCodes = new string[](pageSize);
-          uint[] memory projectsKudos = new uint[](projectCodes.length);
-          uint j = 0;
-          for (uint i = 0; i < pageSize; i++) {
-                projectCodes[i] = getProjectCode(projectCodesArray, j, 3);
-                j += 3;
-          }
-           
-          for (uint z = 0; z < projectCodes.length; z++) {
-                projectsKudos[z] = kudosGiven[projectCodes[z]];    
-          }
-           
-          kudos = projectsKudos;
-      }
-       
        
         // ********************* //
         // *   Internal Calls  * //
         // ********************* //
+        
+        function updateUsersIndex(bytes32 code, uint kudos) internal {
+            
+            UserIndex idx = usersIndex[msg.sender];
+            uint i = idx.kudosIdx[code];
+            
+            // add new entry to index
+            if (i == 0) {
+                i = idx.projects.length + 1;
+                idx.projects.length += 1;
+                idx.kudos.length += 1;
+                idx.projects[i - 1] = code;
+                idx.kudosIdx[code] = i;
+            }
+
+            idx.kudos[i - 1] = kudos;
+        }
         
         function grantUintToReason(uint reason) internal returns (GrantReason result) {
             if (reason == 0)  return GrantReason.Facebook;
@@ -229,15 +214,14 @@ contract ProjectKudos {
             return 3;
         }
         
-        function getProjectCode(bytes projectCodesArray, uint startIndex, uint codeLength) internal constant returns(string code) {
-            bytes memory toConvert = new bytes(codeLength);
-            for (uint i = 0; i < codeLength; i++) {
-                  toConvert[i] = projectCodesArray[startIndex + i];   
+        function strToBytes(string key) internal returns (bytes32 ret) {
+            
+            if (bytes(key).length > 32) throw;
+            
+            assembly {
+                ret := mload(add(key, 32))
             }
-           
-            string memory codeString = string(toConvert);
-            code = codeString;
-        }
+        } 
 
         
         // ********************* //
@@ -245,17 +229,13 @@ contract ProjectKudos {
         // ********************* //
         
         modifier duringVote() {
-            
             if (now < votePeriod.start) throw;
             if (now >= votePeriod.end) throw;
-            
             _;
         }
         
         modifier onlyOwner { 
-            
             if (msg.sender != owner) throw;
-            
             _;
         }
 }
