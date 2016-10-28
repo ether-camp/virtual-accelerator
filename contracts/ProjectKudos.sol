@@ -95,7 +95,7 @@ contract ProjectKudos {
             
             UserInfo giver = users[msg.sender];
 
-            if (giver.kudosGiven + kudos < giver.kudosLimit) throw;
+            if (giver.kudosGiven + kudos > giver.kudosLimit) throw;
             
             bytes32 code = strToBytes(projectCode);
             ProjectInfo project = projects[code];
