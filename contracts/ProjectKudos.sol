@@ -182,10 +182,10 @@ contract ProjectKudos {
 
        
         // ********************* //
-        // *   Internal Calls  * //
+        // *   Priavate Calls  * //
         // ********************* //
         
-        function updateUsersIndex(bytes32 code, uint kudos) internal {
+        function updateUsersIndex(bytes32 code, uint kudos) private {
             
             UserIndex idx = usersIndex[msg.sender];
             uint i = idx.kudosIdx[code];
@@ -202,19 +202,19 @@ contract ProjectKudos {
             idx.kudos[i - 1] = kudos;
         }
         
-        function grantUintToReason(uint reason) internal returns (GrantReason result) {
+        function grantUintToReason(uint reason) private returns (GrantReason result) {
             if (reason == 0)  return GrantReason.Facebook;
             if (reason == 1)  return GrantReason.Twitter;
             return GrantReason.Fake;
         }
         
-        function grantReasonToUint(GrantReason reason) internal returns (uint result) {
+        function grantReasonToUint(GrantReason reason) private returns (uint result) {
             if (reason == GrantReason.Facebook) return 0;
             if (reason == GrantReason.Twitter)  return 1;
             return 3;
         }
         
-        function strToBytes(string key) internal returns (bytes32 ret) {
+        function strToBytes(string key) private returns (bytes32 ret) {
             
             if (bytes(key).length > 32) throw;
             
