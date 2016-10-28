@@ -49,7 +49,7 @@ contract ProjectKudos {
         
         event Vote(
             address indexed voter,
-            string indexed projectCode,
+            bytes32 indexed projectCode,
             uint indexed count
         );
         
@@ -107,7 +107,7 @@ contract ProjectKudos {
             // save index of user voting history
             updateUsersIndex(code, project.kudosByUser[msg.sender]);
             
-            Vote(msg.sender, projectCode, kudos);
+            Vote(msg.sender, sha3(projectCode), kudos);
         }
 
         /**
