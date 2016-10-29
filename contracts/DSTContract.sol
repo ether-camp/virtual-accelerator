@@ -36,7 +36,7 @@ contract DSTContract is StandardToken{
     uint etherPrice;
     
     string public name = "...";                   
-    uint8  public decimals = 2;                 
+    uint8  public decimals = 3;                 
     string public symbol = "...";
     
     bool ableToIssueTokens = true; 
@@ -87,11 +87,12 @@ contract DSTContract is StandardToken{
      *  Set date for early adapters
      *
      */ 
-    function DSTContract(EventInfo eventInfoAddr, string dstName){
+    function DSTContract(EventInfo eventInfoAddr, string dstName, string dstSymbol){
     
       selfAddress = this; 
       executive   = msg.sender;  
       name        = dstName;
+      symbol      = dstSymbol;
 
       eventInfo  = EventInfo(eventInfoAddr);
     }
@@ -105,7 +106,11 @@ contract DSTContract is StandardToken{
             throw;
         }
         
-        // todo: check if started
+        // If the user already declared end 
+        // of issuence
+        if (!ableToIssueTokens) {
+            throw;
+        }
         
         uint tokens = msg.value / (1 finney) * etherPrice;
         
@@ -270,7 +275,7 @@ contract DSTContract is StandardToken{
         // first 5 proposals should be P.value =< total * 20% 
         if (counterProposals < 5 ){
             
-            uint totalBalance = getTotalValue();
+            uint totalBalance = getEtherValue();
             uint fundingShare = totalBalance / value;
             
             if (fundingShare < 5) return (0, false);  
@@ -442,6 +447,15 @@ contract DSTContract is StandardToken{
         return convert(name);
     }    
 
+    function getDSTSymbol() constant returns(string result){
+        return symbol;
+    }    
+    
+    function getDSTSymbolBytes() constant returns(bytes32 result){
+        return convert(symbol);
+    }    
+
+
     function getAddress() constant returns (address result) {
         return selfAddress;
     }
@@ -450,8 +464,7 @@ contract DSTContract is StandardToken{
         return totalSupply;
     } 
     
-    function getTotalValue() constant returns (uint results) {
-        
+    function getEtherValue() constant returns (uint results) {        
         return this.balance;
     }
     

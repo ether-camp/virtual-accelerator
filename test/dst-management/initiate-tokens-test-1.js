@@ -32,11 +32,12 @@ function printDate(){
  *
  * Testing for hackathon period: 
  *  
- *    MK3
+ *    [MK3]
  *
  *     1.  issue  150.000 preffered  1.000 HKG for 1.000 MK3  
  *     2.  issue 1250.000 preffered  1.000 HKG for 2.000 MK3
  *     3.  issue 1000.000            1.0 Ether for 1.000 MK3
+ *     4.  disabled any issuence of the tokens
  *
  */
  
@@ -108,7 +109,7 @@ it('virtual-exchange-init', function() {
 
 it('dst-contract-mk3-init', function() {
 
-    return contracts.DSTContract.new(eventInfo.address, "MK3", 
+    return contracts.DSTContract.new(eventInfo.address, "MerkleTree", "MK3", 
         
         {
             from : '0xcc49bea5129ef2369ff81b0c0200885893979b77'
@@ -129,6 +130,8 @@ it('dst-contract-mk3-init', function() {
 
 
 it('enlist-mk3', function() {
+    log("");
+    log(" (!) Action: [VE] enlist [MK3] for trading");
 
     return virtualExchange.enlist(dstContract1.address, 
     {
@@ -142,11 +145,11 @@ it('enlist-mk3', function() {
     })
     
    .then(function() {
-          
-      log();
+                
+      exist = virtualExchange.isExistByString(dstContract1.getDSTSymbol()); 
       
-      exist = virtualExchange.isExistByString(dstContract1.getDSTName()); 
-      log("MK3: enlisted: " + exist);
+      log("[MK3] => enlisted: " + exist);
+      assert.equal(true, exist);
       
       return true;
     })
@@ -157,7 +160,8 @@ it('enlist-mk3', function() {
 
 it('issue-mk3-tokens-seria-1', function() {
     log("");
-
+    log(" (!) Action: [MK3] issue tokens on [VE] balance 150.000 MK3");
+                           
     return dstContract1.issuePreferedTokens(1, 150000, 
     {
        from : '0xcc49bea5129ef2369ff81b0c0200885893979b77',       
@@ -165,14 +169,16 @@ it('issue-mk3-tokens-seria-1', function() {
 
     .then(function () {
     
-        dst1Total = dstContract1.getTotalSupply().toNumber();
-        log("MK3 total: " + dst1Total);
-
-        veTokens = dstContract1.allowance(dstContract1.address, 
-                                          virtualExchange.address).toNumber();
-        log("MK3 total on exchnage: " + veTokens);
-
+        dst1Total = dstContract1.getTotalSupply().toNumber() / 1000;
         
+        log("[MK3] => total suply: " + dst1Total.toFixed(3) + " MK3");
+        assert(150, dst1Total);
+        
+        veTokens = dstContract1.allowance(dstContract1.address, 
+                                          virtualExchange.address).toNumber() / 1000;
+        log("[MK3] => total on VirtualExchange: " + veTokens.toFixed(3) + " MK3");
+        assert(150, veTokens);
+
         return true;
     })
 });
@@ -180,6 +186,8 @@ it('issue-mk3-tokens-seria-1', function() {
 
 
 it('buy-hkg-for-3a7e', function() {
+    log("");
+    log(" (!) Action: [0x3a7e] buy [HKG] for 1500.000 Ether");    
 
     return workbench.sendTransaction({
       from: '0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d',
@@ -195,7 +203,9 @@ it('buy-hkg-for-3a7e', function() {
     .then(function (txHash) {
 
           value = hackerGold.balanceOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d').toNumber() / 1000;
-          log("\nBalance of 0x3a7e: " + value + " HKG");
+          
+          log("[0x3a7e] => balance: " + value.toFixed(3) + " HKG");
+          assert.equal(225000, value);
     
           return true;          
     })
@@ -206,7 +216,8 @@ it('buy-hkg-for-3a7e', function() {
 
 it('approve-hkg-spend-on-exchange-1', function() {
     log("");
-
+    log(" (!) Action: [0x3a7e] move to [VE] balance 150.000 HKG");
+                                                       
     return hackerGold.approve(virtualExchange.address, 150000, 
     {
        from : '0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d',       
@@ -215,14 +226,14 @@ it('approve-hkg-spend-on-exchange-1', function() {
     .then(function (txHash) {
 
           return workbench.waitForReceipt(txHash);          
-
     })    
     
     .then(function () {
 
         veTokens = hackerGold.allowance('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d', 
-                                          virtualExchange.address).toNumber();
-        log("[0x3a7e] HKG total on exchnage: " + veTokens);
+                                          virtualExchange.address).toNumber() / 1000;
+        log("[0x3a7e] => VirtualExchange balance: " + veTokens.toFixed(3) + " HKG");
+        assert.equal(150, veTokens);
         
         return true;
     })
@@ -233,6 +244,8 @@ it('approve-hkg-spend-on-exchange-1', function() {
 
 it('buy-all-dst-suply-seria-1', function() {
     log("");
+    log(" (!) Action: [0x3a7e] buy tokens [MK3] for 150.000 HKG");
+
     
     return virtualExchange.buy('MK3', 150000, 
     {
@@ -248,18 +261,28 @@ it('buy-all-dst-suply-seria-1', function() {
     
     .then(function () {
 
-        dst1Total = dstContract1.balanceOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d').toNumber();
-        log("[0x3a7e] MK3 total: " + dst1Total);
+        dst1Balance = dstContract1.balanceOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d').toNumber() / 1000;
         
-        value  = dstContract1.getPreferedQtySold();
+        log("[0x3a7e] => balance: " + dst1Balance.toFixed(3) + " MK3");
+        assert.equal(150 , dst1Balance);
+        
+        total  = dstContract1.getPreferedQtySold();
         voting = dstContract1.votingRightsOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d');
         
-        log ("totalPrefered: " + value + " [0x3a7e] voting: " + voting);
+        log ("[0x3a7e] => voting: " + voting + " votes - " + voting / total * 100 + "%");
+        assert.equal(150000 , voting);
+
+        value = hackerGold.balanceOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d').toNumber() / 1000;
+        
+        log("[0x3a7e] => balance: " + value.toFixed(3) + " HKG");
+        assert.equal(224850, value);
+                
+        log ("[MK3] => total: " + total + " votes");
         
         veTokens = hackerGold.allowance('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d', 
-                                          virtualExchange.address).toNumber();
-        log("[0x3a7e] HKG total on exchnage: " + veTokens);
-        
+                                          virtualExchange.address).toNumber() / 1000;
+        log("[0x3a7e] => VirtualExchange balance: " + veTokens.toFixed(3) + " HKG");
+        assert.equal(0 , veTokens);
         
         return true;
     })
@@ -269,6 +292,7 @@ it('buy-all-dst-suply-seria-1', function() {
 
 it('approve-hkg-spend-on-exchange-2', function() {
     log("");
+    log(" (!) Action: [0x3a7e] move to [VE] balance 1000.000 HKG");
 
     return hackerGold.approve(virtualExchange.address, 1000000, 
     {
@@ -285,7 +309,8 @@ it('approve-hkg-spend-on-exchange-2', function() {
 
         veTokens = hackerGold.allowance('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d', 
                                           virtualExchange.address).toNumber();
-        log("[0x3a7e] HKG total on exchnage: " + veTokens);
+        log("[0x3a7e] => VirtualExchange balance: " + veTokens.toFixed(3) + " HKG");
+        assert.equal(1000000 , veTokens);
         
         return true;
     })
@@ -296,6 +321,7 @@ it('approve-hkg-spend-on-exchange-2', function() {
 
 it('issue-mk3-tokens-seria-2', function() {
     log("");
+    log(" (!) Action: [MK3] issue tokens on [VE] balance 1250.000 MK3");
 
     return dstContract1.issuePreferedTokens(2, 1250000, 
     {
@@ -304,13 +330,23 @@ it('issue-mk3-tokens-seria-2', function() {
 
     .then(function () {
     
-        dst1Total = dstContract1.getTotalSupply().toNumber();
-        log("MK3 total: " + dst1Total);
+        dst1Total = dstContract1.getTotalSupply().toNumber() / 1000;
+        log("[MK3] => total: " + dst1Total.toFixed(3) + " MK3");
+        assert.equal(1400 , dst1Total);
 
         veTokens = dstContract1.allowance(dstContract1.address, 
-                                          virtualExchange.address).toNumber();
-        log("MK3 total on exchnage: " + veTokens);
-
+                                          virtualExchange.address).toNumber() / 1000;
+        log("[MK3] => VirtualExchange balance: " + veTokens.toFixed(3) + " MK3");
+        assert.equal(1250, veTokens);
+        
+        total  = dstContract1.getPreferedQtySold();
+        voting = dstContract1.votingRightsOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d');
+        
+        log("[0x3a7e] => voting: " + voting + " votes - " + voting / total * 100 + "%");
+        assert.equal(150000, voting);
+        
+        log("[MK3] => total: " + total + " votes");
+        assert.equal(150000, total);
         
         return true;
     })
@@ -319,6 +355,7 @@ it('issue-mk3-tokens-seria-2', function() {
 
 it('buy-all-dst-suply-seria-2-1', function() {
     log("");
+    log(" (!) Action: [0x3a7e] buy [MK3] for 500.000 HKG");
     
     return virtualExchange.buy('MK3', 500000, 
     {
@@ -329,28 +366,35 @@ it('buy-all-dst-suply-seria-2-1', function() {
     .then(function (txHash) {
 
           return workbench.waitForReceipt(txHash);          
-
     })    
     
     .then(function () {
 
-        dst1Total = dstContract1.balanceOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d').toNumber();
-        log("[0x3a7e] MK3 total: " + dst1Total);
+        mk3Balance = dstContract1.balanceOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d').toNumber() / 1000;
+        log("[0x3a7e] => balance: " + mk3Balance.toFixed(3) + " MK3");
+        assert.equal(1150, mk3Balance);
         
-        value  = dstContract1.getPreferedQtySold();
+        total  = dstContract1.getPreferedQtySold();
         voting = dstContract1.votingRightsOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d');
         
-        log ("totalPrefered: " + value + " [0x3a7e] voting: " + voting);
+        value = hackerGold.balanceOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d').toNumber() / 1000;
         
+        
+        log("[0x3a7e] => voting: " + voting + " votes - " + voting / total * 100 + "%");
+        log("[0x3a7e] => balance: " + value.toFixed(3) + " HKG");
+                
+        log ("[MK3] => total: " + total + " votes");
+        
+                
         veTokens = hackerGold.allowance('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d', 
                                           virtualExchange.address).toNumber();
-        log("[0x3a7e] HKG total on exchnage: " + veTokens);
+        log("[0x3a7e] => VirtualExchange balance: " + veTokens.toFixed(3) + " HKG");
         
         veTokens = dstContract1.allowance(dstContract1.address, 
                                           virtualExchange.address).toNumber();
-        log("MK3 total on exchnage: " + veTokens);
+        log("[MK3] VirtualExchange total: " + veTokens.toFixed(3) + " MK3");
 
-        
+                
         return true;
     })
 });
@@ -360,6 +404,7 @@ it('buy-all-dst-suply-seria-2-1', function() {
 
 it('buy-all-dst-suply-seria-2-2', function() {
     log("");
+    log(" (!) Action: [0x3a7e] buy [MK3] for 125.000 HKG");
     
     return virtualExchange.buy('MK3', 125000, 
     {
@@ -375,22 +420,29 @@ it('buy-all-dst-suply-seria-2-2', function() {
     
     .then(function () {
 
-        dst1Total = dstContract1.balanceOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d').toNumber();
-        log("[0x3a7e] MK3 total: " + dst1Total);
+        mk3Balance = dstContract1.balanceOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d').toNumber() / 1000;
+        log("[0x3a7e] => balance: " + mk3Balance.toFixed(3) + " MK3");
+        assert.equal(1400, mk3Balance);
         
-        value  = dstContract1.getPreferedQtySold();
+        total  = dstContract1.getPreferedQtySold();
         voting = dstContract1.votingRightsOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d');
+
+        value = hackerGold.balanceOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d').toNumber() / 1000;
         
-        log ("totalPrefered: " + value + " [0x3a7e] voting: " + voting);
+        log("[0x3a7e] => voting: " + voting + " votes - " + voting / total * 100 + "%");
+        log("[0x3a7e] => balance: " + value.toFixed(3) + " HKG");
         
         veTokens = hackerGold.allowance('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d', 
                                           virtualExchange.address).toNumber();
-        log("[0x3a7e] HKG total on exchnage: " + veTokens);
+        log("[0x3a7e]  VirtualExchange balance: " + veTokens + " HKG (???) ");
         
         veTokens = dstContract1.allowance(dstContract1.address, 
                                           virtualExchange.address).toNumber();
-        log("MK3 total on exchnage: " + veTokens);
+        log("[MK3] VirtualExchange total: " + veTokens.toFixed(3) + " MK3");
 
+        hkgCollected = hackerGold.balanceOf(dstContract1.address).toNumber() / 1000;
+        
+        log("[MK3] colected balance: " + hkgCollected.toFixed(3) + " HKG");
         
         return true;
     })
@@ -406,6 +458,7 @@ it('roll-time-event-stops', function(){
 
 it('issue-mk3-tokens-seria-3', function() {
     log("");
+    log(" (!) Action: [MK3] issue tokens: 1000.000 MK3");
 
     return dstContract1.issueTokens(1, 1000000, 
     {
@@ -414,18 +467,24 @@ it('issue-mk3-tokens-seria-3', function() {
 
     .then(function () {
 
-        log("\n[The event is over]");
-        dst1Total = dstContract1.getTotalSupply().toNumber();
-        log("MK3 total: " + dst1Total);
-
+        log("[The event is over]");
+        
+        dst1Total = dstContract1.getTotalSupply().toNumber() / 1000;
+        log("[MK3] => total: " + dst1Total.toFixed(3) + " MK3");
+        assert.equal(2400 , dst1Total);
+        
+        issued = dstContract1.balanceOf(dstContract1.address).toNumber() / 1000;
+        log("[MK3] => total suply: " + issued.toFixed(3) + " MK3");
+        assert.equal(1000 , issued);
+        
         return true;
     })
 });
 
 
-
-
 it('buy-all-dst-suply-seria-3-1', function() {
+    log("");
+    log(" (!) Action: [0x3a7e] buy [MK3] tokens for: 990.000 Ether");
 
     return workbench.sendTransaction({
       from: '0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d',
@@ -440,23 +499,17 @@ it('buy-all-dst-suply-seria-3-1', function() {
 
     .then(function (txHash) {
 
-        log("");
     
-        dst1Total = dstContract1.balanceOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d').toNumber();
-        log("[0x3a7e] MK3 total: " + dst1Total);
+        dst1Total = dstContract1.balanceOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d').toNumber() / 1000;
+        log("[0x3a7e] => balance: " + dst1Total + " MK3");
         
-        value  = dstContract1.getPreferedQtySold();
+        total  = dstContract1.getPreferedQtySold();
         voting = dstContract1.votingRightsOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d');
         
-        log ("totalPrefered: " + value + " [0x3a7e] voting: " + voting);
-        
-        veTokens = hackerGold.allowance('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d', 
-                                          virtualExchange.address).toNumber();
-        log("[0x3a7e] HKG total on exchnage: " + veTokens);
-        
+        log("[0x3a7e] => voting: " + voting + " votes - " + voting / total * 100 + "%");
+                
         tokensSuply = dstContract1.balanceOf(dstContract1.address).toNumber();
-        log("MK3 total suply: " + tokensSuply);
-    
+        log("[MK3] available suply: " + tokensSuply + " MK3");    
     
         return true;          
     })
@@ -466,6 +519,8 @@ it('buy-all-dst-suply-seria-3-1', function() {
 
 
 it('buy-all-dst-suply-seria-3-2', function() {
+    log("");
+    log(" (!) Action: [0x3a7e] buy [MK3] tokens for: 10.000 Ether");
 
     return workbench.sendTransaction({
       from: '0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d',
@@ -480,24 +535,17 @@ it('buy-all-dst-suply-seria-3-2', function() {
 
     .then(function (txHash) {
 
-        log("");
-    
-        dst1Total = dstContract1.balanceOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d').toNumber();
-        log("[0x3a7e] MK3 total: " + dst1Total);
+        dst1Total = dstContract1.balanceOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d').toNumber() / 1000;
+        log("[0x3a7e] balance: " + dst1Total + " MK3");
         
         value  = dstContract1.getPreferedQtySold();
         voting = dstContract1.votingRightsOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d');
         
-        log ("totalPrefered: " + value + " [0x3a7e] voting: " + voting);
-        
-        veTokens = hackerGold.allowance('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d', 
-                                          virtualExchange.address).toNumber();
-        log("[0x3a7e] HKG total on exchnage: " + veTokens);
-        
+        log("[0x3a7e] => voting: " + voting + " votes - " + voting / total * 100 + "%");
+                
         tokensSuply = dstContract1.balanceOf(dstContract1.address).toNumber();
-        log("MK3 left for sell: " + tokensSuply);
-    
-    
+        log("[MK3] available suply: " + tokensSuply + " MK3");    
+        
         return true;          
     })
     
@@ -506,6 +554,7 @@ it('buy-all-dst-suply-seria-3-2', function() {
 
 it('disable-token-issuance', function() {
     log("");
+    log(" (!) Action: [0x3a7e] disable [MK3] tokens issueance option");
     
    return dstContract1.disableTokenIssuance( 
    {
@@ -514,8 +563,25 @@ it('disable-token-issuance', function() {
 
    .then(function () {
     
-        dst1Total = dstContract1.getTotalSupply().toNumber();
-        log("MK3 total: " + dst1Total);        
+        dst1Total = dstContract1.getTotalSupply().toNumber() / 1000;
+        log("[MK3] => total issued: " + dst1Total + " MK3");        
+        
+        etherCollected = 
+            dstContract1.getEtherValue().toNumber() / 1000000000000000000;
+            
+        log("[MK3] => balance: " + etherCollected + " Ether");
+        
+        hkgCollected = hackerGold.balanceOf(dstContract1.address).toNumber() / 1000;
+        log("[MK3] => colected balance: " + hkgCollected.toFixed(3) + " HKG");
+        
+
+        total  = dstContract1.getPreferedQtySold();
+        voting = dstContract1.votingRightsOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d');
+        
+        log("[0x3a7e] => voting: " + voting + " votes - " + voting / total * 100 + "%");
+        
+        // ... all the final number
+        
         return true;
    })
 });

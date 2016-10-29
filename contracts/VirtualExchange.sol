@@ -84,13 +84,13 @@ contract VirtualExchange{
         DSTContract dstContract = DSTContract(dstAddress);
 
         /* Don't enlist 2 with the same name */
-        if (isExistByBytes(dstContract.getDSTNameBytes())) throw;
+        if (isExistByBytes(dstContract.getDSTSymbolBytes())) throw;
 
         // Only owner of the DST can deploy the DST 
         if (dstContract.getExecutive() != msg.sender) throw;
 
         // All good enlist the company
-        bytes32 nameBytes = dstContract.getDSTNameBytes();
+        bytes32 nameBytes = dstContract.getDSTSymbolBytes();
         dstListed[nameBytes] = dstAddress;
         
         // Indicate to DST which Virtual Exchange is enlisted
