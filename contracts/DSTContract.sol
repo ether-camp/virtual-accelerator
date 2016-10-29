@@ -32,11 +32,14 @@ contract DSTContract is StandardToken{
     // 1 - HKG => DST qty; tokens for 1 HKG
     uint hkgPrice;
     
+    // 1 - Ether => DST qty; tokens for 1 Ether
+    uint etherPrice;
+    
     string public name = "...";                   
     uint8  public decimals = 2;                 
     string public symbol = "...";
     
-    
+    bool ableToIssueTokens = true; 
     uint preferedQtySold;
     
     
@@ -101,6 +104,28 @@ contract DSTContract is StandardToken{
         if (now < eventInfo.getEventEnd()) {
             throw;
         }
+        
+        // todo: check if started
+        
+        uint tokens = msg.value / (1 ether) * etherPrice;
+        
+        // check if demand of tokens is 
+        // overflow the suply 
+        if (balances[this] < tokens){
+            
+            tokens = balances[this];
+            uint retEther = msg.value - tokens / etherPrice * (1 ether);
+        
+            // return left ether 
+            if (!msg.sender.send(retEther)) throw;
+        }
+        
+        
+        // do transfer
+        balances[msg.sender] += tokens;
+        balances[this] -= tokens;
+        
+        // ... event for transfer
     }
 
     /**
@@ -125,22 +150,28 @@ contract DSTContract is StandardToken{
      */
     function issuePreferedTokens(uint qtyForOneHKG, 
                                  uint qtyToEmit) onlyExecutive 
+                                                 onlyIfAbleToIssueTokens
                                                  onlyBeforeEnd
                                                  onlyAfterTradingStart {
-        
-        // if part of prefered tokens was already 
-        // sold prevent issuence
-        if (preferedQtySold > 0) throw;
-        
+                
         // no issuence is allowed before enlisted on the
         // exchange 
         if (virtualExchangeAddress == 0x0) throw;
-        
-        totalSupply         += qtyToEmit;
-        balances[executive] += qtyToEmit;
+            
+        totalSupply    += qtyToEmit;
+        balances[this] += qtyToEmit;
         hkgPrice = qtyForOneHKG;
         
-        approve(virtualExchangeAddress, qtyToEmit );
+        
+        // now spender can use balance in 
+        // ammount of value from owner balance
+        allowed[this][virtualExchangeAddress] = qtyToEmit;
+        
+        // rise event about the transaction
+        Approval(this, virtualExchangeAddress, qtyToEmit);
+        
+        
+        // ... todo: emit event for new tokens + price
     }
 
     
@@ -179,7 +210,7 @@ contract DSTContract is StandardToken{
       
       
                 
-      transferFrom(executive, 
+      transferFrom(this, 
                    virtualExchangeAddress, tokensQty);
       transfer(sender, tokensQty);        
       
@@ -189,25 +220,40 @@ contract DSTContract is StandardToken{
     
     /**
      * 
-     * kickStartSale - function will issue tokens for 500%
-     *                 of sold on the event
+     * issueTokens - function will issue tokens after the 
+     *               event
      * 
+     * @param qtyForOneEther - ...
+     * @param qtyToEmit      - ...     
+     *
      * @return - ammount of tokens issued
      */
-    function kickStartSale() onlyAfterEnd 
-                             onlyExecutive 
-                             returns (uint result){
+    function issueTokens(uint qtyForOneEther, 
+                         uint qtyToEmit) onlyAfterEnd 
+                                         onlyExecutive {
          
-         // todo: inidicate that this is done once
+         // todo: if creation of tokens is still available
          
-         
-         uint qty = preferedQtySold * 5;
-         balances[executive] += qty;
-         
-         return qty;
+         balances[this] += qtyToEmit;
+         etherPrice = qtyForOneEther;
+         totalSupply    += qtyToEmit;
     }
      
-     
+    
+
+    /**
+     *  disableTokenIssuance - function will disable any 
+     *                         option for future issuence
+     *
+     *
+     */
+    function disableTokenIssuance() onlyExecutive{
+        ableToIssueTokens = false;
+        
+        // todo: event for this
+    }
+
+    
      
     /**
      * 
@@ -439,6 +485,9 @@ contract DSTContract is StandardToken{
     
     modifier onlyExecutive()     { if (msg.sender != executive && 
                                        executiveTeam[msg.sender] == false)   throw; _ }
+                                       
+    modifier onlyIfAbleToIssueTokens()  { if (!ableToIssueTokens) throw; _ } 
+    
     
 }
 

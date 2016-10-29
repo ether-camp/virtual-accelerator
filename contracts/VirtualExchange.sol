@@ -150,7 +150,7 @@ function tst() constant returns (uint result){
         if (valueAvailbeOnExchange < hkg) throw;
 
         // ensure there is DST tokens for sale
-        uint dstTokens = dstContract.allowance(dstContract.getExecutive(), veAddress);
+        uint dstTokens = dstContract.allowance(dstContract, veAddress);
         if (dstTokens < hkg * dstContract.getHKGPrice()) throw;    
                         
         // Transfer HKG to Virtual Exchange account  

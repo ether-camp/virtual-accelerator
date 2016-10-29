@@ -418,7 +418,7 @@ it('sale-hkg-from-dst-for-ether', function() {
 
     .then(function (){
         
-          value = dstContract1.getValue().toNumber();
+          value = dstContract1.getTotalValue().toNumber();
           assert.equal(value, sandbox.web3.toWei(20, 'ether'));
           
         
