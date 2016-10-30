@@ -20,23 +20,45 @@
         "default": true
       },
 
+      
+      "0xcf22908ca26c5291502432044575ea7b900bf395": {
+        "balance": "10000000000000000000000000",
+        "nonce": "1",
+        "pkey": "roman_a",
+        "default": false
+      },
+      
+      "0xba33cc5dd6a60c891bcf93fbac8f13ee7512435f": {
+        "balance": "10000000000000000000000000",
+        "nonce": "1",
+        "pkey": "roman_b",
+        "default": false
+      },
 
+      "0xdb5918d9282f0b280aac6bde061b92e903e11d18": {
+        "balance": "10000000000000000000000000",
+        "nonce": "1",
+        "pkey": "roman_c",
+        "default": false
+      },
+
+      
       "0xcc49bea5129ef2369ff81b0c0200885893979b77": {
-        "balance": "100000000000000000000",
+        "balance": "10000000000000000000000000",
         "nonce": "1",
         "pkey": "roman1",
         "default": false
       },
 
       "0x211b1b6e61e475ace9bf13ae79373ddb419b5f72": {
-        "balance": "100000000000000000000",
+        "balance": "10000000000000000000000000",
         "nonce": "1",
         "pkey": "roman2",
         "default": false
       },
 
       "0x29805ff5b946e7a7c5871c1fb071f740f767cf41": {
-        "balance": "100000000000000000000",
+        "balance": "10000000000000000000000000",
         "nonce": "1",
         "pkey": "buyer1",
         "default": false
@@ -50,7 +72,7 @@
       },
 
       "0x696ba93ef4254da47ff05b6caa88190db335f1c3": {
-        "balance": "100000000000000000000",
+        "balance": "10000000000000000000000000",
         "nonce": "1",
         "pkey": "buyer3",
         "default": false
