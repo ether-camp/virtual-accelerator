@@ -621,40 +621,129 @@ it('buy-apl-by-cd2a', function() {
 
     .then(function (txHash) {
 
-          log("");
-          log(" Voting Summary: ");
-          log(" =============== ");
+        log("");
+        log(" Voting Summary: ");
+        log(" =============== ");
           
-          total  = dstContract_APL.getPreferedQtySold();
-          voting = dstContract_APL.votingRightsOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d');
+        total  = dstContract_APL.getPreferedQtySold();
+        voting = dstContract_APL.votingRightsOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d');
             
-          log ("[0x3a7e] => voting: " + voting + " votes - " + voting / total * 100 + "%");
+        log ("[0x3a7e] => voting: " + voting + " votes - " + voting / total * 100 + "%");
           
-          total  = dstContract_APL.getPreferedQtySold();
-          voting = dstContract_APL.votingRightsOf('0x29805ff5b946e7a7c5871c1fb071f740f767cf41');
+        total  = dstContract_APL.getPreferedQtySold();
+        voting = dstContract_APL.votingRightsOf('0x29805ff5b946e7a7c5871c1fb071f740f767cf41');
             
-          log ("[0x2980] => voting: " + voting + " votes - " + voting / total * 100 + "%");
+        log ("[0x2980] => voting: " + voting + " votes - " + voting / total * 100 + "%");
 
-          total  = dstContract_APL.getPreferedQtySold();
-          voting = dstContract_APL.votingRightsOf('0x696ba93ef4254da47ff05b6caa88190db335f1c3');
+        total  = dstContract_APL.getPreferedQtySold();
+        voting = dstContract_APL.votingRightsOf('0x696ba93ef4254da47ff05b6caa88190db335f1c3');
             
-          log ("[0x696b] => voting: " + voting + "  votes - " + voting / total * 100 + "%");
+        log ("[0x696b] => voting: " + voting + "  votes - " + voting / total * 100 + "%");
 
-          total  = dstContract_APL.getPreferedQtySold();
-          voting = dstContract_APL.votingRightsOf('0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826');
+        total  = dstContract_APL.getPreferedQtySold();
+        voting = dstContract_APL.votingRightsOf('0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826');
             
-          log ("[0xcd2a] => voting: " + voting + " votes - " + voting / total * 100 + "%");
-          log ("[APL] => total: " + total + " votes");
+        log ("[0xcd2a] => voting: " + voting + " votes - " + voting / total * 100 + "%");
+        log ("[APL] => total: " + total + " votes");
           
-          availableSuply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
-          log("[APL] => available suply: " + availableSuply + " APL");    
-              
-          return true;          
+        availableSuply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
+        log("[APL] => available suply: " + availableSuply + " APL");    
+
+
+        etherCollected = 
+          dstContract_APL.getEtherValue().toNumber() / 1000000000000000000;
+        log("[APL] => balance: " + etherCollected + " Ether");
+        
+        hkgCollected = hackerGold.balanceOf(dstContract_APL.address).toNumber() / 1000;
+        log("[APL] => collected balance: " + hkgCollected.toFixed(3) + " HKG");
+          
+        return true;          
 
     })    
     
     
 });
+
+
+
+it('roll-time-event-stops', function(){
+   
+    return workbench.rollTimeTo('22-Dec-2016 14:00 UTC+00')
+    .then(function(contract) { printDate(); return true; });
+});
+
+
+
+
+it('issue-apl-tokens-seria-2', function() {
+    log("");
+    log(" (!) Action: [APL] issue tokens: 1000000.000 APL");
+
+    return dstContract_APL.issueTokens(100, 1000000000, 
+    {
+       from : '0xcc49bea5129ef2369ff81b0c0200885893979b77',       
+    })
+
+    .then(function () {
+
+        dst1Total = dstContract_APL.getTotalSupply().toNumber() / 1000;
+        log("[APL] => total: " + dst1Total.toFixed(3) + " APL");
+        //assert.equal(2400 , dst1Total);
+        
+        issued = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
+        log("[APL] => available suply: " + issued.toFixed(3) + " APL");
+        //assert.equal(1000 , issued);
+        
+        return true;
+    })
+});
+
+
+
+it('buy-all-apl-suply-seria-2', function() {
+    log("");
+    log(" (!) Action: [0x3a7e] buy [APL] tokens for: 10000.000 Ether");
+
+    return workbench.sendTransaction({
+      from: '0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d',
+      to: dstContract_APL.address,
+      value: sandbox.web3.toWei(10000, 'ether')
+    })
+    
+    .then(function (txHash) {
+
+          return workbench.waitForReceipt(txHash);          
+    })
+
+    .then(function (txHash) {
+    
+        dst1Total = dstContract_APL.balanceOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d').toNumber() / 1000;
+        log("[0x3a7e] => balance: " + dst1Total + " APL");
+        
+        total  = dstContract_APL.getPreferedQtySold();
+        voting = dstContract_APL.votingRightsOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d');
+        
+        log("[0x3a7e] => voting: " + voting + " votes - " + voting / total * 100 + "%");
+                
+        tokensSuply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber();
+        log("[APL] => available suply: " + tokensSuply + " APL");    
+
+        log("");
+        
+        etherCollected = 
+          dstContract_APL.getEtherValue().toNumber() / 1000000000000000000;
+        log("[APL] => balance: " + etherCollected + " Ether");
+        
+        hkgCollected = hackerGold.balanceOf(dstContract_APL.address).toNumber() / 1000;
+        log("[APL] => collected balance: " + hkgCollected.toFixed(3) + " HKG");
+        
+    
+        return true;          
+    })
+    
+});
+
+
 
 
 
