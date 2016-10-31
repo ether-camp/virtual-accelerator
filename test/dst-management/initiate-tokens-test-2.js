@@ -885,6 +885,32 @@ it('buy-tokens-with-no-ether', function() {
 });
 
 
+
+it('disable-token-issuance', function() {
+    log("");
+    log(" (!) Action: [0x3a7e] disable [APL] tokens issueance option");
+    
+   return dstContract_APL.disableTokenIssuance( 
+   {
+       from : '0xcc49bea5129ef2369ff81b0c0200885893979b77',       
+   })
+
+   .then(function () {
+    
+        etherCollected = 
+          dstContract_APL.getEtherValue().toNumber() / 1000000000000000000;
+        log("[APL] => balance: " + etherCollected + " Ether");
+        assert.equal(10000, etherCollected);
+        
+        hkgCollected = hackerGold.balanceOf(dstContract_APL.address).toNumber() / 1000;
+        log("[APL] => collected balance: " + hkgCollected.toFixed(3) + " HKG");
+        assert.equal(1000000, hkgCollected);
+        
+        return true;
+   })
+});
+
+
 });
 
  

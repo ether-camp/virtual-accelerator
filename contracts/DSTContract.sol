@@ -158,6 +158,11 @@ contract DSTContract is StandardToken{
                                                  onlyIfAbleToIssueTokens
                                                  onlyBeforeEnd
                                                  onlyAfterTradingStart {
+        
+        // the issuer of the token disabled futer issuance                                                        
+        if (!ableToIssueTokens) {
+            throw;
+        }                
                 
         // no issuence is allowed before enlisted on the
         // exchange 
