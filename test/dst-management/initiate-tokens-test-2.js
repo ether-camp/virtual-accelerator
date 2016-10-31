@@ -31,13 +31,15 @@ function printDate(){
 
 /**
  *
- * Testing for issue project token series: 
+ * Testing for issue project DST token series: 
  *  
- *     1.  
- *     2. 
- *     3. 
- *
- *    ... todo detailed description
+ *     1.  Enlist the APL token
+ *     2.  Issue 1,000,000,000,000.000 APL tokens 
+ *     3.  [0x3a7e] Buy 250,000,000.000 APL => 25%  
+ *     4.  [0x2980] Buy 300,000,000.000 APL => 30%
+ *     5.  [0x696b] Buy  50,000,000.000 APL =>  5%
+ *     6.  [0xcd2a] Buy 400,000,000.000 APL => 40%
+ *    
  */
  
 it('event-info-init', function() {
@@ -493,25 +495,25 @@ it('buy-apl-by-2980', function() {
         dst1Balance = dstContract_APL.balanceOf('0x29805ff5b946e7a7c5871c1fb071f740f767cf41').toNumber() / 1000;
         
         log("[0x2980] => balance: " + dst1Balance.toFixed(3) + " APL");
-        //assert.equal(150 , dst1Balance);
+        assert.equal(300000000 , dst1Balance);
         
         total  = dstContract_APL.getPreferedQtySold();
         voting = dstContract_APL.votingRightsOf('0x29805ff5b946e7a7c5871c1fb071f740f767cf41');
         
         log ("[0x2980] => voting: " + voting + " votes - " + voting / total * 100 + "%");
-        //assert.equal(150000 , voting);
+        assert.equal(300000000000 , voting);
 
         value = hackerGold.balanceOf('0x29805ff5b946e7a7c5871c1fb071f740f767cf41').toNumber() / 1000;
         
         log("[0x2980] => balance: " + value.toFixed(3) + " HKG");
-        //assert.equal(224850, value);
+        assert.equal(700000, value);
                 
         log ("[APL] => total: " + total + " votes");
         
         veTokens = hackerGold.allowance('0x29805ff5b946e7a7c5871c1fb071f740f767cf41', 
                                           virtualExchange.address).toNumber() / 1000;
         log("[0x2980] => VirtualExchange balance: " + veTokens.toFixed(3) + " HKG");
-        //assert.equal(0 , veTokens);
+        assert.equal(700000 , veTokens);
         
         availableSuply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
         log("[APL] => available suply: " + availableSuply + " APL");    
@@ -544,25 +546,25 @@ it('buy-apl-by-696b', function() {
         dst1Balance = dstContract_APL.balanceOf('0x696ba93ef4254da47ff05b6caa88190db335f1c3').toNumber() / 1000;
         
         log("[0x696b] => balance: " + dst1Balance.toFixed(3) + " APL");
-        //assert.equal(150 , dst1Balance);
+        assert.equal(50000000 , dst1Balance);
         
         total  = dstContract_APL.getPreferedQtySold();
         voting = dstContract_APL.votingRightsOf('0x696ba93ef4254da47ff05b6caa88190db335f1c3');
         
         log ("[0x696b] => voting: " + voting + " votes - " + voting / total * 100 + "%");
-        //assert.equal(150000 , voting);
+        assert.equal(50000000000 , voting);
 
         value = hackerGold.balanceOf('0x696ba93ef4254da47ff05b6caa88190db335f1c3').toNumber() / 1000;
         
         log("[0x696b] => balance: " + value.toFixed(3) + " HKG");
-        //assert.equal(224850, value);
+        assert.equal(950000, value);
                 
         log ("[APL] => total: " + total + " votes");
         
         veTokens = hackerGold.allowance('0x696ba93ef4254da47ff05b6caa88190db335f1c3', 
                                           virtualExchange.address).toNumber() / 1000;
         log("[0x2980] => VirtualExchange balance: " + veTokens.toFixed(3) + " HKG");
-        //assert.equal(0 , veTokens);
+        assert.equal(950000 , veTokens);
         
         availableSuply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
         log("[APL] => available suply: " + availableSuply + " APL");    
@@ -595,25 +597,25 @@ it('buy-apl-by-cd2a', function() {
         dst1Balance = dstContract_APL.balanceOf('0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826').toNumber() / 1000;
         
         log("[0xcd2a] => balance: " + dst1Balance.toFixed(3) + " APL");
-        //assert.equal(150 , dst1Balance);
+        assert.equal(400000000 , dst1Balance);
         
         total  = dstContract_APL.getPreferedQtySold();
         voting = dstContract_APL.votingRightsOf('0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826');
         
         log ("[0xcd2a] => voting: " + voting + " votes - " + voting / total * 100 + "%");
-        //assert.equal(150000 , voting);
+        assert.equal(400000000000 , voting);
 
         value = hackerGold.balanceOf('0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826').toNumber() / 1000;
         
         log("[0xcd2a] => balance: " + value.toFixed(3) + " HKG");
-        //assert.equal(224850, value);
+        assert.equal(600000, value);
                 
         log ("[APL] => total: " + total + " votes");
         
         veTokens = hackerGold.allowance('0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826', 
                                           virtualExchange.address).toNumber() / 1000;
         log("[0xcd2a] => VirtualExchange balance: " + veTokens.toFixed(3) + " HKG");
-        //assert.equal(0 , veTokens);
+        assert.equal(600000, veTokens);
         
         availableSuply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
         log("[APL] => available suply: " + availableSuply + " APL");    
@@ -631,33 +633,42 @@ it('buy-apl-by-cd2a', function() {
         voting = dstContract_APL.votingRightsOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d');
             
         log ("[0x3a7e] => voting: " + voting + " votes - " + voting / total * 100 + "%");
+        assert.equal(25, voting / total * 100);
           
         total  = dstContract_APL.getPreferedQtySold();
         voting = dstContract_APL.votingRightsOf('0x29805ff5b946e7a7c5871c1fb071f740f767cf41');
             
         log ("[0x2980] => voting: " + voting + " votes - " + voting / total * 100 + "%");
+        assert.equal(30, voting / total * 100);
 
         total  = dstContract_APL.getPreferedQtySold();
         voting = dstContract_APL.votingRightsOf('0x696ba93ef4254da47ff05b6caa88190db335f1c3');
             
         log ("[0x696b] => voting: " + voting + "  votes - " + voting / total * 100 + "%");
+        assert.equal(5, voting / total * 100);
 
         total  = dstContract_APL.getPreferedQtySold();
         voting = dstContract_APL.votingRightsOf('0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826');
             
         log ("[0xcd2a] => voting: " + voting + " votes - " + voting / total * 100 + "%");
+        assert.equal(40, voting / total * 100);
+
         log ("[APL] => total: " + total + " votes");
+        assert.equal(1000000000000, total);
           
         availableSuply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
         log("[APL] => available suply: " + availableSuply + " APL");    
+        assert.equal(0, availableSuply);
 
 
         etherCollected = 
           dstContract_APL.getEtherValue().toNumber() / 1000000000000000000;
         log("[APL] => balance: " + etherCollected + " Ether");
+        assert.equal(0, etherCollected);
         
         hkgCollected = hackerGold.balanceOf(dstContract_APL.address).toNumber() / 1000;
         log("[APL] => collected balance: " + hkgCollected.toFixed(3) + " HKG");
+        assert.equal(1000000, hkgCollected);
           
         return true;          
 
@@ -690,11 +701,11 @@ it('issue-apl-tokens-seria-2', function() {
 
         dst1Total = dstContract_APL.getTotalSupply().toNumber() / 1000;
         log("[APL] => total: " + dst1Total.toFixed(3) + " APL");
-        //assert.equal(2400 , dst1Total);
+        assert.equal(1001000000 , dst1Total);
         
         issued = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
         log("[APL] => available suply: " + issued.toFixed(3) + " APL");
-        //assert.equal(1000 , issued);
+        assert.equal(1000000 , issued);
         
         return true;
     })
@@ -721,23 +732,28 @@ it('buy-all-apl-suply-seria-2', function() {
     
         dst1Total = dstContract_APL.balanceOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d').toNumber() / 1000;
         log("[0x3a7e] => balance: " + dst1Total + " APL");
+        assert.equal(251000000 , dst1Total);
         
         total  = dstContract_APL.getPreferedQtySold();
         voting = dstContract_APL.votingRightsOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d');
         
         log("[0x3a7e] => voting: " + voting + " votes - " + voting / total * 100 + "%");
+        assert.equal(25, voting / total * 100);
                 
         tokensSuply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber();
         log("[APL] => available suply: " + tokensSuply + " APL");    
+        assert.equal(0, tokensSuply);
 
         log("");
         
         etherCollected = 
           dstContract_APL.getEtherValue().toNumber() / 1000000000000000000;
         log("[APL] => balance: " + etherCollected + " Ether");
+        assert.equal(10000, etherCollected);
         
         hkgCollected = hackerGold.balanceOf(dstContract_APL.address).toNumber() / 1000;
         log("[APL] => collected balance: " + hkgCollected.toFixed(3) + " HKG");
+        assert.equal(1000000, hkgCollected);
         
     
         return true;          
