@@ -4,16 +4,14 @@
     "test": "mocha test/**/*-test.js --reporter mochawesome"
   },
   "dependencies": {
-  
     "async": "^2.0.0-rc.5",
+    "chai": "*",
     "ethereum-sandbox": "git+https://github.com/kobigurk/ethereum-sandbox.git#develop",
     "ethereum-sandbox-client": "git+https://github.com/kobigurk/ethereum-sandbox-client.git#develop",
     "ethereum-sandbox-workbench": "git+https://github.com/kobigurk/ethereum-sandbox-workbench.git",
-    
+    "ethereumjs-util": "^4.5.0",
     "mocha": "^2.5.3",
     "mochawesome": "1.3.0",
-    "chai": "*",
-    
     "solc": "^0.3.6",
     "web3": "^0.17.0-alpha"
   }

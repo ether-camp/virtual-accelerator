@@ -1,3 +1,4 @@
+var ethUtil = require('ethereumjs-util');
 var assert = require('assert');
 
 var log = console.log;
@@ -244,6 +245,18 @@ it('vote-during-the-period-2', function() {
      
   .then(function(txHash) {
     return workbench.waitForReceipt(txHash);
+  })
+
+  // check Vote event args
+
+  .then(function(parsed) {
+    args = parsed.logs[0].args;
+    
+    assert.equal(args.voter, '0xcc49bea5129ef2369ff81b0c0200885893979b77');
+    assert.equal(args.count.toNumber(), 4);
+    assert.equal(args.projectCode, ethUtil.bufferToHex(ethUtil.sha3('TST')));
+
+    return true;
   })
 
   .then(function() {
