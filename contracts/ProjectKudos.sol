@@ -252,7 +252,7 @@ contract ProjectKudos {
 
    
     // ********************* //
-    // *   Priavate Calls  * //
+    // *   Private Calls   * //
     // ********************* //
     
     /**
