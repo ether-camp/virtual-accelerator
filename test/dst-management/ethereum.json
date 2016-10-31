@@ -77,14 +77,22 @@
         "pkey": "buyer3",
         "default": false
       },
-
       
       "0xdedb49385ad5b94a16f236a6890cf9e0b1e30392": {
-        "balance": 1000000000000000000000000000000000000000000000000000000 ,
+        "balance": 1000000000000000000000000000000000000000000000000000000,
         "nonce": "0x1cf",
         "pkey": "0x974f963ee4571e86e5f9bc3b493e453db9c15e5bd19829a4ef9a790de0da0015", 
         "default": false
+      },
+      
+      "0x36cef404bd674e1aa6ba6b444c9ef458460c9871": {
+        "balance": 10000000000000000000,                    
+        "nonce": "0x1",
+        "pkey": "poor_ether", 
+        "default": false
       }
+
+      
       
 
     }

@@ -252,6 +252,35 @@ it('dst-contract-apl-init', function() {
     });        
 });
 
+// ...
+// [X] Action [VE] enlist not by the owner
+// ...
+
+it('enlist-not-by-the-owner', function() {
+    log("");
+    log(" [X] Action [VE] enlist not by the owner");
+
+    return virtualExchange.enlist(dstContract_APL.address, 
+    {
+       from : '0xdedb49385ad5b94a16f236a6890cf9e0b1e30392',       
+    })
+       
+   .then(function(txHash) {
+      return workbench.waitForReceipt(txHash);
+    })
+    
+   .then(function() {
+                
+      exist = virtualExchange.isExistByString(dstContract_APL.getDSTSymbol()); 
+      
+      log("[APL] => enlisted: " + exist);
+      assert.equal(false, exist);
+      
+      return true;
+    })
+    
+});
+
 
 it('enlist-apl', function() {
     log("");
@@ -391,6 +420,38 @@ it('approve-hkg-spend-on-exchange-for-cd2a', function() {
 });
 
 
+
+// ...
+// [X] Action [0xdedb] issue tokens for [APL] not by the owner .
+// ...
+
+it('issue-apl-tokens-not-by-the-owner', function() {
+    log("");
+    log(" [X] Action [0xdedb] issue tokens for [APL] not by the owner");
+                           
+    return dstContract_APL.issuePreferedTokens(1000, 1000000000000, 
+    {
+       from : '0xdedb49385ad5b94a16f236a6890cf9e0b1e30392',       
+    })
+
+    .then(function () {
+    
+        dst1Total = dstContract_APL.getTotalSupply().toNumber() / 1000;
+        
+        log("[APL] => total suply: " + dst1Total.toFixed(3) + " APL");
+        assert("0.000", dst1Total.toFixed(3));
+        
+        veTokens = dstContract_APL.allowance(dstContract_APL.address, 
+                                          virtualExchange.address).toNumber() / 1000;
+        log("[APL] => total on VirtualExchange: " + veTokens.toFixed(3) + " APL");
+        assert("0.000", dst1Total.toFixed(3));
+
+        return true;
+    })
+});
+
+
+
 it('issue-apl-tokens-seria-1', function() {
     log("");
     log(" (!) Action: [APL] issue tokens on [VE] balance 1,000,000,000,000.000 APL");
@@ -416,6 +477,37 @@ it('issue-apl-tokens-seria-1', function() {
     })
 });
 
+
+// ...
+// [X] Action [0xdedb] buy [APL] tokens on [VE] with no HKG  .
+// ...  
+
+it('buy-apl-by-3a7e', function() {
+    log("");
+    log(" [X] Action [0xdedb] buy [APL] tokens on [VE] with no HKG");
+
+    
+    return virtualExchange.buy('APL', 10000, 
+    {
+       from : '0xdedb49385ad5b94a16f236a6890cf9e0b1e30392',   
+       gas: 250000,
+    })
+
+    .then(function (txHash) {
+
+          return workbench.waitForReceipt(txHash);          
+    })    
+    
+    .then(function () {
+
+        dst1Balance = dstContract_APL.balanceOf('0xdedb49385ad5b94a16f236a6890cf9e0b1e30392').toNumber() / 1000;
+        
+        log("[0xdedb] => balance: " + dst1Balance.toFixed(3) + " APL");
+        assert.equal(0, dst1Balance);
+        
+        return true;
+    })
+});
 
 
 
@@ -762,7 +854,35 @@ it('buy-all-apl-suply-seria-2', function() {
 });
 
 
+// ...
+// [X] Action [0x36ce] buy with ether [APL] non existing tokens
+// ...
 
+it('buy-tokens-with-no-ether', function() {
+    log("");
+    log(" [X] Action [0x36ce] buy with ether [APL] non existing tokens.");
+
+    return workbench.sendTransaction({
+      from: '0x36cef404bd674e1aa6ba6b444c9ef458460c9871',
+      to: dstContract_APL.address,
+      value: sandbox.web3.toWei(1, 'ether')
+    })
+    
+    .then(function (txHash) {
+
+          return workbench.waitForReceipt(txHash);          
+    })
+
+    .then(function (txHash) {
+
+        dst1Total = dstContract_APL.balanceOf('0x36cef404bd674e1aa6ba6b444c9ef458460c9871').toNumber() / 1000;
+        log("[0x36ce] => balance: " + dst1Total + " APL");
+        assert.equal(0, dst1Total);
+    
+        return true;          
+    })
+    
+});
 
 
 });

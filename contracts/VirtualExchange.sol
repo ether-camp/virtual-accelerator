@@ -106,10 +106,10 @@ contract VirtualExchange{
      */
     function delist(){
         // +. only after the event is done
-        // +. only by owner of the DSG
+        // +. only by owner of the DST
     }
 
-uint token;
+uint token; //...todo: remove 
 function tst() constant returns (uint result){
     return token; 
 }
@@ -144,6 +144,10 @@ function tst() constant returns (uint result){
         // todo: check that tokens are available
         
         address veAddress = address(this);        
+        
+        // ensure that there is HKG balance
+        uint valueHKGOwned = hackerGold.balanceOf(msg.sender);        
+        if (valueHKGOwned < hkg) throw;        
         
         // ensure that there is HKG token allowed to be spend
         uint valueAvailbeOnExchange = hackerGold.allowance(msg.sender, veAddress);
