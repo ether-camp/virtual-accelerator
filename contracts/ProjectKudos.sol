@@ -3,8 +3,8 @@ pragma solidity ^0.4.0;
 /**
  * @title Project Kudos
  * 
- * Plain voting system for the 
- * VirtualAccelerator events, includes judges and fans voting.
+ * Events voting system of the Virtual Accelerator.
+ * Includes the voting for both judges and fans.
  * 
  */
 contract ProjectKudos {
