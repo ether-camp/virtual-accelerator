@@ -228,6 +228,9 @@ contract DSTContract is StandardToken{
     }
     
     
+    // ... todo: setHKGPrice()
+    
+    
     /**
      * 
      * issueTokens - function will issue tokens after the 
@@ -249,6 +252,8 @@ contract DSTContract is StandardToken{
          totalSupply    += qtyToEmit;
     }
      
+     
+    // ... todo: setEtherPrice()
     
 
     /**

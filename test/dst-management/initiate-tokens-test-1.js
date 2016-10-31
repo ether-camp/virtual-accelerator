@@ -30,7 +30,7 @@ function printDate(){
 
 /**
  *
- * Testing for hackathon period: 
+ * Testing for issue project token series: 
  *  
  *    [MK3]
  *
@@ -499,17 +499,19 @@ it('buy-all-dst-suply-seria-3-1', function() {
 
     .then(function (txHash) {
 
-    
         dst1Total = dstContract1.balanceOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d').toNumber() / 1000;
         log("[0x3a7e] => balance: " + dst1Total + " MK3");
+        assert.equal(2390 , dst1Total);
         
         total  = dstContract1.getPreferedQtySold();
         voting = dstContract1.votingRightsOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d');
         
         log("[0x3a7e] => voting: " + voting + " votes - " + voting / total * 100 + "%");
+        assert.equal(1400000 , voting);
                 
         tokensSuply = dstContract1.balanceOf(dstContract1.address).toNumber();
         log("[MK3] available suply: " + tokensSuply + " MK3");    
+        assert.equal(10000 , tokensSuply);
     
         return true;          
     })
@@ -537,14 +539,17 @@ it('buy-all-dst-suply-seria-3-2', function() {
 
         dst1Total = dstContract1.balanceOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d').toNumber() / 1000;
         log("[0x3a7e] balance: " + dst1Total + " MK3");
+        assert.equal(2400 , dst1Total);
         
         value  = dstContract1.getPreferedQtySold();
         voting = dstContract1.votingRightsOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d');
         
         log("[0x3a7e] => voting: " + voting + " votes - " + voting / total * 100 + "%");
+        assert.equal(1400000 , voting);       
                 
         tokensSuply = dstContract1.balanceOf(dstContract1.address).toNumber();
         log("[MK3] available suply: " + tokensSuply + " MK3");    
+        assert.equal(0 , tokensSuply); 
         
         return true;          
     })
@@ -564,23 +569,24 @@ it('disable-token-issuance', function() {
    .then(function () {
     
         dst1Total = dstContract1.getTotalSupply().toNumber() / 1000;
-        log("[MK3] => total issued: " + dst1Total + " MK3");        
+        log("[MK3] => total issued: " + dst1Total + " MK3");    
+        assert.equal(2400, dst1Total);         
         
         etherCollected = 
             dstContract1.getEtherValue().toNumber() / 1000000000000000000;
             
         log("[MK3] => balance: " + etherCollected + " Ether");
+        assert.equal(1000, etherCollected);
         
         hkgCollected = hackerGold.balanceOf(dstContract1.address).toNumber() / 1000;
-        log("[MK3] => colected balance: " + hkgCollected.toFixed(3) + " HKG");
-        
+        log("[MK3] => collected balance: " + hkgCollected.toFixed(3) + " HKG");
+        assert.equal(775, hkgCollected);
 
         total  = dstContract1.getPreferedQtySold();
         voting = dstContract1.votingRightsOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d');
         
         log("[0x3a7e] => voting: " + voting + " votes - " + voting / total * 100 + "%");
-        
-        // ... all the final number
+        assert.equal(1400000, voting);
         
         return true;
    })
