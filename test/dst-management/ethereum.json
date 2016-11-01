@@ -65,7 +65,7 @@
       },
        
       "0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d": {
-        "balance": "10000000000000000000000000",
+        "balance": "1000000000000000000000000000",
         "nonce": "1",
         "pkey": "buyer2",
         "default": false

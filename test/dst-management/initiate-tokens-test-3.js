@@ -32,7 +32,7 @@ function printDate(){
 
 
 /**
- *
+ * 
  * Testing for issue project token series: 
  *  
  *     1.  
@@ -95,12 +95,12 @@ it('roll-time-ve-trading-start', function(){
 
 it('buy-hkg-for-3a7e', function() {
     log("");
-    log(" (!) Action: [0x3a7e] buy [HKG] for 5000.000 Ether");    
+    log(" (!) Action: [0x3a7e] buy [HKG] for 10000 Ether");    
 
     return workbench.sendTransaction({
       from: '0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d',
       to: hackerGold.address,
-      value: sandbox.web3.toWei(5000, 'ether')
+      value: sandbox.web3.toWei(10000, 'ether')
     })
     
     .then(function (txHash) {
@@ -113,7 +113,7 @@ it('buy-hkg-for-3a7e', function() {
           value = hackerGold.balanceOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d').toNumber() / 1000;
           
           log("[0x3a7e] => balance: " + value.toFixed(3) + " HKG");
-          assert.equal(1000000, value);
+          assert.equal(2000000, value);
     
           return true;          
     })
@@ -156,7 +156,7 @@ it('buy-hkg-for-696b', function() {
     return workbench.sendTransaction({
       from: '0x696ba93ef4254da47ff05b6caa88190db335f1c3',
       to: hackerGold.address,
-      value: sandbox.web3.toWei(5000, 'ether')
+      value: sandbox.web3.toWei(10000, 'ether')
     })
     
     .then(function (txHash) {
@@ -169,7 +169,7 @@ it('buy-hkg-for-696b', function() {
           value = hackerGold.balanceOf('0x696ba93ef4254da47ff05b6caa88190db335f1c3').toNumber() / 1000;
           
           log("[0x696b] => balance: " + value.toFixed(3) + " HKG");
-          assert.equal(1000000, value);
+          assert.equal(2000000, value);
     
           return true;          
     })
@@ -184,7 +184,7 @@ it('buy-hkg-for-cd2a', function() {
     return workbench.sendTransaction({
       from: '0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826',
       to: hackerGold.address,
-      value: sandbox.web3.toWei(5000, 'ether')
+      value: sandbox.web3.toWei(10000, 'ether')
     })
     
     .then(function (txHash) {
@@ -197,7 +197,7 @@ it('buy-hkg-for-cd2a', function() {
           value = hackerGold.balanceOf('0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826').toNumber() / 1000;
           
           log("[0xcd2a] => balance: " + value.toFixed(3) + " HKG");
-          assert.equal(1000000, value);
+          assert.equal(2000000, value);
     
           return true;          
     })
@@ -542,7 +542,7 @@ it('approve-hkg-spend-on-exchange-for-3a7e', function() {
     log("");
     log(" (!) Action: [0x3a7e] move to [VE] balance 1,000,000.000 HKG");
                                                        
-    return hackerGold.approve(virtualExchange.address, 1000000000, 
+    return hackerGold.approve(virtualExchange.address, 2000000000, 
     {
        from : '0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d',       
     })
@@ -558,7 +558,7 @@ it('approve-hkg-spend-on-exchange-for-3a7e', function() {
                                           virtualExchange.address).toNumber() / 1000;
                                           
         log("[0x3a7e] => VirtualExchange balance: " + veTokens.toFixed(3) + " HKG");
-        assert.equal(1000000, veTokens);
+        assert.equal(2000000, veTokens);
         
         return true;
     })
@@ -596,7 +596,7 @@ it('approve-hkg-spend-on-exchange-for-696b', function() {
     log("");
     log(" (!) Action: [0x696b] move to [VE] balance 1,000,000.000 HKG");
                                                        
-    return hackerGold.approve(virtualExchange.address, 1000000000, 
+    return hackerGold.approve(virtualExchange.address, 2000000000, 
     {
        from : '0x696ba93ef4254da47ff05b6caa88190db335f1c3',       
     })
@@ -612,7 +612,7 @@ it('approve-hkg-spend-on-exchange-for-696b', function() {
                                           virtualExchange.address).toNumber() / 1000;
                                           
         log("[0x696b] => VirtualExchange balance: " + veTokens.toFixed(3) + " HKG");
-        assert.equal(1000000, veTokens);
+        assert.equal(2000000, veTokens);
         
         return true;
     })
@@ -624,7 +624,7 @@ it('approve-hkg-spend-on-exchange-for-cd2a', function() {
     log("");
     log(" (!) Action: [0xcd2a] move to [VE] balance 1,000,000.000 HKG");
                                                        
-    return hackerGold.approve(virtualExchange.address, 1000000000, 
+    return hackerGold.approve(virtualExchange.address, 2000000000, 
     {
        from : '0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826',       
     })
@@ -640,14 +640,11 @@ it('approve-hkg-spend-on-exchange-for-cd2a', function() {
                                           virtualExchange.address).toNumber() / 1000;
                                           
         log("[0xcd2a] => VirtualExchange balance: " + veTokens.toFixed(3) + " HKG");
-        assert.equal(1000000, veTokens);
+        assert.equal(2000000, veTokens);
         
         return true;
     })
 });
-
-
-
 
 
 it('buy-apl-by-3a7e', function() {
@@ -683,7 +680,7 @@ it('buy-apl-by-3a7e', function() {
         value = hackerGold.balanceOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d').toNumber() / 1000;
         
         log("[0x3a7e] => balance: " + value.toFixed(3) + " HKG");
-        assert.equal(700000, value); 
+        assert.equal(1700000, value); 
                 
         log ("[APL] => total: " + total + " votes");
         assert.equal(300000000000, total);
@@ -691,7 +688,7 @@ it('buy-apl-by-3a7e', function() {
         veTokens = hackerGold.allowance('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d', 
                                           virtualExchange.address).toNumber() / 1000;
         log("[0x3a7e] => VirtualExchange balance: " + veTokens.toFixed(3) + " HKG");
-        assert.equal(700000 , veTokens);
+        assert.equal(1700000 , veTokens);
 
         availableSuply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
         log("[APL] => available suply: " + availableSuply + " APL");    
@@ -813,7 +810,11 @@ it('buy-apl-by-2980', function() {
         voting = dstContract_APL.votingRightsOf('0x29805ff5b946e7a7c5871c1fb071f740f767cf41');
             
         log ("[0x2980] => voting: " + voting + " votes - " + voting / total * 100 + "%");
-        assert.equal(70, voting / total * 100);        
+        assert.equal(70, voting / total * 100);     
+
+        value = hackerGold.balanceOf(dstContract_APL.address).toNumber() / 1000;
+        log("[APL] => collected: " + value.toFixed(3) + " HKG");
+        assert.equal(1700000, value);         
         
         return true;
     })
@@ -855,7 +856,7 @@ it('buy-fbx-by-696b', function() {
         value = hackerGold.balanceOf('0x696ba93ef4254da47ff05b6caa88190db335f1c3').toNumber() / 1000;
         
         log("[0x3a7e] => balance: " + value.toFixed(3) + " HKG");
-        assert.equal(520000, value); 
+        assert.equal(1520000, value); 
                 
         log ("[FBX] => total: " + total + " votes");
         assert.equal(480000000000, total);
@@ -863,7 +864,7 @@ it('buy-fbx-by-696b', function() {
         veTokens = hackerGold.allowance('0x696ba93ef4254da47ff05b6caa88190db335f1c3', 
                                           virtualExchange.address).toNumber() / 1000;
         log("[0x696b] => VirtualExchange balance: " + veTokens.toFixed(3) + " HKG");
-        assert.equal(520000 , veTokens);
+        assert.equal(1520000 , veTokens);
 
         availableSuply = dstContract_FBX.balanceOf(dstContract_FBX.address).toNumber() / 1000;
         log("[FBX] => available suply: " + availableSuply + " FBX");    
@@ -908,7 +909,7 @@ it('buy-fbx-by-0xcd2a', function() {
         value = hackerGold.balanceOf('0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826').toNumber() / 1000;
         
         log("[0x3a7e] => balance: " + value.toFixed(3) + " HKG");
-        assert.equal(480000, value); 
+        assert.equal(1480000, value); 
                 
         log ("[FBX] => total: " + total + " votes");
         assert.equal(1000000000000, total);
@@ -916,7 +917,7 @@ it('buy-fbx-by-0xcd2a', function() {
         veTokens = hackerGold.allowance('0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826', 
                                           virtualExchange.address).toNumber() / 1000;
         log("[0x696b] => VirtualExchange balance: " + veTokens.toFixed(3) + " HKG");
-        assert.equal(480000 , veTokens);
+        assert.equal(1480000 , veTokens);
 
         availableSuply = dstContract_FBX.balanceOf(dstContract_FBX.address).toNumber() / 1000;
         log("[FBX] => available suply: " + availableSuply + " FBX");    
@@ -936,7 +937,216 @@ it('buy-fbx-by-0xcd2a', function() {
         voting = dstContract_FBX.votingRightsOf('0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826');
             
         log ("[0x2980] => voting: " + voting + " votes - " + voting / total * 100 + "%");
-        assert.equal(52, voting / total * 100);         
+        assert.equal(52, voting / total * 100);   
+
+        value = hackerGold.balanceOf(dstContract_FBX.address).toNumber() / 1000;
+        log("[FBX] => collected: " + value.toFixed(3) + " HKG");
+        assert.equal(1000000, value);         
+        
+        return true;
+    })
+});
+
+
+it('buy-gog-by-3a7e', function() {
+    log("");
+    log(" (!) Action: [0x3a7e] buy tokens [GOG] for 100,000.000 HKG");
+
+    
+    return virtualExchange.buy('GOG', 100000000, 
+    {
+       from : '0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d',   
+       gas: 250000,
+    })
+
+    .then(function (txHash) {
+
+          return workbench.waitForReceipt(txHash);          
+
+    })    
+    
+    .then(function () {
+
+        dst1Balance = dstContract_GOG.balanceOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d').toNumber() / 1000;
+        
+        log("[0x3a7e] => balance: " + dst1Balance.toFixed(3) + " GOG");
+        assert.equal(100000000 , dst1Balance);                            
+        
+        total  = dstContract_GOG.getPreferedQtySold();
+        voting = dstContract_GOG.votingRightsOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d');
+        
+        log ("[0x3a7e] => voting: " + voting + " votes - " + voting / total * 100 + "%");
+        assert.equal(100000000000 , voting);
+
+        value = hackerGold.balanceOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d').toNumber() / 1000;
+        
+        log("[0x3a7e] => balance: " + value.toFixed(3) + " HKG");
+        assert.equal(1600000, value); 
+                
+        log ("[GOG] => total: " + total + " votes");
+        assert.equal(100000000000, total);
+        
+        veTokens = hackerGold.allowance('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d', 
+                                          virtualExchange.address).toNumber() / 1000;
+        log("[0x3a7e] => VirtualExchange balance: " + veTokens.toFixed(3) + " HKG");
+        assert.equal(1600000 , veTokens);
+
+        availableSuply = dstContract_GOG.balanceOf(dstContract_GOG.address).toNumber() / 1000;
+        log("[GOG] => available suply: " + availableSuply + " GOG");    
+        assert.equal(900000000 , availableSuply);
+        
+        return true;
+    })
+});
+
+
+
+it('change-price-gog-tokens-seria-1', function() {
+    log("");
+    log(" (!) Action: [GOG] price change to 2 GOG for 1 HKG ");
+                           
+    return dstContract_GOG.setHKGPrice(2000,  
+    {
+       from : '0xba33cc5dd6a60c891bcf93fbac8f13ee7512435f',       
+    })
+
+    .then(function () {
+    
+        qtyForOneHkg = dstContract_GOG.getHKGPrice().toNumber() / 1000;
+        
+        log("[GOG] => price 1 HKG = " + qtyForOneHkg + " GOG");
+        assert.equal(2, qtyForOneHkg.toFixed(3));
+        
+        //...todo check the event
+        
+        return true;
+    })
+});
+
+
+it('buy-gog-by-3a7e', function() {
+    log("");
+    log(" (!) Action: [0x3a7e] buy tokens [GOG] for 300,000.000 HKG");
+
+    
+    return virtualExchange.buy('GOG', 300000000, 
+    {
+       from : '0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d',   
+       gas: 250000,
+    })
+
+    .then(function (txHash) {
+
+          return workbench.waitForReceipt(txHash);          
+
+    })    
+    
+    .then(function () {
+
+        dst1Balance = dstContract_GOG.balanceOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d').toNumber() / 1000;
+        
+        log("[0x3a7e] => balance: " + dst1Balance.toFixed(3) + " GOG");
+        assert.equal(700000000 , dst1Balance);                            
+        
+        total  = dstContract_GOG.getPreferedQtySold();
+        voting = dstContract_GOG.votingRightsOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d');
+        
+        log ("[0x3a7e] => voting: " + voting + " votes - " + voting / total * 100 + "%");
+        assert.equal(700000000000 , voting);
+
+        value = hackerGold.balanceOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d').toNumber() / 1000;
+        
+        log("[0x3a7e] => balance: " + value.toFixed(3) + " HKG");
+        assert.equal(1300000, value); 
+                
+        log ("[GOG] => total: " + total + " votes");
+        assert.equal(700000000000, total);
+        
+        veTokens = hackerGold.allowance('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d', 
+                                          virtualExchange.address).toNumber() / 1000;
+        log("[0x3a7e] => VirtualExchange balance: " + veTokens.toFixed(3) + " HKG");
+        assert.equal(1300000 , veTokens);
+
+        availableSuply = dstContract_GOG.balanceOf(dstContract_GOG.address).toNumber() / 1000;
+        log("[GOG] => available suply: " + availableSuply + " GOG");    
+        assert.equal(300000000 , availableSuply);
+        
+        return true;
+    })
+});
+
+
+
+it('change-price-gog-tokens-seria-1', function() {
+    log("");
+    log(" (!) Action: [GOG] price change to 1 GOG for 1 HKG ");
+                           
+    return dstContract_GOG.setHKGPrice(1000,  
+    {
+       from : '0xba33cc5dd6a60c891bcf93fbac8f13ee7512435f',       
+    })
+
+    .then(function () {
+    
+        qtyForOneHkg = dstContract_GOG.getHKGPrice().toNumber() / 1000;
+        
+        log("[GOG] => price 1 HKG = " + qtyForOneHkg + " GOG");
+        assert.equal(1, qtyForOneHkg.toFixed(3));
+        
+        //...todo check the event
+        
+        return true;
+    })
+});
+
+
+
+
+it('buy-gog-by-3a7e', function() {
+    log("");
+    log(" (!) Action: [0x3a7e] buy tokens [GOG] for 300,000.000 HKG");
+
+    
+    return virtualExchange.buy('GOG', 300000000, 
+    {
+       from : '0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d',   
+       gas: 250000,
+    })
+
+    .then(function (txHash) {
+
+          return workbench.waitForReceipt(txHash);          
+    })    
+    
+    .then(function () {
+
+        dst1Balance = dstContract_GOG.balanceOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d').toNumber() / 1000;
+        
+        log("[0x3a7e] => balance: " + dst1Balance.toFixed(3) + " GOG");
+        assert.equal(1000000000 , dst1Balance);                            
+        
+        total  = dstContract_GOG.getPreferedQtySold();
+        voting = dstContract_GOG.votingRightsOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d');
+        
+        log ("[0x3a7e] => voting: " + voting + " votes - " + voting / total * 100 + "%");
+        assert.equal(1000000000000 , voting);
+
+        value = hackerGold.balanceOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d').toNumber() / 1000;
+        
+        log("[0x3a7e] => balance: " + value.toFixed(3) + " HKG");
+        assert.equal(1000000, value); 
+                
+        log ("[GOG] => total: " + total + " votes");
+        assert.equal(1000000000000, total);
+        
+        veTokens = hackerGold.allowance('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d', 
+                                          virtualExchange.address).toNumber() / 1000;
+        log("[0x3a7e] => VirtualExchange balance: " + veTokens.toFixed(3) + " HKG");
+        assert.equal(1000000 , veTokens);
+
+        availableSuply = dstContract_GOG.balanceOf(dstContract_GOG.address).toNumber() / 1000;
+        log("[GOG] => available suply: " + availableSuply + " GOG");    
+        assert.equal(0 , availableSuply);
         
         return true;
     })
