@@ -106,11 +106,6 @@ contract DSTContract is StandardToken{
             throw;
         }
         
-        // If the user already declared end 
-        // of issuence
-        if (!ableToIssueTokens) {
-            throw;
-        }
         
         uint tokens = msg.value / (1 finney) * etherPrice;
         
@@ -245,7 +240,11 @@ contract DSTContract is StandardToken{
                          uint qtyToEmit) onlyAfterEnd 
                                          onlyExecutive {
          
-         // todo: if creation of tokens is still available
+        // If the user already declared end 
+        // of issuence
+        if (!ableToIssueTokens) {
+            throw;
+        }
          
          balances[this] += qtyToEmit;
          etherPrice = qtyForOneEther;

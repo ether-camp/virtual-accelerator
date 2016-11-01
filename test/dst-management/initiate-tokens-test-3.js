@@ -536,6 +536,60 @@ it('issue-amz-tokens-seria-1', function() {
     })
 });
 
+
+
+it('buy-apl-by-3a7e', function() {
+    log("");
+    log(" (!) Action: [0x3a7e] buy tokens [APL] for 300,000.000 HKG");
+
+    
+    return virtualExchange.buy('APL', 300000000, 
+    {
+       from : '0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d',   
+       gas: 250000,
+    })
+
+    .then(function (txHash) {
+
+          return workbench.waitForReceipt(txHash);          
+
+    })    
+    
+    .then(function () {
+
+        dst1Balance = dstContract_APL.balanceOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d').toNumber() / 1000;
+        
+        log("[0x3a7e] => balance: " + dst1Balance.toFixed(3) + " APL");
+        assert.equal(250000000 , dst1Balance);
+        
+        total  = dstContract_APL.getPreferedQtySold();
+        voting = dstContract_APL.votingRightsOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d');
+        
+        log ("[0x3a7e] => voting: " + voting + " votes - " + voting / total * 100 + "%");
+        assert.equal(250000000000 , voting);
+
+        value = hackerGold.balanceOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d').toNumber() / 1000;
+        
+        log("[0x3a7e] => balance: " + value.toFixed(3) + " HKG");
+        assert.equal(750000, value); 
+                
+        log ("[APL] => total: " + total + " votes");
+        assert.equal(250000000000, total);
+        
+        veTokens = hackerGold.allowance('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d', 
+                                          virtualExchange.address).toNumber() / 1000;
+        log("[0x3a7e] => VirtualExchange balance: " + veTokens.toFixed(3) + " HKG");
+        assert.equal(750000 , veTokens);
+
+        availableSuply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
+        log("[APL] => available suply: " + availableSuply + " APL");    
+        assert.equal(750000000 , availableSuply);
+        
+        return true;
+    })
+});
+
+
 });
 
 
