@@ -82,6 +82,9 @@ contract DSTContract is StandardToken{
     }
     
     
+    event PriceHKGChange(uint qtyForOneHKG);
+
+    
     /*
      * 
      *  Set date for early adapters
@@ -141,6 +144,19 @@ contract DSTContract is StandardToken{
         
     }
     
+    
+    /**
+     * 
+     * qtyForOneHKG - 
+     * 
+     */    
+     function setHKGPrice(uint qtyForOneHKG) onlyExecutive {
+         
+         hkgPrice = qtyForOneHKG;
+         PriceHKGChange(qtyForOneHKG);
+     }
+     
+     
     
     /**
      * 
@@ -223,7 +239,6 @@ contract DSTContract is StandardToken{
     }
     
     
-    // ... todo: setHKGPrice()
     
     
     /**
