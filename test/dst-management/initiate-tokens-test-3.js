@@ -1148,9 +1148,75 @@ it('buy-gog-by-3a7e', function() {
         log("[GOG] => available suply: " + availableSuply + " GOG");    
         assert.equal(0 , availableSuply);
         
+        
+        log("");
+        log(" Voting Summary: ");
+        log(" =============== ");
+          
+        total  = dstContract_GOG.getPreferedQtySold();
+        voting = dstContract_GOG.votingRightsOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d');
+            
+        log ("[0x3a7e] => voting: " + voting + " votes - " + voting / total * 100 + "%");
+        assert.equal(100, voting / total * 100);
+          
+        
+        
+        
         return true;
     })
 });
+
+
+
+it('roll-time-va-ends', function(){
+   
+    return workbench.rollTimeTo('22-Dec-2016 14:00 UTC+00')
+    .then(function(contract) { printDate(); return true; });
+});
+
+
+
+
+it('end-event-summary', function() {
+    log("");
+    
+    //var dstContract_APL;  // Awesome Poker League
+    //var dstContract_FBX;  // Filmbox
+    //var dstContract_GOG;  // Gog and Magog
+    //var dstContract_AMZ;  // Auto Motor Zone
+
+    log("Post Event Summary:");
+    log("===================");
+    
+    value = hackerGold.balanceOf(dstContract_APL.address).toNumber() / 1000;
+        
+    dollarValue = value / 100;    
+    log("[APL] => collected: " + value.toFixed(3) + " HKG" + " = $" + dollarValue);
+    assert.equal(17000, dollarValue); 
+
+    value = hackerGold.balanceOf(dstContract_FBX.address).toNumber() / 1000;
+        
+    dollarValue = value / 100;    
+    log("[FBX] => collected: " + value.toFixed(3) + " HKG" + " = $" + dollarValue);
+    assert.equal(10000, dollarValue); 
+
+    value = hackerGold.balanceOf(dstContract_GOG.address).toNumber() / 1000;
+
+    dollarValue = value / 100;    
+    log("[GOG] => collected: " + value.toFixed(3) + " HKG" + " = $" + dollarValue);
+    assert.equal(7000, dollarValue); 
+    
+    
+    value = hackerGold.balanceOf(dstContract_AMZ.address).toNumber() / 1000;
+        
+    dollarValue = value / 100;    
+    log("[AMZ] => collected: " + value.toFixed(3) + " HKG" + " = $" + dollarValue);
+    assert.equal(0, dollarValue); 
+    
+    
+    return true;
+});
+
 
 
 
