@@ -1,4 +1,6 @@
 
+pragma solidity ^0.4.0;
+
 /**
  * 
  * EventInfo - imutable class that denotes

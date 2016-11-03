@@ -2,3 +2,5 @@ node_modules/
 db/
 mochawesome-reports/
 .contract_cache/
+.solc_cache/
+.node-*

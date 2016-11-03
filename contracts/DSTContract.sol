@@ -5,6 +5,8 @@ import "StandardToken.sol";
 import "EventInfo.sol";
 import "HackerGold.sol";
 
+pragma solidity ^0.4.2;
+
 /*
  * DSTContract - DST stands for decentralized standard team.
  *
@@ -101,7 +103,7 @@ contract DSTContract is StandardToken{
     }
     
 
-    function(){
+    function() payable {
         
         // If the hack event is not over return 
         // sent ether.
@@ -514,16 +516,20 @@ contract DSTContract is StandardToken{
                 ret := mload(add(key, 32))
             }
     }    
- 
-    modifier onlyBeforeEnd() { if (now  >=  eventInfo.getEventEnd()) throw; _ }
-    modifier onlyAfterEnd()  { if (now  <   eventInfo.getEventEnd()) throw; _ }
     
-    modifier onlyAfterTradingStart()  { if (now  < eventInfo.getTradingStart()) throw; _ }
+    // ********************* //
+    // *     Modifiers     * //
+    // ********************* //    
+ 
+    modifier onlyBeforeEnd() { if (now  >=  eventInfo.getEventEnd()) throw; _; }
+    modifier onlyAfterEnd()  { if (now  <   eventInfo.getEventEnd()) throw; _; }
+    
+    modifier onlyAfterTradingStart()  { if (now  < eventInfo.getTradingStart()) throw; _; }
     
     modifier onlyExecutive()     { if (msg.sender != executive && 
-                                       executiveTeam[msg.sender] == false)   throw; _ }
+                                       executiveTeam[msg.sender] == false)   throw; _; }
                                        
-    modifier onlyIfAbleToIssueTokens()  { if (!ableToIssueTokens) throw; _ } 
+    modifier onlyIfAbleToIssueTokens()  { if (!ableToIssueTokens) throw; _; } 
     
     
 }

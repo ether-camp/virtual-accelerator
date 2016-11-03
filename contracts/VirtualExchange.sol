@@ -3,6 +3,8 @@ import "HackerGold.sol";
 import "EventInfo.sol";
 import "DSTContract.sol";
 
+pragma solidity ^0.4.2;
+
 /**
  *    The exchange is valid system 
  *    to purchase tokens from DST
@@ -185,12 +187,15 @@ function tst() constant returns (uint result){
             }
     }    
     
+    // ********************* //
+    // *     Modifiers     * //
+    // ********************* //        
     
-    modifier onlyOwner()    { if (msg.sender != owner)        throw; _ }
-    modifier eventInfoSet() { if (eventInfo  == address(0))   throw; _ }
+    modifier onlyOwner()    { if (msg.sender != owner)        throw; _; }
+    modifier eventInfoSet() { if (eventInfo  == address(0))   throw; _; }
     
-    modifier onlyBeforeEnd() { if (now  >= eventInfo.getEventEnd()) throw; _ }
-    modifier onlyAfterEnd()  { if (now  <  eventInfo.getEventEnd()) throw; _ }
+    modifier onlyBeforeEnd() { if (now  >= eventInfo.getEventEnd()) throw; _; }
+    modifier onlyAfterEnd()  { if (now  <  eventInfo.getEventEnd()) throw; _; }
     
     
     // events notifications
