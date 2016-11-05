@@ -434,13 +434,16 @@ it('redeem-proposal-1', function() {
     .then(function (parsed) {
        
        args = parsed.logs[0].args;       
-           
+       
+       assert(dstContract_APL.address, args.from);
+       assert("0xcc49bea5129ef2369ff81b0c0200885893979b77", args.to);
+       assert(1000000000, args.value);
+         
        return true;                
     })
     
     .then(function () {
-       
-       
+              
        value = hackerGold.balanceOf('0xcc49bea5129ef2369ff81b0c0200885893979b77').toNumber() / 1000;
         
        log("[0xcc49] => balance: " + value.toFixed(3) + " HKG");       

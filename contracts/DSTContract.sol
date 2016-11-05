@@ -1,6 +1,3 @@
-
-
-
 import "StandardToken.sol";
 import "EventInfo.sol";
 import "HackerGold.sol";
@@ -62,6 +59,7 @@ contract DSTContract is StandardToken{
         uint votesObjecting;
         
         address submitter;
+        bool redeemed;
     }
     uint counterProposals;
     uint timeOfLastProposal;
@@ -295,7 +293,6 @@ contract DSTContract is StandardToken{
     }
 
     
-     event here_event(address number);  // REMOVE IT !!!
      
     /**
      * 
@@ -305,7 +302,7 @@ contract DSTContract is StandardToken{
      */
     function submitHKGProposal(uint requestValue, string url) onlyAfterEnd
                                                               onlyExecutive returns (bytes32 resultId, bool resultSucces){
-        //here_event(hackerGold);// REMOVE IT !!!
+        
 
         // If there is no 2 months over since the last event.
         // There is no posible to get any HKG 
@@ -347,7 +344,7 @@ contract DSTContract is StandardToken{
         bytes32 id = sha3(msg.data, now);
         uint timeEnds = now + 10 days; 
         
-        Proposal memory newProposal = Proposal(id, requestValue, timeEnds, url, 0, msg.sender);
+        Proposal memory newProposal = Proposal(id, requestValue, timeEnds, url, 0, msg.sender, false);
         proposals[id] = newProposal;
         listProposals.push(newProposal);
         
@@ -395,30 +392,32 @@ contract DSTContract is StandardToken{
      }
     
     
+     //event here_event(uint number);  // REMOVE IT !!!
+     //here_event(proposal.value);// REMOVE IT !!!
    
     /**
      * 
      * 
-     * 
+     * @param id bytes32: the id of the proposal to redeem
      */
     function redeemProposalFunds(bytes32 id) onlyExecutive {
-                 
+        
         Proposal memory proposal = proposals[id];
-         
+                          
         if (proposal.id == 0) throw;
         if (proposal.submitter != msg.sender) throw;
+        
+        // ensure objection time
+        if (now + 10 days < proposal.votindEndTS) throw;
+                           
+        // check votes objection => 55% of total votes
+        uint objectionThreshold = preferedQtySold / 100 * 55;
+        if (proposal.votesObjecting  > objectionThreshold) throw;
          
-        // todo: 1. check time
-         
-        // check votes objection => 67 / 50 = 1.34
-        // x * 1.34 => ensures 75% of preferedQtySold
-        uint objectionRatio = proposal.votesObjecting * 67 / 50;         
-
-        if (objectionRatio  > preferedQtySold) throw;
-         
-        // todo: 3. check already redeemed
-        // todo: 4. mark the proposal as redeemed
-
+        // check already redeemed
+        if (proposal.redeemed == true) throw;
+        
+        proposal.redeemed = true; 
         hackerGold.transfer(proposal.submitter, proposal.value);      
     }
     
