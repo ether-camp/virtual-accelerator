@@ -318,11 +318,10 @@ contract DSTContract is StandardToken{
                 
         uint percent = collectedHKG / 100;
         
-
         // validate the ammount is legit
         // first 5 proposals should be less than 20% 
-        if (counterProposals < 5 && 
-            requestValue     > 20 * percent) throw;
+        if (counterProposals <= 5 && 
+            requestValue     >  20 * percent) throw;
         
         
         // if remained value is less than requested 
