@@ -366,7 +366,10 @@ it('submit-proposal-1', function() {
     })
     
     .then(function (parsed) {
-       
+        
+        proposal_1 = dstContract_APL.getProposalIdByIndex(0);
+        log(proposal_1);
+       /*
        args = parsed.logs[0].args;       
        
        proposalId = args.id;
@@ -403,7 +406,7 @@ it('submit-proposal-1', function() {
         
        log("[0xcc49] => balance: " + value.toFixed(3) + " HKG");       
        assert.equal(0, value);     
-              
+              */
        return true;                
     })
 
@@ -436,13 +439,13 @@ it('redeem-proposal-1', function() {
     })
     
     .then(function (parsed) {
-       
+       /*
        args = parsed.logs[0].args;       
        
        assert(dstContract_APL.address, args.from);
        assert("0xcc49bea5129ef2369ff81b0c0200885893979b77", args.to);
        assert(1000000000, args.value);
-         
+         */
        return true;                
     })
     
@@ -492,6 +495,10 @@ it('submit-proposal-2', function() {
     
     .then(function (parsed) {
        
+        proposal_2 = dstContract_APL.getProposalIdByIndex(1);
+        log(proposal_2);
+       
+       /*
        args = parsed.logs[0].args;       
        
        proposalId = args.id;
@@ -528,7 +535,7 @@ it('submit-proposal-2', function() {
         
        log("[0xcc49] => balance: " + value.toFixed(3) + " HKG");       
        assert.equal(1000000, value);     
-              
+              */
        return true;                
     })
 
@@ -560,13 +567,13 @@ it('redeem-proposal-2', function() {
     })
     
     .then(function (parsed) {
-       
+       /*
        args = parsed.logs[0].args;       
        
        assert(dstContract_APL.address, args.from);
        assert("0xcc49bea5129ef2369ff81b0c0200885893979b77", args.to);
        assert(1000000000, args.value);
-         
+         */
        return true;                
     })
     
@@ -615,7 +622,14 @@ it('submit-proposal-3', function() {
     })
     
     .then(function (parsed) {
+
        
+        proposal_3 = dstContract_APL.getProposalIdByIndex(2);
+        log(proposal_3);
+       
+
+    
+     /*
        args = parsed.logs[0].args;       
        
        proposalId = args.id;
@@ -652,7 +666,7 @@ it('submit-proposal-3', function() {
         
        log("[0xcc49] => balance: " + value.toFixed(3) + " HKG");       
        assert.equal(2000000, value);     
-              
+             */ 
        return true;                
     })
 
@@ -684,13 +698,13 @@ it('redeem-proposal-3', function() {
     })
     
     .then(function (parsed) {
-       
+       /*
        args = parsed.logs[0].args;       
        
        assert(dstContract_APL.address, args.from);
        assert("0xcc49bea5129ef2369ff81b0c0200885893979b77", args.to);
        assert(1000000000, args.value);
-         
+         */
        return true;                
     })
     
@@ -740,7 +754,12 @@ it('submit-proposal-4', function() {
     })
     
     .then(function (parsed) {
-       
+
+        proposal_4 = dstContract_APL.getProposalIdByIndex(3);
+        log(proposal_4);
+
+    
+    /*
        args = parsed.logs[0].args;       
        
        proposalId = args.id;
@@ -777,7 +796,7 @@ it('submit-proposal-4', function() {
         
        log("[0xcc49] => balance: " + value.toFixed(3) + " HKG");       
        assert.equal(3000000, value);     
-              
+              */
        return true;                
     })
 
@@ -809,13 +828,13 @@ it('redeem-proposal-4', function() {
     })
     
     .then(function (parsed) {
-       
+       /*
        args = parsed.logs[0].args;       
        
        assert(dstContract_APL.address, args.from);
        assert("0xcc49bea5129ef2369ff81b0c0200885893979b77", args.to);
        assert(1000000000, args.value);
-         
+         */
        return true;                
     })
     
@@ -864,7 +883,11 @@ it('submit-proposal-5', function() {
     })
     
     .then(function (parsed) {
-       
+
+        proposal_5 = dstContract_APL.getProposalIdByIndex(4);
+        log(proposal_5);
+
+     /*
        args = parsed.logs[0].args;       
        
        proposalId = args.id;
@@ -901,7 +924,7 @@ it('submit-proposal-5', function() {
         
        log("[0xcc49] => balance: " + value.toFixed(3) + " HKG");       
        assert.equal(4000000, value);     
-              
+          */
        return true;                
     })
 
@@ -933,13 +956,13 @@ it('redeem-proposal-5', function() {
     })
     
     .then(function (parsed) {
-       
+       /*
        args = parsed.logs[0].args;       
        
        assert(dstContract_APL.address, args.from);
        assert("0xcc49bea5129ef2369ff81b0c0200885893979b77", args.to);
        assert(1000000000, args.value);
-         
+         */
        return true;                
     })
     
