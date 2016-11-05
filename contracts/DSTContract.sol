@@ -305,7 +305,8 @@ contract DSTContract is StandardToken{
         
 
         // If there is no 2 months over since the last event.
-        // There is no posible to get any HKG 
+        // There is no posible to get any HKG. After 2 months
+        // all the HKG is available. 
         if (now < (eventInfo.getEventEnd() + 8 weeks)) {
             throw;
         }
@@ -314,18 +315,9 @@ contract DSTContract is StandardToken{
         // Possible to submit a proposal once 2 weeks 
         if (now < (timeOfLastProposal + 2 weeks)) throw;
 
-
-        // number of days after 2 months since the event ends
-        uint days3rdMonth = (now - eventInfo.getEventEnd() + 8 weeks) / 1 days;
                 
         uint percent = collectedHKG / 100;
         
-        // 50%   - after 2 months
-        // 3%    - for each day later        
-        uint valueHKGAvailableToRequest = (percent * 50 + 3 * percent * days3rdMonth);
-                                              
-        if (requestValue > valueHKGAvailableToRequest) throw;            
-
 
         // validate the ammount is legit
         // first 5 proposals should be less than 20% 
