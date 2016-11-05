@@ -395,38 +395,37 @@ contract DSTContract is StandardToken{
      }
     
     
-     
-     /**
-      * 
-      * 
-      * 
-      */
-     function redeemProposalFunds(bytes32 id) onlyExecutive {
+   
+    /**
+     * 
+     * 
+     * 
+     */
+    function redeemProposalFunds(bytes32 id) onlyExecutive {
+                 
+        Proposal memory proposal = proposals[id];
          
+        if (proposal.id == 0) throw;
+        if (proposal.submitter != msg.sender) throw;
          
-         // todo... after 6 months you can request all the sum no mater what.
-                                                    
+        // todo: 1. check time
+         
+        // check votes objection => 67 / 50 = 1.34
+        // x * 1.34 => ensures 75% of preferedQtySold
+        uint objectionRatio = proposal.votesObjecting * 67 / 50;         
 
+        if (objectionRatio  > preferedQtySold) throw;
          
-         Proposal memory proposal = proposals[id];
-         
-         if (proposal.id == 0) throw;
-         if (proposal.submitter != msg.sender) throw;
-         
-         // todo: 1. check time
-         
-         // check votes objection => 67 / 50 = 1.34
-         // x * 1.34 => ensures 75% of preferedQtySold
-         uint objectionRatio = proposal.votesObjecting * 67 / 50;         
+        // todo: 3. check already redeemed
+        // todo: 4. mark the proposal as redeemed
 
-         if (objectionRatio  > preferedQtySold) throw;
-         
-         // todo: 3. check already redeemed
-         // todo: 4. mark the proposal as redeemed
-
-         bool success = msg.sender.send(proposal.value);
-      
-     }
+        hackerGold.transfer(proposal.submitter, proposal.value);      
+    }
+    
+    
+    function getAllTheFunds(){
+        // todo... after 6 months you can request all the sum no mater what.
+    }
     
     
     /**
