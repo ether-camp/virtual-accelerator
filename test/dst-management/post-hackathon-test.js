@@ -163,7 +163,7 @@ it('virtual-exchange-init', function() {
 
 it('dst-contract-1-init', function() {
 
-    return contracts.DSTContract.new(eventInfo.address, "MK3", 
+    return contracts.DSTContract.new(eventInfo.address, hackerGold.address, "MK3", 
         
         {
             from : '0xcc49bea5129ef2369ff81b0c0200885893979b77'
@@ -184,7 +184,7 @@ it('dst-contract-1-init', function() {
 
 it('dst-contract-2-init', function() {
 
-    return contracts.DSTContract.new(eventInfo.address, "CRB",
+    return contracts.DSTContract.new(eventInfo.address, hackerGold.address, "CRB",
 
         {
             from : '0x211b1b6e61e475ace9bf13ae79373ddb419b5f72'

@@ -111,7 +111,7 @@ it('virtual-exchange-init', function() {
 
 it('dst-contract-mk3-init', function() {
 
-    return contracts.DSTContract.new(eventInfo.address, "MerkleTree", "MK3", 
+    return contracts.DSTContract.new(eventInfo.address, hackerGold.address, "MerkleTree", "MK3", 
         
         {
             from : '0xcc49bea5129ef2369ff81b0c0200885893979b77'

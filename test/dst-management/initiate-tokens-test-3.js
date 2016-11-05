@@ -236,7 +236,7 @@ it('virtual-exchange-init', function() {
 
 it('dst-contract-apl-init', function() {
 
-    return contracts.DSTContract.new(eventInfo.address, "Awesome Poker League", "APL", 
+    return contracts.DSTContract.new(eventInfo.address, hackerGold.address, "Awesome Poker League", "APL", 
         
         {
             from : '0xcc49bea5129ef2369ff81b0c0200885893979b77'
@@ -257,7 +257,7 @@ it('dst-contract-apl-init', function() {
 
 it('dst-contract-fbx-init', function() {
 
-    return contracts.DSTContract.new(eventInfo.address, "Filmbox", "FBX", 
+    return contracts.DSTContract.new(eventInfo.address, hackerGold.address, "Filmbox", "FBX", 
         
         {
             from : '0xcf22908ca26c5291502432044575ea7b900bf395'
@@ -279,7 +279,7 @@ it('dst-contract-fbx-init', function() {
 
 it('dst-contract-gog-init', function() {
 
-    return contracts.DSTContract.new(eventInfo.address, "Gog and Magog", "GOG", 
+    return contracts.DSTContract.new(eventInfo.address, hackerGold.address, "Gog and Magog", "GOG", 
         
         {
             from : '0xba33cc5dd6a60c891bcf93fbac8f13ee7512435f'
@@ -299,7 +299,7 @@ it('dst-contract-gog-init', function() {
 
 it('dst-contract-amz-init', function() {
 
-    return contracts.DSTContract.new(eventInfo.address, "Gog and Maamz", "AMZ", 
+    return contracts.DSTContract.new(eventInfo.address, hackerGold.address, "Gog and Maamz", "AMZ", 
         
         {
             from : '0xdb5918d9282f0b280aac6bde061b92e903e11d18'

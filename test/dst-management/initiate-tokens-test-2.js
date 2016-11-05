@@ -236,7 +236,7 @@ it('virtual-exchange-init', function() {
 
 it('dst-contract-apl-init', function() {
 
-    return contracts.DSTContract.new(eventInfo.address, "Awesome Poker League", "APL", 
+    return contracts.DSTContract.new(eventInfo.address, hackerGold.address, "Awesome Poker League", "APL", 
         
         {
             from : '0xcc49bea5129ef2369ff81b0c0200885893979b77'

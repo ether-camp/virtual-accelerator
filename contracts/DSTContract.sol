@@ -14,6 +14,7 @@ pragma solidity ^0.4.2;
  */
 contract DSTContract is StandardToken{
 
+
     address   selfAddress;
 
     address   executive; 
@@ -43,6 +44,7 @@ contract DSTContract is StandardToken{
     
     bool ableToIssueTokens = true; 
     uint preferedQtySold;
+    uint collectedHKG; 
     
     
     // Proposal of the funds spending
@@ -87,19 +89,22 @@ contract DSTContract is StandardToken{
     event PriceHKGChange(uint qtyForOneHKG);
     event BuyForHKGTransaction(uint tokensAmount, uint qtyForOneHKG, uint tokensAvailable, uint tokensSold);
     
+    event ProposalRequestHKGSubmitted(bytes32 id, uint value, uint timeEnds, string url, address sender);
+    
     
     /*
      * 
      *  Set date for early adapters
      *
      */ 
-    function DSTContract(EventInfo eventInfoAddr, string dstName, string dstSymbol){
+    function DSTContract(EventInfo eventInfoAddr, HackerGold hackerGoldAddr, string dstName, string dstSymbol){
     
       selfAddress = this; 
       executive   = msg.sender;  
       name        = dstName;
       symbol      = dstSymbol;
 
+      hackerGold = HackerGold(hackerGoldAddr);
       eventInfo  = EventInfo(eventInfoAddr);
     }
     
@@ -196,6 +201,7 @@ contract DSTContract is StandardToken{
         
         
         // ... todo: emit event for new tokens + price
+        // DstTokensIssued(indexed uint qtyForOneEther, indexed uint qtyToEmit, indexed uint totalSupply)
     }
 
     
@@ -231,6 +237,7 @@ contract DSTContract is StandardToken{
       // Gain voting rights
       votingRights[sender] +=tokensQty;
       preferedQtySold += tokensQty;
+      collectedHKG += hkgValue;
       
       
                 
@@ -288,6 +295,7 @@ contract DSTContract is StandardToken{
     }
 
     
+     event here_event(address number);  // REMOVE IT !!!
      
     /**
      * 
@@ -295,41 +303,60 @@ contract DSTContract is StandardToken{
      * 
      * 
      */
-    function submitProposal(uint value, string url) onlyAfterEnd 
-                                                    onlyExecutive 
-                                                    returns (bytes32 resultId, bool resultSucces){
-        // todo: check the time since last proposal
-        
-        // validate the ammount is legit
-        // first 5 proposals should be P.value =< total * 20% 
-        if (counterProposals < 5 ){
-            
-            uint totalBalance = getEtherValue();
-            uint fundingShare = totalBalance / value;
-            
-            if (fundingShare < 5) return (0, false);  
-            
+    function submitHKGProposal(uint requestValue, string url) onlyAfterEnd
+                                                              onlyExecutive returns (bytes32 resultId, bool resultSucces){
+        //here_event(hackerGold);// REMOVE IT !!!
+
+        // If there is no 2 months over since the last event.
+        // There is no posible to get any HKG 
+        if (now < (eventInfo.getEventEnd() + 8 weeks)) {
+            throw;
         }
+
+
+        // Possible to submit a proposal once 2 weeks 
+        if (now < (timeOfLastProposal + 2 weeks)) throw;
+
+
+        // number of days after 2 months since the event ends
+        uint days3rdMonth = (now - eventInfo.getEventEnd() + 8 weeks) / 1 days;
+                
+        uint percent = collectedHKG / 100;
         
+        // 50%   - after 2 months
+        // 3%    - for each day later        
+        uint valueHKGAvailableToRequest = (percent * 50 + 3 * percent * days3rdMonth);
+                                              
+        if (requestValue > valueHKGAvailableToRequest) throw;            
+
+
+        // validate the ammount is legit
+        // first 5 proposals should be less than 20% 
+        if (counterProposals < 5 && 
+            requestValue     > 20 * percent) throw;
+        
+        
+        // if remained value is less than requested 
+        // gain all.
+        if (requestValue > getHKGOwned()) 
+            requestValue = getHKGOwned();
+        
+    
         // set id of the proposal
         // submit proposal to the map
-       
         bytes32 id = sha3(msg.data, now);
-        uint timeEnds = now + 2 weeks; 
+        uint timeEnds = now + 10 days; 
         
-        Proposal memory newProposal = Proposal(id, value, timeEnds, url, 0, msg.sender);
+        Proposal memory newProposal = Proposal(id, requestValue, timeEnds, url, 0, msg.sender);
         proposals[id] = newProposal;
         listProposals.push(newProposal);
         
-        
-        // todo: Rise Event
-        
-        
         ++counterProposals;
-        timeOfLastProposal = now;
+        timeOfLastProposal = now;                
+                
+        ProposalRequestHKGSubmitted(id, requestValue, timeEnds, url, msg.sender);
         
-        
-        return (id, true);
+        return (id, true);        
     }  
     
     
@@ -375,6 +402,11 @@ contract DSTContract is StandardToken{
       * 
       */
      function redeemProposalFunds(bytes32 id) onlyExecutive {
+         
+         
+         // todo... after 6 months you can request all the sum no mater what.
+                                                    
+
          
          Proposal memory proposal = proposals[id];
          
