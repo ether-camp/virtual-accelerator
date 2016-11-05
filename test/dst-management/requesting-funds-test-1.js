@@ -361,9 +361,37 @@ it('issue-apl-tokens-seria-1', function() {
     
     .then(function (parsed) {
        
-       log(parsed);
-       args = parsed.logs[0].args;
-       log(args);
+       args = parsed.logs[0].args;       
+       
+       proposalId = args.id;
+       proposalValue = args.value;
+       proposalValue = proposalValue / 1000;
+       
+       proposalTimeEnds = args.timeEnds;
+       proposalURL = args.url;
+       proposalSender = args.sender;
+       
+       log("");
+       log("Proposal Submitted");
+       log("==================");
+       
+       log("proposalId: "       + proposalId);
+       log("proposalValue: "    + proposalValue.toFixed(3));
+       log("proposalTimeEnds: " + proposalTimeEnds);
+       log("proposalURL: "      + proposalURL);
+       log("proposalSender: "   + proposalSender);
+       
+       
+       assert(1000000000, proposalValue);
+       
+       t1 = eventInfo.getNow().toNumber() + 60 * 60 * 24 * 10;
+       t2 = proposalTimeEnds;
+       assert(t1, t2);
+
+       assert(proposalURL,    "http://pastebin.com/raw/6e9PBTeP");
+       assert(proposalSender, "0xcc49bea5129ef2369ff81b0c0200885893979b77");
+       
+       
        
     return true;        
     
