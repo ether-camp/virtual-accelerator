@@ -423,7 +423,7 @@ contract DSTContract is StandardToken{
     
     
     function getAllTheFunds(){
-        // todo... after 6 months you can request all the sum no mater what.
+        // todo... after 6 months you can request all the HKG value no mater what.
     }
     
     
@@ -448,6 +448,15 @@ contract DSTContract is StandardToken{
 
     } 
     
+    
+    function getEther(){
+        
+        // proposals are the same as with HKG 
+        // Condition_1: the issuing ether is done
+        // Condition_2: all the tokens are sold
+        
+        // ... possible close the sale and burn the rest of tokens
+    }
     
     
     /**

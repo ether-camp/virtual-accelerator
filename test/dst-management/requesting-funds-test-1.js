@@ -23,6 +23,7 @@ var virtualExchange;
 var dstContract_APL;  // Awesome Poker League
 
 var proposal_1;
+var proposal_2;
 
 
 function printDate(){
@@ -459,6 +460,128 @@ it('redeem-proposal-1', function() {
 
 });
 
+
+
+it('roll-time-proposal-redeem', function(){
+   
+    return workbench.rollTimeTo('08-May-2017 14:00 UTC+00')
+    .then(function(contract) { printDate(); return true; });
+});
+
+
+
+it('submit-proposal-2', function() {
+    log("");
+    log(" (!) Action: [0xcc49] ask to recieve 1,000,000.000 (20%) of the HKG collected");
+                           
+    return dstContract_APL.submitHKGProposal(1000000000, "http://pastebin.com/raw/6e9PBTeP", 
+    {
+       from : '0xcc49bea5129ef2369ff81b0c0200885893979b77',   
+       gas : 350000,       
+    })
+
+    .then(function (txHash) {
+    
+        return workbench.waitForReceipt(txHash);        
+        
+    })
+    
+    .then(function (parsed) {
+       
+       args = parsed.logs[0].args;       
+       
+       proposalId = args.id;
+       proposalValue = args.value;
+       proposalValue = proposalValue / 1000;
+       
+       proposalTimeEnds = args.timeEnds;
+       proposalURL = args.url;
+       proposalSender = args.sender;
+       
+       log("");
+       log("Proposal Submitted");
+       log("==================");
+       
+       log("proposalId: "       + proposalId);
+       log("proposalValue: "    + proposalValue.toFixed(3));
+       log("proposalTimeEnds: " + proposalTimeEnds);
+       log("proposalURL: "      + proposalURL);
+       log("proposalSender: "   + proposalSender);
+       
+       
+       assert.equal(1000000, proposalValue);
+       
+       t1 = eventInfo.getNow().toNumber() + 60 * 60 * 24 * 10;
+       t2 = proposalTimeEnds;
+       assert(t1, t2);
+
+       assert.equal(proposalURL,    "http://pastebin.com/raw/6e9PBTeP");
+       assert.equal(proposalSender, "0xcc49bea5129ef2369ff81b0c0200885893979b77");
+       
+       proposal_2 = proposalId;
+               
+       value = hackerGold.balanceOf('0xcc49bea5129ef2369ff81b0c0200885893979b77').toNumber() / 1000;
+        
+       log("[0xcc49] => balance: " + value.toFixed(3) + " HKG");       
+       assert.equal(1000000, value);     
+              
+       return true;                
+    })
+
+});
+
+
+it('roll-time-proposal-redeem', function(){
+   
+    return workbench.rollTimeTo('18-May-2017 14:00 UTC+00')
+    .then(function(contract) { printDate(); return true; });
+});
+
+
+
+it('redeem-proposal-2', function() {
+    log("");
+    log(" (!) Action: [0xcc49] collect 1,000,000.000 HKG value of proposal 1");
+                           
+    return dstContract_APL.redeemProposalFunds(proposal_2, 
+    {
+       from : '0xcc49bea5129ef2369ff81b0c0200885893979b77',   
+       gas : 350000,       
+    })
+
+    .then(function (txHash) {
+    
+        return workbench.waitForReceipt(txHash);        
+        
+    })
+    
+    .then(function (parsed) {
+       
+       args = parsed.logs[0].args;       
+       
+       assert(dstContract_APL.address, args.from);
+       assert("0xcc49bea5129ef2369ff81b0c0200885893979b77", args.to);
+       assert(1000000000, args.value);
+         
+       return true;                
+    })
+    
+    .then(function () {
+              
+       value = hackerGold.balanceOf('0xcc49bea5129ef2369ff81b0c0200885893979b77').toNumber() / 1000;
+        
+       log("[0xcc49] => balance: " + value.toFixed(3) + " HKG");       
+       assert.equal(2000000, value);
+           
+       value = hackerGold.balanceOf(dstContract_APL.address).toNumber() / 1000;
+        
+       log("[APL] => balance: " + value.toFixed(3) + " HKG");       
+       assert.equal(3000000, value);
+
+       return true;                
+    })
+
+});
 
 
 });
