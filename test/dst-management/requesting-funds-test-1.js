@@ -367,9 +367,6 @@ it('submit-proposal-1', function() {
     
     .then(function (parsed) {
         
-        proposal_1 = dstContract_APL.getProposalIdByIndex(0);
-        log(proposal_1);
-       /*
        args = parsed.logs[0].args;       
        
        proposalId = args.id;
@@ -406,7 +403,7 @@ it('submit-proposal-1', function() {
         
        log("[0xcc49] => balance: " + value.toFixed(3) + " HKG");       
        assert.equal(0, value);     
-              */
+
        return true;                
     })
 
@@ -416,7 +413,7 @@ it('submit-proposal-1', function() {
 
 it('roll-time-proposal-redeem', function(){
    
-    return workbench.rollTimeTo('04-Mar-2017 14:00 UTC+00')
+    return workbench.rollTimeTo('04-Mar-2017 14:01 UTC+00')
     .then(function(contract) { printDate(); return true; });
 });
 
@@ -439,13 +436,13 @@ it('redeem-proposal-1', function() {
     })
     
     .then(function (parsed) {
-       /*
+       
        args = parsed.logs[0].args;       
        
        assert(dstContract_APL.address, args.from);
        assert("0xcc49bea5129ef2369ff81b0c0200885893979b77", args.to);
        assert(1000000000, args.value);
-         */
+         
        return true;                
     })
     
@@ -471,7 +468,7 @@ it('redeem-proposal-1', function() {
 
 it('roll-time-for-new-proposal-submit', function(){
    
-    return workbench.rollTimeTo('08-Mar-2017 14:00 UTC+00')
+    return workbench.rollTimeTo('08-Mar-2017 14:02 UTC+00')
     .then(function(contract) { printDate(); return true; });
 });
 
@@ -495,10 +492,7 @@ it('submit-proposal-2', function() {
     
     .then(function (parsed) {
        
-        proposal_2 = dstContract_APL.getProposalIdByIndex(1);
-        log(proposal_2);
        
-       /*
        args = parsed.logs[0].args;       
        
        proposalId = args.id;
@@ -535,7 +529,7 @@ it('submit-proposal-2', function() {
         
        log("[0xcc49] => balance: " + value.toFixed(3) + " HKG");       
        assert.equal(1000000, value);     
-              */
+
        return true;                
     })
 
@@ -544,7 +538,7 @@ it('submit-proposal-2', function() {
 
 it('roll-time-proposal-redeem', function(){
    
-    return workbench.rollTimeTo('18-Mar-2017 14:00 UTC+00')
+    return workbench.rollTimeTo('18-Mar-2017 14:03 UTC+00')
     .then(function(contract) { printDate(); return true; });
 });
 
@@ -599,7 +593,7 @@ it('redeem-proposal-2', function() {
 
 it('roll-time-for-new-proposal-submit', function(){
    
-    return workbench.rollTimeTo('22-Mar-2017 14:00 UTC+00')
+    return workbench.rollTimeTo('22-Mar-2017 14:04 UTC+00')
     .then(function(contract) { printDate(); return true; });
 });
 
@@ -624,12 +618,6 @@ it('submit-proposal-3', function() {
     .then(function (parsed) {
 
        
-        proposal_3 = dstContract_APL.getProposalIdByIndex(2);
-        log(proposal_3);
-       
-
-    
-     /*
        args = parsed.logs[0].args;       
        
        proposalId = args.id;
@@ -666,7 +654,7 @@ it('submit-proposal-3', function() {
         
        log("[0xcc49] => balance: " + value.toFixed(3) + " HKG");       
        assert.equal(2000000, value);     
-             */ 
+ 
        return true;                
     })
 
@@ -675,7 +663,7 @@ it('submit-proposal-3', function() {
 
 it('roll-time-proposal-redeem', function(){
    
-    return workbench.rollTimeTo('01-Apr-2017 14:00 UTC+00')
+    return workbench.rollTimeTo('01-Apr-2017 14:05 UTC+00')
     .then(function(contract) { printDate(); return true; });
 });
 
@@ -698,13 +686,13 @@ it('redeem-proposal-3', function() {
     })
     
     .then(function (parsed) {
-       /*
+       
        args = parsed.logs[0].args;       
        
        assert(dstContract_APL.address, args.from);
        assert("0xcc49bea5129ef2369ff81b0c0200885893979b77", args.to);
        assert(1000000000, args.value);
-         */
+       
        return true;                
     })
     
@@ -731,7 +719,7 @@ it('redeem-proposal-3', function() {
 
 it('roll-time-for-new-proposal-submit', function(){
    
-    return workbench.rollTimeTo('05-Apr-2017 14:00 UTC+00')
+    return workbench.rollTimeTo('05-Apr-2017 14:06 UTC+00')
     .then(function(contract) { printDate(); return true; });
 });
 
@@ -755,11 +743,6 @@ it('submit-proposal-4', function() {
     
     .then(function (parsed) {
 
-        proposal_4 = dstContract_APL.getProposalIdByIndex(3);
-        log(proposal_4);
-
-    
-    /*
        args = parsed.logs[0].args;       
        
        proposalId = args.id;
@@ -796,7 +779,7 @@ it('submit-proposal-4', function() {
         
        log("[0xcc49] => balance: " + value.toFixed(3) + " HKG");       
        assert.equal(3000000, value);     
-              */
+
        return true;                
     })
 
@@ -805,7 +788,7 @@ it('submit-proposal-4', function() {
 
 it('roll-time-proposal-redeem', function(){
    
-    return workbench.rollTimeTo('15-Apr-2017 14:00 UTC+00')
+    return workbench.rollTimeTo('15-Apr-2017 14:07 UTC+00')
     .then(function(contract) { printDate(); return true; });
 });
 
@@ -828,13 +811,13 @@ it('redeem-proposal-4', function() {
     })
     
     .then(function (parsed) {
-       /*
+       
        args = parsed.logs[0].args;       
        
        assert(dstContract_APL.address, args.from);
        assert("0xcc49bea5129ef2369ff81b0c0200885893979b77", args.to);
        assert(1000000000, args.value);
-         */
+       
        return true;                
     })
     
@@ -860,7 +843,7 @@ it('redeem-proposal-4', function() {
 
 it('roll-time-for-new-proposal-submit', function(){
    
-    return workbench.rollTimeTo('19-Apr-2017 14:00 UTC+00')
+    return workbench.rollTimeTo('19-Apr-2017 14:08 UTC+00')
     .then(function(contract) { printDate(); return true; });
 });
 
@@ -884,10 +867,6 @@ it('submit-proposal-5', function() {
     
     .then(function (parsed) {
 
-        proposal_5 = dstContract_APL.getProposalIdByIndex(4);
-        log(proposal_5);
-
-     /*
        args = parsed.logs[0].args;       
        
        proposalId = args.id;
@@ -924,7 +903,7 @@ it('submit-proposal-5', function() {
         
        log("[0xcc49] => balance: " + value.toFixed(3) + " HKG");       
        assert.equal(4000000, value);     
-          */
+          
        return true;                
     })
 
@@ -933,7 +912,7 @@ it('submit-proposal-5', function() {
 
 it('roll-time-proposal-redeem', function(){
    
-    return workbench.rollTimeTo('23-Apr-2017 14:00 UTC+00')
+    return workbench.rollTimeTo('29-Apr-2017 14:09 UTC+00')
     .then(function(contract) { printDate(); return true; });
 });
 
@@ -956,13 +935,13 @@ it('redeem-proposal-5', function() {
     })
     
     .then(function (parsed) {
-       /*
+       
        args = parsed.logs[0].args;       
        
        assert(dstContract_APL.address, args.from);
        assert("0xcc49bea5129ef2369ff81b0c0200885893979b77", args.to);
        assert(1000000000, args.value);
-         */
+       
        return true;                
     })
     

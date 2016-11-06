@@ -353,8 +353,6 @@ it('roll-time-50%-available', function(){
 // ...
 // [X] Submit proposal by non executive.
 // ... 
-/*   UNCOMMENT THAT TEST
-
 it('submit-proposal-0', function() {
     log("");
     log(" [X] Submit proposal by non executive.");
@@ -381,7 +379,6 @@ it('submit-proposal-0', function() {
     })
 
 });
-*/
 
 
 it('submit-proposal-1', function() {
@@ -401,6 +398,7 @@ it('submit-proposal-1', function() {
     })
     
     .then(function (parsed) {
+        printDate();
         
         proposal_1 = dstContract_APL.getProposalIdByIndex(0);
         log(proposal_1);
