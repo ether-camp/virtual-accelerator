@@ -469,9 +469,6 @@ it('submit-proposal-1', function() {
     
     .then(function (parsed) {
         
-        proposal_1 = dstContract_APL.getProposalIdByIndex(0);
-        log(proposal_1);
-       /*
        args = parsed.logs[0].args;       
        
        proposalId = args.id;
@@ -508,7 +505,7 @@ it('submit-proposal-1', function() {
         
        log("[0xcc49] => balance: " + value.toFixed(3) + " HKG");       
        assert.equal(0, value);     
-              */
+       
        return true;                
     })
 
@@ -542,18 +539,6 @@ it('redeem-proposal-to-early', function() {
         
     })
     
-    .then(function (parsed) {
-        
-        
-       /*
-       args = parsed.logs[0].args;       
-       
-       assert(dstContract_APL.address, args.from);
-       assert("0xcc49bea5129ef2369ff81b0c0200885893979b77", args.to);
-       assert(1000000000, args.value);
-         */
-       return true;                
-    })
     
     .then(function () {
               
@@ -575,7 +560,7 @@ it('redeem-proposal-to-early', function() {
 
 it('roll-time-proposal-redeem', function(){
    
-    return workbench.rollTimeTo('04-Mar-2017 14:00 UTC+00')
+    return workbench.rollTimeTo('04-Mar-2017 14:01 UTC+00')
     .then(function(contract) { printDate(); return true; });
 });
 
@@ -600,20 +585,7 @@ it('redeem-non-exist-proposal', function() {
         return workbench.waitForReceipt(txHash);        
         
     })
-    
-    .then(function (parsed) {
-
-
-     /*
-       args = parsed.logs[0].args;       
-       
-       assert(dstContract_APL.address, args.from);
-       assert("0xcc49bea5129ef2369ff81b0c0200885893979b77", args.to);
-       assert(1000000000, args.value);
-         */
-       return true;                
-    })
-    
+        
     .then(function () {
               
        value = hackerGold.balanceOf('0xcc49bea5129ef2369ff81b0c0200885893979b77').toNumber() / 1000;
@@ -653,18 +625,7 @@ it('redeem-by-non-submitter-proposal', function() {
         return workbench.waitForReceipt(txHash);        
         
     })
-    
-    .then(function (parsed) {
-       /*
-       args = parsed.logs[0].args;       
-       
-       assert(dstContract_APL.address, args.from);
-       assert("0xcc49bea5129ef2369ff81b0c0200885893979b77", args.to);
-       assert(1000000000, args.value);
-         */
-       return true;                
-    })
-    
+        
     .then(function () {
               
        value = hackerGold.balanceOf('0xdedb49385ad5b94a16f236a6890cf9e0b1e30392').toNumber() / 1000;
@@ -701,13 +662,13 @@ it('redeem-proposal-1', function() {
     })
     
     .then(function (parsed) {
-       /*
+       
        args = parsed.logs[0].args;       
        
        assert(dstContract_APL.address, args.from);
        assert("0xcc49bea5129ef2369ff81b0c0200885893979b77", args.to);
        assert(1000000000, args.value);
-         */
+       
        return true;                
     })
     
@@ -731,7 +692,7 @@ it('redeem-proposal-1', function() {
 
 it('roll-time-one-day', function(){
    
-    return workbench.rollTimeTo('05-Mar-2017 14:00 UTC+00')
+    return workbench.rollTimeTo('05-Mar-2017 14:01 UTC+00')
     .then(function(contract) { printDate(); return true; });
 });
 
@@ -758,17 +719,6 @@ it('redeem-proposal-twice', function() {
         
     })
     
-    .then(function (parsed) {
-
-       /*
-       args = parsed.logs[0].args;       
-       
-       assert(dstContract_APL.address, args.from);
-       assert("0xcc49bea5129ef2369ff81b0c0200885893979b77", args.to);
-       assert(1000000000, args.value);
-         */
-       return true;                
-    })
     
     .then(function () {
               
