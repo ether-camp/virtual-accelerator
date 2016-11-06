@@ -383,8 +383,8 @@ contract DSTContract is StandardToken{
      }
     
     
-     //event here_event(uint number);  // REMOVE IT !!!
-     //here_event(proposal.value);// REMOVE IT !!!
+//    event here_event(bool redeemed);  // REMOVE IT !!!
+//    here_event(proposal.redeemed);// REMOVE IT !!!
    
     /**
      * 
@@ -397,18 +397,20 @@ contract DSTContract is StandardToken{
                           
         if (proposal.id == 0) throw;
         if (proposal.submitter != msg.sender) throw;
+
         
         // ensure objection time
-        if (now + 10 days < proposal.votindEndTS) throw;
+        if (now < proposal.votindEndTS) throw;
                            
         // check votes objection => 55% of total votes
         uint objectionThreshold = preferedQtySold / 100 * 55;
         if (proposal.votesObjecting  > objectionThreshold) throw;
          
         // check already redeemed
-        if (proposal.redeemed == true) throw;
+        if (proposal.redeemed) throw;
         
-        proposal.redeemed = true; 
+        // execute the proposal 
+        proposals[id].redeemed = true; 
         hackerGold.transfer(proposal.submitter, proposal.value);      
     }
     
