@@ -458,7 +458,7 @@ it('submit-proposal-1', function() {
     return dstContract_APL.submitHKGProposal(1000000000, "http://pastebin.com/raw/6e9PBTeP", 
     {
        from : '0xcc49bea5129ef2369ff81b0c0200885893979b77',   
-       gas : 350000,       
+       gas : 450000,       
     })
 
     .then(function (txHash) {

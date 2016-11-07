@@ -46,8 +46,11 @@ contract DSTContract is StandardToken{
     
     // Proposal of the funds spending
     mapping (bytes32 => Proposal) proposals;
+
+    enum ProposalCurrency { HKG, ETHER }
+    ProposalCurrency myCurrency;
     
-    
+       
     struct Proposal{
         
         bytes32 id;
@@ -60,6 +63,10 @@ contract DSTContract is StandardToken{
         
         address submitter;
         bool redeemed;
+
+        ProposalCurrency proposalCurrency;
+        
+        mapping (address => uint256) voted;
     }
     uint counterProposals;
     uint timeOfLastProposal;
@@ -335,7 +342,7 @@ contract DSTContract is StandardToken{
         bytes32 id = sha3(msg.data, now);
         uint timeEnds = now + 10 days; 
         
-        Proposal memory newProposal = Proposal(id, requestValue, timeEnds, url, 0, msg.sender, false);
+        Proposal memory newProposal = Proposal(id, requestValue, timeEnds, url, 0, msg.sender, false, ProposalCurrency.HKG);
         proposals[id] = newProposal;
         listProposals.push(newProposal);
         
@@ -393,25 +400,31 @@ contract DSTContract is StandardToken{
      */
     function redeemProposalFunds(bytes32 id) onlyExecutive {
         
-        Proposal memory proposal = proposals[id];
-                          
-        if (proposal.id == 0) throw;
-        if (proposal.submitter != msg.sender) throw;
+        if (proposals[id].id == 0) throw;
+        if (proposals[id].submitter != msg.sender) throw;
 
+        if (proposals[id].proposalCurrency == ProposalCurrency.HKG){
+            
+            // ensure objection time
+            if (now < proposals[id].votindEndTS) throw;
+                               
+            // check votes objection => 55% of total votes
+            uint objectionThreshold = preferedQtySold / 100 * 55;
+            if (proposals[id].votesObjecting  > objectionThreshold) throw;
+             
+            // check already redeemed
+            if (proposals[id].redeemed) throw;
+            
+            // execute the proposal 
+            proposals[id].redeemed = true; 
+            hackerGold.transfer(proposals[id].submitter, proposals[id].value);      
+            
+            
+        } else {
+            
+            
+        }
         
-        // ensure objection time
-        if (now < proposal.votindEndTS) throw;
-                           
-        // check votes objection => 55% of total votes
-        uint objectionThreshold = preferedQtySold / 100 * 55;
-        if (proposal.votesObjecting  > objectionThreshold) throw;
-         
-        // check already redeemed
-        if (proposal.redeemed) throw;
-        
-        // execute the proposal 
-        proposals[id].redeemed = true; 
-        hackerGold.transfer(proposal.submitter, proposal.value);      
     }
     
     
