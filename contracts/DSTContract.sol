@@ -92,7 +92,8 @@ contract DSTContract is StandardToken{
     
     
     event PriceHKGChange(uint qtyForOneHKG);
-    event BuyForHKGTransaction(uint tokensAmount, uint qtyForOneHKG, uint tokensAvailable, uint tokensSold);
+    event BuyForHKGTransaction(uint indexed qtyForOneHKG, uint indexed tokensSold, uint indexed totalSupply, uint tokensAmount);
+    event DstTokensIssued(uint indexed qtyForOneHKG, uint indexed tokensSold, uint indexed totalSupply, uint qtyToEmit);
     
     event ProposalRequestHKGSubmitted(bytes32 id, uint value, uint timeEnds, string url, address sender);
     
@@ -208,7 +209,7 @@ contract DSTContract is StandardToken{
         
         
         // ... todo: emit event for new tokens + price
-        // DstTokensIssued(indexed uint qtyForOneEther, indexed uint qtyToEmit, indexed uint totalSupply)
+        DstTokensIssued(hkgPrice, preferedQtySold, balances[this], qtyToEmit);
     }
 
     
@@ -252,7 +253,7 @@ contract DSTContract is StandardToken{
                    virtualExchangeAddress, tokensQty);
       transfer(sender, tokensQty);        
             
-      BuyForHKGTransaction(tokensQty, hkgPrice, balances[this], tokensQty);
+      BuyForHKGTransaction(hkgPrice, preferedQtySold, balances[this], tokensQty);
         
       return true;
     }
