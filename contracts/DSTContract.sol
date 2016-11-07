@@ -66,7 +66,7 @@ contract DSTContract is StandardToken{
 
         ProposalCurrency proposalCurrency;
         
-        mapping (address => uint256) voted;
+        mapping (address => bool) voted;
     }
     uint counterProposals;
     uint timeOfLastProposal;
@@ -95,6 +95,8 @@ contract DSTContract is StandardToken{
     event BuyForHKGTransaction(uint tokensAmount, uint qtyForOneHKG, uint tokensAvailable, uint tokensSold);
     
     event ProposalRequestHKGSubmitted(bytes32 id, uint value, uint timeEnds, string url, address sender);
+    
+    event ObjectedVote(bytes32 id, address voter, uint votes);
     
     
     /*
@@ -363,24 +365,29 @@ contract DSTContract is StandardToken{
      */
      function objectProposal(bytes32 id){
          
-         Proposal memory proposal = proposals[id];
+        Proposal memory proposal = proposals[id];
          
-         if (proposal.id == 0) throw;
-         
-         // todo: check that time for voting isn't over
-         // todo: check that the voted can't vote anymore   
+        // check proposal exist 
+        if (proposals[id].id == 0) throw;
 
-         uint votes = votingRights[msg.sender];
+        // check already redeemed
+        if (proposals[id].redeemed) throw;
+         
+        // ensure objection time
+        if (now >= proposals[id].votindEndTS) throw;
+         
+        if (proposals[id].voted[msg.sender]) throw;
          
          // submit votes
-         proposal.votesObjecting += votes;
-         proposals[id] = proposal;
+         uint votes = votingRights[msg.sender];
+         proposals[id].votesObjecting += votes;
          
          uint idx = getIndexByProposalId(id);
-         listProposals[idx] = proposal;     
-            
-         
+         listProposals[idx] = proposals[id];   
+
+         ObjectedVote(id, msg.sender, votes);         
      }
+     
      
      function getIndexByProposalId(bytes32 id) returns (uint result){
          
@@ -422,7 +429,7 @@ contract DSTContract is StandardToken{
             
         } else {
             
-            
+            // ... TODO: Ether redeem will be here 
         }
         
     }
@@ -449,9 +456,7 @@ contract DSTContract is StandardToken{
     /**
      * 
      */
-    function voteForProposal(bool yes){
-        
-
+    function voteForImeachment(bool yes){        
     } 
     
     
