@@ -435,8 +435,24 @@ contract DSTContract is StandardToken{
     }
     
     
-    function getAllTheFunds(){
-        // todo... after 6 months you can request all the HKG value no mater what.
+    /**
+     * 
+     * 
+     * 
+     */             
+    function getAllTheFunds() onlyExecutive {
+        
+        // If there is a deadlock in voting participates
+        // the funds can be redeemed completelly in 6 months
+        if (now < (eventInfo.getEventEnd() + 24 weeks)) {
+            throw;
+        }  
+        
+        // all the Ether
+        bool success = msg.sender.send(this.balance);        
+        
+        // all the HKG
+        hackerGold.transfer(msg.sender, getHKGOwned());              
     }
     
     
