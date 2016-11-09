@@ -791,12 +791,111 @@ it('redeem-proposal-1', function() {
 
 });
 
+//
+// [X] Submit impeachment less than 3 months from the event finish
+// 
+
+it('impeachment-proposal-less-time-from-event-end', function() {
+    log("");
+    log(" [X] Submit impeachment less than 3 months from the event finish");
+                           
+    return dstContract_APL.submitImpeachmentProposal("http://pastebin.com/raw/Ehet8yVf", '0xdedb49385ad5b94a16f236a6890cf9e0b1e30392', 
+    {
+       from : '0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d',   
+       gas : 250000,       
+    })  
+
+    .then(function (txHash) {
+    
+        return workbench.waitForReceipt(txHash);        
+        
+    })
+    
+    .then(function (parsed) {
+       
+       log("");
+       log("No impeachment was submitted");
+       assert.equal(parsed.logs.length, 0);       
+       
+       return true;                
+    })
+    
+    .then(function () {
+          
+       totalPreferred = dstContract_APL.getPreferedQtySold().toNumber();   
+       impeachmentSupport = dstContract_APL.getCurrentImpeachmentVotesSupporting().toNumber();
+       
+       impSupport = (impeachmentSupport / totalPreferred) * 100
+       
+       log("");
+       
+       log("Support for impeachment: " + impSupport + "%");
+       assert.equal(0, impSupport);
+       
+       log("Executive for now: " + dstContract_APL.getExecutive());       
+       assert.equal('0xcc49bea5129ef2369ff81b0c0200885893979b77' ,dstContract_APL.getExecutive());              
+       
+       return true;                
+    })
+
+});
+
 
 
 it('roll-time-to-start-impeachment', function(){
    
     return workbench.rollTimeTo('22-Mar-2017 14:00 UTC+00')
     .then(function(contract) { printDate(); return true; });
+});
+
+
+//
+// [X] Submit impeachment by non voter
+//
+
+it('impeachment-proposal-by-non-voter', function() {
+    log("");
+    log(" [X] Action: submit impeachment by non voter");
+                           
+    return dstContract_APL.submitImpeachmentProposal("http://pastebin.com/raw/Ehet8yVf", '0xdedb49385ad5b94a16f236a6890cf9e0b1e30392', 
+    {
+       from : '0x36cef404bd674e1aa6ba6b444c9ef458460c9871',   
+       gas : 250000,       
+    })  
+
+    .then(function (txHash) {
+    
+        return workbench.waitForReceipt(txHash);        
+        
+    })
+    
+    .then(function (parsed) {
+       
+       log("");
+       log("No impeachment was submitted");
+       assert.equal(parsed.logs.length, 0);       
+       
+       return true;                
+    })
+    
+    .then(function () {
+          
+       totalPreferred = dstContract_APL.getPreferedQtySold().toNumber();   
+       impeachmentSupport = dstContract_APL.getCurrentImpeachmentVotesSupporting().toNumber();
+       
+       impSupport = (impeachmentSupport / totalPreferred) * 100
+       
+       log("");
+       
+       log("Support for impeachment: " + impSupport + "%");
+       assert.equal(0, impSupport);
+       
+       log("Executive for now: " + dstContract_APL.getExecutive());       
+       assert.equal('0xcc49bea5129ef2369ff81b0c0200885893979b77' ,dstContract_APL.getExecutive());              
+       
+       return true;                
+    })
+
 });
 
 
@@ -920,7 +1019,107 @@ it('impeachment-proposal-support-1', function() {
 
 });
 
+//
+// [X] Support impeachment by a non voter
+//
 
+it('impeachment-proposal-support-by-non-voter', function() {
+    log("");
+    log(" [X] Support impeachment by a non voter");
+                           
+    return dstContract_APL.supportImpeachment( 
+    {
+       from : '0x36cef404bd674e1aa6ba6b444c9ef458460c9871',   
+       gas : 250000,       
+    })  
+
+    .then(function (txHash) {
+    
+        return workbench.waitForReceipt(txHash);        
+        
+    })
+    
+    .then(function (parsed) {
+       
+       assert.equal(parsed.logs.length, 0);
+       log("");
+       
+       log("No support event generated");
+       
+       return true;                
+    })
+    
+    .then(function () {
+              
+       totalPreferred = dstContract_APL.getPreferedQtySold().toNumber();   
+       impeachmentSupport = dstContract_APL.getCurrentImpeachmentVotesSupporting().toNumber();
+       
+       impSupport = (impeachmentSupport / totalPreferred) * 100
+       
+       log("");
+       
+       log("Support for impeachment: " + impSupport + "%");
+       assert.equal(60, impSupport);
+       
+       log("Executive for now: " + dstContract_APL.getExecutive());       
+       assert.equal('0xcc49bea5129ef2369ff81b0c0200885893979b77' ,dstContract_APL.getExecutive());       
+       
+       return true;                
+    })
+
+});
+
+
+
+//
+// [X] Support impeachment by a an already voted voter
+//
+
+it('impeachment-proposal-support-by-already-voter', function() {
+    log("");
+    log(" [X] Support impeachment by a an already voted voter ");
+                           
+    return dstContract_APL.supportImpeachment( 
+    {
+       from : '0x29805ff5b946e7a7c5871c1fb071f740f767cf41',   
+       gas : 250000,       
+    })  
+
+    .then(function (txHash) {
+    
+        return workbench.waitForReceipt(txHash);        
+        
+    })
+    
+    .then(function (parsed) {
+       
+       assert.equal(parsed.logs.length, 0);
+       log("");
+       
+       log("No support event generated");
+       
+       return true;                
+    })
+    
+    .then(function () {
+              
+       totalPreferred = dstContract_APL.getPreferedQtySold().toNumber();   
+       impeachmentSupport = dstContract_APL.getCurrentImpeachmentVotesSupporting().toNumber();
+       
+       impSupport = (impeachmentSupport / totalPreferred) * 100
+       
+       log("");
+       
+       log("Support for impeachment: " + impSupport + "%");
+       assert.equal(60, impSupport);
+       
+       log("Executive for now: " + dstContract_APL.getExecutive());       
+       assert.equal('0xcc49bea5129ef2369ff81b0c0200885893979b77' ,dstContract_APL.getExecutive());       
+       
+       return true;                
+    })
+
+});
 
 
 it('impeachment-proposal-support-2', function() {
@@ -974,6 +1173,170 @@ it('impeachment-proposal-support-2', function() {
        log("New executive appointed: " + dstContract_APL.getExecutive());       
        assert.equal('0xdedb49385ad5b94a16f236a6890cf9e0b1e30392' ,dstContract_APL.getExecutive());       
               
+       return true;                
+    })
+
+});
+
+
+
+it('roll-time-to-start-2nd-impeachment', function(){
+   
+    return workbench.rollTimeTo('22-Apr-2017 14:00 UTC+00')
+    .then(function(contract) { printDate(); return true; });
+});
+
+
+it('impeachment-proposal-submit-2', function() {
+    log("");
+    log(" (!) Action: [0x3a7e] submit impeachment proposal");
+                           
+    return dstContract_APL.submitImpeachmentProposal("http://pastebin.com/raw/Ehet8yVf", '0xcc49bea5129ef2369ff81b0c0200885893979b77', 
+    {
+       from : '0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d',   
+       gas : 250000,       
+    })  
+
+    .then(function (txHash) {
+    
+        return workbench.waitForReceipt(txHash);        
+        
+    })
+    
+    .then(function (parsed) {
+       
+       args = parsed.logs[0].args;       
+       
+       log("");
+       
+       log("ImpeachmentProposed (event)");
+       log("===================");
+       
+       
+       assert.equal("ImpeachmentProposed", parsed.logs[0].event);     
+       
+       log("Submited by: " +  args.submitter);
+       assert.equal("0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d", args.submitter);     
+       
+       assert.equal("http://pastebin.com/raw/Ehet8yVf",           args.urlDetails);     
+       assert.equal("0xcc49bea5129ef2369ff81b0c0200885893979b77", args.newExecutive);     
+
+       expectedEndTime = new Date('06-May-2017 14:00 UTC+00').getTime() / 1000;
+       assert.equal(expectedEndTime, args.votindEndTS);
+       
+       return true;                
+    })
+    
+    .then(function () {
+          
+       totalPreferred = dstContract_APL.getPreferedQtySold().toNumber();   
+       impeachmentSupport = dstContract_APL.getCurrentImpeachmentVotesSupporting().toNumber();
+       
+       impSupport = (impeachmentSupport / totalPreferred) * 100
+       
+       log("");
+       
+       log("Support for impeachment: " + impSupport + "%");
+       assert.equal(30, impSupport);
+       
+       log("Executive for now: " + dstContract_APL.getExecutive());       
+       assert.equal('0xdedb49385ad5b94a16f236a6890cf9e0b1e30392' ,dstContract_APL.getExecutive());              
+       
+       return true;                
+    })
+
+});
+
+
+it('roll-time-to-end-voting-2nd-impeachment', function(){
+   
+    return workbench.rollTimeTo('06-May-2017 14:00 UTC+00')
+    .then(function(contract) { printDate(); return true; });
+});
+
+
+//
+// [X] Support impeachment after the time for voting ended 
+//
+
+it('support-impeachment-after-timeover', function() {
+    log("");
+    log(" [X] Support impeachment after the time for voting ended ");
+                           
+    return dstContract_APL.supportImpeachment( 
+    {
+       from : '0x29805ff5b946e7a7c5871c1fb071f740f767cf41',   
+       gas : 250000,       
+    })  
+
+    .then(function (txHash) {
+    
+        return workbench.waitForReceipt(txHash);        
+        
+    })
+    
+    .then(function (parsed) {
+       
+       assert.equal(parsed.logs.length, 0);
+       log("");
+       
+       log("No support event generated");
+       
+       return true;                
+    })
+    
+    .then(function () {
+              
+       totalPreferred = dstContract_APL.getPreferedQtySold().toNumber();   
+       impeachmentSupport = dstContract_APL.getCurrentImpeachmentVotesSupporting().toNumber();
+       
+       impSupport = (impeachmentSupport / totalPreferred) * 100
+       
+       log("");
+       
+       log("Support for impeachment: " + impSupport + "%");
+       assert.equal(30, impSupport);
+       
+       log("Executive for now: " + dstContract_APL.getExecutive());       
+       assert.equal('0xdedb49385ad5b94a16f236a6890cf9e0b1e30392' ,dstContract_APL.getExecutive());       
+       
+       return true;                
+    })
+
+});
+
+
+//
+// [X] Submit another impeachment before 1 month from the last passed
+//
+
+it('impeachment-proposal-submit-3', function() {
+    log("");
+    log(" [X] Submit another impeachment before 1 month from the last passed");
+                           
+    return dstContract_APL.submitImpeachmentProposal("http://pastebin.com/raw/Ehet8yVf", '0xcc49bea5129ef2369ff81b0c0200885893979b77', 
+    {
+       from : '0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d',   
+       gas : 250000,       
+    })  
+
+    .then(function (txHash) {
+    
+        return workbench.waitForReceipt(txHash);        
+        
+    })
+    
+    .then(function (parsed) {
+       
+       assert.equal(parsed.logs.length, 0);
+       log("");
+       
+       log("Rejected to accept new submission proposal");       
+       
+       return true;                       
+    })
+    
+    .then(function () {       
        return true;                
     })
 
