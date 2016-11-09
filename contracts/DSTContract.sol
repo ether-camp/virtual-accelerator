@@ -48,7 +48,7 @@ contract DSTContract is StandardToken{
     mapping (bytes32 => Proposal) proposals;
 
     enum ProposalCurrency { HKG, ETHER }
-    ProposalCurrency myCurrency;
+    ProposalCurrency enumDeclaration;
                   
        
     struct Proposal{
@@ -89,7 +89,7 @@ contract DSTContract is StandardToken{
         
         mapping (address => bool) voted;        
     }
-    uint lastTimeImpProposed;
+    
     ImpeachmentProposal lastImpeachmentProposal;
 
     
@@ -486,7 +486,7 @@ contract DSTContract is StandardToken{
         if (now < (eventInfo.getEventEnd() + 12 weeks)) throw;
         
                 
-        // todo: check there is 1 months over since last one
+        // check there is 1 months over since last one
         if (lastImpeachmentProposal.votindEndTS != 0 && 
             lastImpeachmentProposal.votindEndTS +  2 weeks > now) throw;
 
@@ -524,7 +524,7 @@ contract DSTContract is StandardToken{
         lastImpeachmentProposal.votesSupporting += votingRights[msg.sender];
 
         // rise impeachment suppporting event
-        ImpeachmentSupport(msg.sender, lastImpeachmentProposal.votesSupporting);
+        ImpeachmentSupport(msg.sender, votingRights[msg.sender]);
         
         // if the vote is over 70% execute the switch 
         uint percent = preferedQtySold / 100; 
@@ -614,8 +614,13 @@ contract DSTContract is StandardToken{
         return listProposals[i].votesObjecting;
     }    
     
-    function getCurrentImpeachmentVotesSupporting(){
-        lastImpeachmentProposal.votesSupporting;
+    function getCurrentImpeachmentUrlDetails() constant returns (string result){
+        return lastImpeachmentProposal.urlDetails;
+    }
+    
+    
+    function getCurrentImpeachmentVotesSupporting() constant returns (uint result){
+        return lastImpeachmentProposal.votesSupporting;
     }
     
     function convert(string key) returns (bytes32 ret) {
