@@ -529,7 +529,7 @@ contract DSTContract is StandardToken{
         // if the vote is over 70% execute the switch 
         uint percent = preferedQtySold / 100; 
         
-        if (lastImpeachmentProposal.votesSupporting > 70 * percent){
+        if (lastImpeachmentProposal.votesSupporting >= 70 * percent){
             executive = lastImpeachmentProposal.newExecutive;
             
             // impeachment event
