@@ -49,16 +49,17 @@ contract DSTContract is StandardToken{
 
     enum ProposalCurrency { HKG, ETHER }
     ProposalCurrency myCurrency;
-    
+                  
        
     struct Proposal{
         
         bytes32 id;
         uint value;
-        uint votindEndTS;
-        
+
         string urlDetails;
-        
+
+        uint votindEndTS;
+                
         uint votesObjecting;
         
         address submitter;
@@ -73,22 +74,24 @@ contract DSTContract is StandardToken{
     
     Proposal[] listProposals;
     
+
     /**
      * Impeachment process proposals
-     */
-    uint lastTimeImpProposed;
-    ImpeachmentProposal currentImpProposal;
-    
+     */    
     struct ImpeachmentProposal{
         
+        string urlDetails;
+        
         address newExecutive;
-        uint timeSubmited;
+
+        uint votindEndTS;        
+        uint votesSupporting;
         
-        uint votesYes;
-        uint votesNo;
-        
-        
+        mapping (address => bool) voted;        
     }
+    uint lastTimeImpProposed;
+    ImpeachmentProposal lastImpeachmentProposal;
+
     
     
     event PriceHKGChange(uint qtyForOneHKG);
@@ -97,6 +100,11 @@ contract DSTContract is StandardToken{
     event ProposalRequestHKGSubmitted(bytes32 id, uint value, uint timeEnds, string url, address sender);
     
     event ObjectedVote(bytes32 id, address voter, uint votes);
+    
+    event ImpeachmentProposed(address submitter, string urlDetails, uint votindEndTS, address newExecutive);
+    event ImpeachmentSupport(address supportter, uint votes);
+    
+    event ImpeachmentAccepted(address newExecutive);
     
     
     /*
@@ -144,6 +152,8 @@ contract DSTContract is StandardToken{
         balances[this] -= tokens;
         
         // ... event for transfer
+        
+        // ... todo: add counter for this tokens
     }
 
     /**
@@ -325,7 +335,7 @@ contract DSTContract is StandardToken{
         if (now < (timeOfLastProposal + 2 weeks)) throw;
 
                 
-        uint percent = collectedHKG / 100;
+        uint percent = preferedQtySold / 100;
         
         // validate the ammount is legit
         // first 5 proposals should be less than 20% 
@@ -344,7 +354,7 @@ contract DSTContract is StandardToken{
         bytes32 id = sha3(msg.data, now);
         uint timeEnds = now + 10 days; 
         
-        Proposal memory newProposal = Proposal(id, requestValue, timeEnds, url, 0, msg.sender, false, ProposalCurrency.HKG);
+        Proposal memory newProposal = Proposal(id, requestValue, url, timeEnds, 0, msg.sender, false, ProposalCurrency.HKG);
         proposals[id] = newProposal;
         listProposals.push(newProposal);
         
@@ -381,6 +391,9 @@ contract DSTContract is StandardToken{
          // submit votes
          uint votes = votingRights[msg.sender];
          proposals[id].votesObjecting += votes;
+         
+         // todo: .... double check (!!!)
+         proposals[id].voted[msg.sender] = true; 
          
          uint idx = getIndexByProposalId(id);
          listProposals[idx] = proposals[id];   
@@ -461,46 +474,72 @@ contract DSTContract is StandardToken{
      * 
      * 
      */             
-     function startImpeachmentProcess(){
+     function submitImpeachmentProposal(string urlDetails, address newExecutive){
          
-         // todo: check there is 1 months since last one
+        // to offer impeachment you should have 
+        // voting rights
+        if (votingRights[msg.sender] == 0) throw;
          
+        // the submission of the first impeachment 
+        // proposal is possible only after 3 months
+        // since the hackathon is over
+        if (now < (eventInfo.getEventEnd() + 12 weeks)) throw;
+        
+                
+        // todo: check there is 1 months over since last one
+        if (lastImpeachmentProposal.votindEndTS != 0 && 
+            lastImpeachmentProposal.votindEndTS +  2 weeks > now) throw;
+
+
+        // submit impeachment proposal
+        // add the votes of the submitter 
+        // to the proposal right away
+        lastImpeachmentProposal = ImpeachmentProposal(urlDetails, newExecutive, now + 2 weeks, votingRights[msg.sender]);
+        lastImpeachmentProposal.voted[msg.sender] = true;
          
+        // rise event
+        ImpeachmentProposed(msg.sender, urlDetails, now + 2 weeks, newExecutive);
      }
     
     
     /**
      * 
+     *
+     *
      */
-    function voteForImeachment(bool yes){        
+    function supportImpeachment(){
+
+        // to offer impeachment you should have 
+        // voting rights
+        if (votingRights[msg.sender] == 0) throw;
+        
+        // check if not voted already 
+        if (lastImpeachmentProposal.voted[msg.sender]) throw;
+        
+        // check if not finished the 2 weeks of voting 
+        if (lastImpeachmentProposal.votindEndTS + 2 weeks <= now) throw;
+                
+        // support the impeachment
+        lastImpeachmentProposal.voted[msg.sender] = true;
+        lastImpeachmentProposal.votesSupporting += votingRights[msg.sender];
+
+        // rise impeachment suppporting event
+        ImpeachmentSupport(msg.sender, lastImpeachmentProposal.votesSupporting);
+        
+        // if the vote is over 70% execute the switch 
+        uint percent = preferedQtySold / 100; 
+        
+        if (lastImpeachmentProposal.votesSupporting > 70 * percent){
+            executive = lastImpeachmentProposal.newExecutive;
+            
+            // impeachment event
+            ImpeachmentAccepted(executive);
+        }
+        
     } 
     
     
-    function getEther(){
-        
-        // proposals are the same as with HKG 
-        // Condition_1: the issuing ether is done
-        // Condition_2: all the tokens are sold
-        
-        // ... possible close the sale and burn the rest of tokens
-    }
-    
-    
-    /**
-     * 
-     *  
-     * 
-     */
-    function executeImpeachment(){
-        
-        // check there is 50% voters
-        // check there is 70% vote Yes
-        
-        // set new executive 
-        // tokens transfered to new executive
-        
-        
-    }
+  
     
     
     
@@ -575,6 +614,9 @@ contract DSTContract is StandardToken{
         return listProposals[i].votesObjecting;
     }    
     
+    function getCurrentImpeachmentVotesSupporting(){
+        lastImpeachmentProposal.votesSupporting;
+    }
     
     function convert(string key) returns (bytes32 ret) {
             if (bytes(key).length > 32) {
@@ -585,6 +627,8 @@ contract DSTContract is StandardToken{
                 ret := mload(add(key, 32))
             }
     }    
+    
+    
     
     // ********************* //
     // *     Modifiers     * //
