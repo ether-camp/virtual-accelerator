@@ -6,8 +6,11 @@ var Workbench = require('ethereum-sandbox-workbench');
 var workbench = new Workbench({
   defaults: {
     from: '0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826'
-  }
+  }, 
+  
+  solcVersion: '0.4.2'
 });
+
 
 workbench.startTesting(['StandardToken', 'EventInfo', 'DSTContract', 'VirtualExchange'],  function(contracts) {
 
@@ -145,8 +148,8 @@ it('buy-hkg-on-the-sale-2', function() {
 
 it('virtual-exchange-init', function() {
 
-    return contracts.VirtualExchange.new(hackerGold.address)
-
+    return contracts.VirtualExchange.new(hackerGold.address, 
+                                         eventInfo.address)
         .then(function(contract) {
           
           if (contract.address){

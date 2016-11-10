@@ -215,8 +215,8 @@ it('roll-time-ve-trading-start', function(){
 
 it('virtual-exchange-init', function() {
 
-    return contracts.VirtualExchange.new(hackerGold.address)
-
+    return contracts.VirtualExchange.new(hackerGold.address, 
+                                         eventInfo.address)
         .then(function(contract) {
           
           if (contract.address){

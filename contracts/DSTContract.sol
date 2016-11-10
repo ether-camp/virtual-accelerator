@@ -5,20 +5,34 @@ import "HackerGold.sol";
 pragma solidity ^0.4.2;
 
 /*
- * DSTContract - DST stands for decentralized standard team.
+ * DSTContract - DST stands for decentralized startup team.
+ *               the contract ensures funding for a decentralized
+ *               team in 2 phases: 
  *
+ *                +. Funding by HKG during the hackathon event. 
+ *                +. Funding by Ether after the event is over. 
+ *
+ *               After the funds been collected there is a governence
+ *               mechanism managed by proposition to withdraw funds
+ *               for development usage. 
+ *
+ *               The DST ensures that backers of the projects keeps
+ *               some influence on the project by ability to reject
+ *               propositions they find as non effective. 
+ *
+ *               In very radical occasions the backers may loose 
+ *               the trust in the team completelly, in that case 
+ *               there is an option to propose impeachment process
+ *               completelly removing the execute and assigning new
+ *               person to manage the funds. 
  *
  */
 contract DSTContract is StandardToken{
 
 
     address   selfAddress;
-
     address   executive; 
-    
-    // todo: 
-    mapping (address => bool) executiveTeam; 
-    
+        
     EventInfo eventInfo;
     
     // Indicateds where the DST is threaded
@@ -93,19 +107,7 @@ contract DSTContract is StandardToken{
     ImpeachmentProposal lastImpeachmentProposal;
 
     
-    
-    event PriceHKGChange(uint qtyForOneHKG);
-    event BuyForHKGTransaction(uint tokensAmount, uint qtyForOneHKG, uint tokensAvailable, uint tokensSold);
-    
-    event ProposalRequestHKGSubmitted(bytes32 id, uint value, uint timeEnds, string url, address sender);
-    
-    event ObjectedVote(bytes32 id, address voter, uint votes);
-    
-    event ImpeachmentProposed(address submitter, string urlDetails, uint votindEndTS, address newExecutive);
-    event ImpeachmentSupport(address supportter, uint votes);
-    
-    event ImpeachmentAccepted(address newExecutive);
-    
+        
     
     /*
      * 
@@ -156,18 +158,6 @@ contract DSTContract is StandardToken{
         // ... todo: add counter for this tokens
     }
 
-    /**
-     * 
-     * 
-     */
-    function spendHKG(uint value, address targetAddr){
-        
-        // validate time frame
-        // only executive can do it
-        
-
-        
-    }
     
     
     /**
@@ -278,7 +268,6 @@ contract DSTContract is StandardToken{
      * @param qtyForOneEther - ...
      * @param qtyToEmit      - ...     
      *
-     * @return - ammount of tokens issued
      */
     function issueTokens(uint qtyForOneEther, 
                          uint qtyToEmit) onlyAfterEnd 
@@ -293,10 +282,21 @@ contract DSTContract is StandardToken{
          balances[this] += qtyToEmit;
          etherPrice = qtyForOneEther;
          totalSupply    += qtyToEmit;
+         
+         // todo: event for this 
     }
      
-     
-    // ... todo: setEtherPrice()
+    
+    /**
+     * setEtherPrice - 
+     *
+     */     
+    function setEtherPrice(uint qtyForOneEther) onlyAfterEnd
+                                                onlyExecutive {
+         etherPrice = qtyForOneEther; 
+
+         // todo: event for this 
+    }    
     
 
     /**
@@ -315,9 +315,10 @@ contract DSTContract is StandardToken{
      
     /**
      * 
+     * submitHKGProposal - 
      * 
-     * 
-     * 
+     *  @param requestValue - 
+     *  @param url - 
      */
     function submitHKGProposal(uint requestValue, string url) onlyAfterEnd
                                                               onlyExecutive returns (bytes32 resultId, bool resultSucces){
@@ -369,9 +370,9 @@ contract DSTContract is StandardToken{
     
     
     /**
+     * objectProposal - 
      * 
-     * 
-     * 
+     *  @param id 
      */
      function objectProposal(bytes32 id){
          
@@ -410,11 +411,9 @@ contract DSTContract is StandardToken{
      }
     
     
-//    event here_event(bool redeemed);  // REMOVE IT !!!
-//    here_event(proposal.redeemed);// REMOVE IT !!!
    
     /**
-     * 
+     * redeemProposalFunds - 
      * 
      * @param id bytes32: the id of the proposal to redeem
      */
@@ -449,7 +448,7 @@ contract DSTContract is StandardToken{
     
     
     /**
-     * 
+     *  getAllTheFunds
      * 
      * 
      */             
@@ -470,8 +469,10 @@ contract DSTContract is StandardToken{
     
     
     /**
+     * submitImpeachmentProposal - 
      * 
-     * 
+     *  @param urlDetails  -
+     *  @param newExecutive - 
      * 
      */             
      function submitImpeachmentProposal(string urlDetails, address newExecutive){
@@ -503,12 +504,15 @@ contract DSTContract is StandardToken{
     
     
     /**
-     * 
-     *
+     * supportImpeachment - vote for impeachment proposal 
+     *                      that is currently in progress
      *
      */
     function supportImpeachment(){
 
+        // ensure that support is for exist proposal 
+        if (lastImpeachmentProposal.newExecutive == 0x0) throw;
+    
         // to offer impeachment you should have 
         // voting rights
         if (votingRights[msg.sender] == 0) throw;
@@ -538,16 +542,11 @@ contract DSTContract is StandardToken{
         
     } 
     
+      
     
-  
-    
-    
-    
-    /**
-     * 
-     *   Constant Function 
-     * 
-     */ 
+    // **************************** //
+    // *     Constant Getters     * //
+    // **************************** //    
     
     function votingRightsOf(address _owner) constant returns (uint256 result) {
         result = votingRights[_owner];
@@ -644,11 +643,28 @@ contract DSTContract is StandardToken{
     
     modifier onlyAfterTradingStart()  { if (now  < eventInfo.getTradingStart()) throw; _; }
     
-    modifier onlyExecutive()     { if (msg.sender != executive && 
-                                       executiveTeam[msg.sender] == false)   throw; _; }
+    modifier onlyExecutive()     { if (msg.sender != executive) throw; _; }
                                        
     modifier onlyIfAbleToIssueTokens()  { if (!ableToIssueTokens) throw; _; } 
     
+
+    // ****************** //
+    // *     Events     * //
+    // ****************** //        
+
+    
+    event PriceHKGChange(uint qtyForOneHKG);
+    event BuyForHKGTransaction(uint tokensAmount, uint qtyForOneHKG, uint tokensAvailable, uint tokensSold);
+    
+    event ProposalRequestHKGSubmitted(bytes32 id, uint value, uint timeEnds, string url, address sender);
+    
+    event ObjectedVote(bytes32 id, address voter, uint votes);
+    
+    event ImpeachmentProposed(address submitter, string urlDetails, uint votindEndTS, address newExecutive);
+    event ImpeachmentSupport(address supportter, uint votes);
+    
+    event ImpeachmentAccepted(address newExecutive);
+
     
 }
 
