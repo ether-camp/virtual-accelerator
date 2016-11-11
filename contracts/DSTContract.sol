@@ -105,7 +105,6 @@ contract DSTContract is StandardToken{
         
         mapping (address => bool) voted;        
     }
-    
     ImpeachmentProposal lastImpeachmentProposal;
 
         
@@ -210,9 +209,8 @@ contract DSTContract is StandardToken{
         // rise event about the transaction
         Approval(this, virtualExchangeAddress, qtyToEmit);
         
-        
-        // ...todo... emit event for new tokens + price
-        // DstTokensIssued(indexed uint qtyForOneEther, indexed uint qtyToEmit, indexed uint totalSupply)
+        // rise event 
+        DstTokensIssued(hkgPrice, preferedQtySold, balances[this], qtyToEmit);
     }
 
     
@@ -230,28 +228,26 @@ contract DSTContract is StandardToken{
     function buyForHackerGold(uint hkgValue) onlyBeforeEnd 
                                              returns (bool success) {
     
-
-      // Validate that the caller is official accelerator HKG Exchange
+      // validate that the caller is official accelerator HKG Exchange
       if (msg.sender != virtualExchangeAddress) throw;
       
-    
-      // Transfer token 
-      address sender = tx.origin;
       
+      // transfer token 
+      address sender = tx.origin;
       uint tokensQty = hkgValue * hkgPrice;
 
-
-      // Gain voting rights
+      // gain voting rights
       votingRights[sender] +=tokensQty;
       preferedQtySold += tokensQty;
       collectedHKG += hkgValue;
-      
-                  
+
+      // do actual transfer
       transferFrom(this, 
                    virtualExchangeAddress, tokensQty);
       transfer(sender, tokensQty);        
             
-      BuyForHKGTransaction(tokensQty, hkgPrice, balances[this], tokensQty);
+      // rise event       
+      BuyForHKGTransaction(sender, preferedQtySold, balances[this], hkgPrice, tokensQty);
         
       return true;
     }
@@ -717,7 +713,8 @@ contract DSTContract is StandardToken{
 
     
     event PriceHKGChange(uint qtyForOneHKG);
-    event BuyForHKGTransaction(uint tokensAmount, uint qtyForOneHKG, uint tokensAvailable, uint tokensSold);
+    event BuyForHKGTransaction(address indexed buyer, uint indexed tokensSold, uint indexed totalSupply, uint qtyForOneHKG, uint tokensAmount);
+    event DstTokensIssued(uint indexed qtyForOneHKG, uint indexed tokensSold, uint indexed totalSupply, uint qtyToEmit);
     
     event ProposalRequestSubmitted(bytes32 id, uint value, uint timeEnds, string url, address sender);
     
