@@ -108,17 +108,9 @@ contract DSTContract is StandardToken{
     ImpeachmentProposal lastImpeachmentProposal;
 
         
-    /**
+    /*
      * 
-     *  DSTContract: ctor for DST token and governence contract
-     *
-     *  @param eventInfoAddr EventInfo: address of object denotes events 
-     *                                  milestones      
-     *  @param hackerGoldAddr HackerGold: address of HackerGold token
-     *
-     *  @param dstName string: dstName: real name of the team
-     *
-     *  @param dstSymbol string: 3 letter symbold of the team
+     *  Set date for early adapters
      *
      */ 
     function DSTContract(EventInfo eventInfoAddr, HackerGold hackerGoldAddr, string dstName, string dstSymbol){
@@ -165,20 +157,18 @@ contract DSTContract is StandardToken{
         // count collected ether 
         collectedEther += msg.value; 
         
-        // rise event
-        BuyForEtherTransaction(msg.sender, collectedEther, balances[this], etherPrice, tokens);
+        // todo: ... event for transfer
         
     }
 
     
     
     /**
-     * setHKGPrice - set price: 1HKG => DST tokens qty
-     *
-     *  @param qtyForOneHKG uint: DST tokens for 1 HKG
+     * 
+     * qtyForOneHKG - 
      * 
      */    
-     function setHKGPrice(uint qtyForOneHKG) onlyExecutive  {
+     function setHKGPrice(uint qtyForOneHKG) onlyExecutive {
          
          hkgPrice = qtyForOneHKG;
          PriceHKGChange(qtyForOneHKG);
@@ -189,10 +179,7 @@ contract DSTContract is StandardToken{
     /**
      * 
      * issuePreferedTokens - prefered tokens issued on the hackathon event
-     *                       grant special rights
-     *
-     *  @param qtyForOneHKG uint: price DST tokens for one 1 HKG
-     *  @param qtyToEmit uint: new supply of tokens 
+     *                       tain special rights
      * 
      */
     function issuePreferedTokens(uint qtyForOneHKG, 
@@ -269,10 +256,10 @@ contract DSTContract is StandardToken{
     /**
      * 
      * issueTokens - function will issue tokens after the 
-     *               event, able to sell for 1 ether 
+     *               event
      * 
-     *  @param qtyForOneEther uint: DST tokens for 1 ETH
-     *  @param qtyToEmit uint: new tokens supply
+     * @param qtyForOneEther - ...
+     * @param qtyToEmit      - ...     
      *
      */
     function issueTokens(uint qtyForOneEther, 
@@ -289,29 +276,27 @@ contract DSTContract is StandardToken{
          etherPrice = qtyForOneEther;
          totalSupply    += qtyToEmit;
          
-         // rise event  
-         DstTokensIssued(qtyForOneEther, totalSupply, balances[this], qtyToEmit);
+         // todo: event for this 
     }
      
     
     /**
-     * setEtherPrice - change the token price
+     * setEtherPrice - 
      *
-     *  @param qtyForOneEther uint: new price - DST tokens for 1 ETH
      */     
     function setEtherPrice(uint qtyForOneEther) onlyAfterEnd
                                                 onlyExecutive {
          etherPrice = qtyForOneEther; 
 
-         // rise event for this
-         NewEtherPrice(qtyForOneEther);
+         // todo: event for this 
     }    
     
 
     /**
      *  disableTokenIssuance - function will disable any 
-     *                         option for future token 
-     *                         issuence
+     *                         option for future issuence
+     *
+     *
      */
     function disableTokenIssuance() onlyExecutive {
         ableToIssueTokens = false;
@@ -321,24 +306,23 @@ contract DSTContract is StandardToken{
 
     
     /**
-     *  burnRemainToken -  eliminated all available for sale
-     *                     tokens. 
+     *  burnRemainToken -  
+     *                    
+     *
+     *
      */
     function burnRemainToken() onlyExecutive {
     
-        totalSupply -= balances[this];
         balances[this] = 0;
         
-        // rise event for this
-        BurnedAllRemainedTokens();
+        // todo: event for this
     }
     
     /**
-     *  submitEtherProposal: submit proposal to use part of the 
-     *                       collected ether funds
+     *  submitEtherProposal - 
      *
-     *   @param requestValue uint: value in wei 
-     *   @param url string: details of the proposal 
+     *   @param requestValue - 
+     *   @param url - 
      */ 
     function submitEtherProposal(uint requestValue, string url) onlyAfterEnd 
                                                                 onlyExecutive returns (bytes32 resultId, bool resultSucces) {       
@@ -379,11 +363,10 @@ contract DSTContract is StandardToken{
      
     /**
      * 
-     * submitHKGProposal - submit proposal to request for 
-     *                     partial HKG funds collected 
+     * submitHKGProposal - 
      * 
-     *  @param requestValue uint: value in HKG to request. 
-     *  @param url string: url with details on the proposition 
+     *  @param requestValue - 
+     *  @param url - 
      */
     function submitHKGProposal(uint requestValue, string url) onlyAfterEnd
                                                               onlyExecutive returns (bytes32 resultId, bool resultSucces){
@@ -432,12 +415,9 @@ contract DSTContract is StandardToken{
     
     
     /**
-     * objectProposal - object previously submitted proposal, 
-     *                  the objection right is obtained by 
-     *                  purchasing prefered tokens on time of 
-     *                  the hackathon.
+     * objectProposal - 
      * 
-     *  @param id bytes32 : the id of the proposla to redeem
+     *  @param id 
      */
      function objectProposal(bytes32 id){
          
@@ -479,8 +459,7 @@ contract DSTContract is StandardToken{
     
    
     /**
-     * redeemProposalFunds - redeem funds requested by prior 
-     *                       submitted proposal     
+     * redeemProposalFunds - 
      * 
      * @param id bytes32: the id of the proposal to redeem
      */
@@ -521,12 +500,7 @@ contract DSTContract is StandardToken{
     
     
     /**
-     *  getAllTheFunds - to ensure there is no deadlock can 
-     *                   can happen, and no case that voting 
-     *                   structure will freeze the funds forever
-     *                   the startup will be able to get all the
-     *                   funds without a proposal required after
-     *                   6 months.
+     *  getAllTheFunds
      * 
      * 
      */             
@@ -547,11 +521,10 @@ contract DSTContract is StandardToken{
     
     
     /**
-     * submitImpeachmentProposal - submit request to switch 
-     *                             executive.
+     * submitImpeachmentProposal - 
      * 
-     *  @param urlDetails  - details of the impeachment proposal 
-     *  @param newExecutive - address of the new executive 
+     *  @param urlDetails  -
+     *  @param newExecutive - 
      * 
      */             
      function submitImpeachmentProposal(string urlDetails, address newExecutive){
@@ -625,7 +598,7 @@ contract DSTContract is StandardToken{
     
     // **************************** //
     // *     Constant Getters     * //
-    // **************************** //
+    // **************************** //    
     
     function votingRightsOf(address _owner) constant returns (uint256 result) {
         result = votingRights[_owner];
@@ -697,11 +670,7 @@ contract DSTContract is StandardToken{
 
     function getProposalObjectionByIndex(uint i) constant returns (uint result){
         return listProposals[i].votesObjecting;
-    }
-
-    function getProposalValueByIndex(uint i) constant returns (uint result){
-        return listProposals[i].value;
-    }                  
+    }    
     
     function getCurrentImpeachmentUrlDetails() constant returns (string result){
         return lastImpeachmentProposal.urlDetails;
@@ -745,8 +714,6 @@ contract DSTContract is StandardToken{
     
     event PriceHKGChange(uint qtyForOneHKG);
     event BuyForHKGTransaction(address indexed buyer, uint indexed tokensSold, uint indexed totalSupply, uint qtyForOneHKG, uint tokensAmount);
-    event BuyForEtherTransaction(address indexed buyer, uint indexed tokensSold, uint indexed totalSupply, uint qtyForOneEther, uint tokensAmount);
-
     event DstTokensIssued(uint indexed qtyForOneHKG, uint indexed tokensSold, uint indexed totalSupply, uint qtyToEmit);
     
     event ProposalRequestSubmitted(bytes32 id, uint value, uint timeEnds, string url, address sender);
@@ -760,10 +727,7 @@ contract DSTContract is StandardToken{
     
     event ImpeachmentAccepted(address newExecutive);
 
-    event NewEtherPrice(uint newQtyForOneEther);
     event DisableTokenIssuance();
-    
-    event BurnedAllRemainedTokens();
     
 }
 
