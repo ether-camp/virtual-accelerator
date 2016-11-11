@@ -217,7 +217,7 @@ contract DSTContract is StandardToken{
         
         // now spender can use balance in 
         // ammount of value from owner balance
-        allowed[this][virtualExchangeAddress] = qtyToEmit;
+        allowed[this][virtualExchangeAddress] += qtyToEmit;
         
         // rise event about the transaction
         Approval(this, virtualExchangeAddress, qtyToEmit);
