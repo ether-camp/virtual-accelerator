@@ -2,6 +2,7 @@ var assert = require('assert');
 
 var log = console.log;
 
+
 var Workbench = require('ethereum-sandbox-workbench');
 var workbench = new Workbench({
   defaults: {
@@ -49,6 +50,12 @@ function printDate(){
  */
  
 it('event-info-init', function() {
+
+    log('');
+    log(' *****************************');
+    log('  ether-trade-funds-test-1.js');
+    log(' *****************************');
+    log('');
     
     return contracts.EventInfo.new()
 
@@ -139,8 +146,8 @@ it('roll-time-ve-trading-start', function(){
 
 it('virtual-exchange-init', function() {
 
-    return contracts.VirtualExchange.new(hackerGold.address)
-
+    return contracts.VirtualExchange.new(hackerGold.address, 
+                                         eventInfo.address)
         .then(function(contract) {
           
           if (contract.address){
@@ -159,11 +166,15 @@ it('dst-contract-apl-init', function() {
     return contracts.DSTContract.new(eventInfo.address, hackerGold.address, "Awesome Poker League", "APL", 
         
         {
-            from : '0xcc49bea5129ef2369ff81b0c0200885893979b77'
+            from : '0xcc49bea5129ef2369ff81b0c0200885893979b77',
+            gas: 4000000,
         })
-
+        
         .then(function(contract) {
-          
+
+          tx = sandbox.web3.eth.getTransactionReceipt(contract.transactionHash);
+          log("Gas used: " + tx.gasUsed);
+        
           if (contract.address){
             dstContract_APL = contract;
           } else {
@@ -171,7 +182,8 @@ it('dst-contract-apl-init', function() {
           }        
           
           return true;        
-    });        
+        })
+
 });
 
 
@@ -313,7 +325,6 @@ it('buy-apl-by-3a7e', function() {
 });
 
 
-
 it('roll-time-va-ends', function(){
    
     return workbench.rollTimeTo('22-Dec-2016 14:00 UTC+00')
@@ -321,11 +332,8 @@ it('roll-time-va-ends', function(){
 });
 
 
-
-
 it('end-event-summary', function() {
     log("");
-    
 
     log("Post Event Summary:");
     log("===================");
@@ -336,78 +344,241 @@ it('end-event-summary', function() {
     log("[APL] => collected: " + value.toFixed(3) + " HKG" + " = $" + dollarValue);
     assert.equal(50000, dollarValue); 
 
+    leftTokens = dstContract_APL.balanceOf(dstContract_APL.address);
+    log("[APL] => tokens supply left: " + leftTokens + " APL");
+    
+    return true;
+});
+
+
+it('set-ether-price', function() {
+    log("");
+    log(" (!) Action: [0xcc49] set price in ehter 1,000,000,000 for 1 ether");
+    
+    return dstContract_APL.setEtherPrice(1000000000, 
+    {
+       from : '0xcc49bea5129ef2369ff81b0c0200885893979b77',   
+       gas: 250000,
+    })
+
+    .then(function (txHash) {
+
+          return workbench.waitForReceipt(txHash);          
+    })    
+    
+    .then(function () {
+     
+        currentEtherPrice = dstContract_APL.getEtherPrice().toNumber();     
+        log("[APL] => 1 Ether = " + currentEtherPrice + " APL ");
+        assert.equal(currentEtherPrice, 1000000000);
+        
+        return true;
+    })
+    
+    return true;
+});
+
+
+it('send-ether-to-dst-1', function() {
+    log("");
+    log(" (!) Action: [0x36ce] send 5 ether to [APL]");
+
+    return workbench.sendTransaction({
+      from: '0x36cef404bd674e1aa6ba6b444c9ef458460c9871',
+      to: dstContract_APL.address,
+      gas: 200000,
+      value: sandbox.web3.toWei(5, 'ether')
+    })
+
+    .then(function (txHash) {
+
+          return workbench.waitForReceipt(txHash);          
+    })    
+    
+    .then(function () {
+     
+        leftTokens = dstContract_APL.balanceOf(dstContract_APL.address);
+        log("[APL] => tokens supply left: " + leftTokens + " APL");
+        assert.equal(990000000000000, leftTokens);
+        
+        return true;
+    })
+    
     return true;
 });
 
 
 
-it('roll-time-50%-available', function(){
-   
-    return workbench.rollTimeTo('22-Feb-2017 14:00 UTC+00')
-    .then(function(contract) { printDate(); return true; });
-});
-
-
-
-
-// ...
-// [X] Submit proposal by non executive.
-// ... 
-it('submit-proposal-0', function() {
+it('send-ether-to-dst-2', function() {
     log("");
-    log(" [X] Submit proposal by non executive.");
-                           
-    return dstContract_APL.submitHKGProposal(1000000000, "http://pastebin.com/raw/6e9PBTeP",  
-    {
-       from : '0xdb5918d9282f0b280aac6bde061b92e903e11d18',   
-       gas : 350000,       
+    log(" (!) Action: [0xdedb] send 990 ether to [APL]");
+
+    return workbench.sendTransaction({
+      from: '0xdedb49385ad5b94a16f236a6890cf9e0b1e30392',
+      to: dstContract_APL.address,
+      gas: 200000,
+      value: sandbox.web3.toWei(990, 'ether')
     })
 
     .then(function (txHash) {
-    
-        return workbench.waitForReceipt(txHash);                
-    })
-    
-    .then(function (parsed) {
-        
-       counter = dstContract_APL.getCounterProposals();
-       
-       log("Submitted Proposals: " + counter);
-       assert.equal(0, counter);
-       
-       return true;                
-    })
 
+          return workbench.waitForReceipt(txHash);          
+    })    
+    
+    .then(function () {
+     
+        leftTokens = dstContract_APL.balanceOf(dstContract_APL.address);
+        log("[APL] => tokens supply left: " + leftTokens + " APL");
+        assert.equal(0, leftTokens);
+        
+        return true;
+    })
+    
+    return true;
 });
 
+//
+// [X] Submit Ether proposal before disabled token issuance
+//
 
-it('submit-proposal-1', function() {
+it('submit-proposal-for-ether-0', function() {
     log("");
-    log(" (!) Action: [0xcc49] ask to recieve 1,000,000.000 (20%) of the HKG collected");
-                           
-    return dstContract_APL.submitHKGProposal(1000000000, "http://pastebin.com/raw/6e9PBTeP", 
+    log(" [X] Submit Ether proposal before disabled token issuance ");
+    
+    return dstContract_APL.submitEtherProposal( sandbox.web3.toWei(199, 'ether'), 
+                                               'http://pastebin.com/raw/w2gSWvgM',
     {
        from : '0xcc49bea5129ef2369ff81b0c0200885893979b77',   
-       gas : 350000,       
+       gas: 400000,
     })
 
     .then(function (txHash) {
-    
-        return workbench.waitForReceipt(txHash);        
-        
+
+          return workbench.waitForReceipt(txHash);          
+    })    
+
+    .then(function (parsed) {
+       
+       assert.equal(0, parsed.logs.length)               
+       return true;                       
     })
     
+    return true;
+});
+
+
+
+it('disable-token-issue-option', function() {
+    log("");
+    log(" (!) Action: [0xcc49] disable issuance of tokens for [APL]");
+    
+    return dstContract_APL.disableTokenIssuance( 
+    {
+       from : '0xcc49bea5129ef2369ff81b0c0200885893979b77',   
+       gas: 250000,
+    })
+
+    .then(function (txHash) {
+
+          return workbench.waitForReceipt(txHash);          
+    })    
+
     .then(function (parsed) {
-        printDate();
+       
+       log("");
+
+       eventName = parsed.logs[0].event;
+       assert.equal('DisableTokenIssuance', eventName);
+       
+       return true;                       
+    })
+
+    
+    .then(function () {
+     
+        log("");
         
-        proposal_1 = dstContract_APL.getProposalIdByIndex(0);
-        log(proposal_1);
-       /*
+
+        log("Post Ether Sale Summary:");
+        log("========================");
+        
+        value = hackerGold.balanceOf(dstContract_APL.address).toNumber() / 1000;
+            
+        dollarValue = value / 100;    
+        log("[APL] => collected: " + value.toFixed(3) + " HKG" + " = $" + dollarValue);
+        assert.equal(50000, dollarValue); 
+
+        weiCollected   = dstContract_APL.getEtherValue().toNumber();        
+        etherCollected = sandbox.web3.fromWei(weiCollected, 'ether');        
+                        
+        dollarValue = etherCollected * 11;    
+        log("[APL] => collected: " + etherCollected + " Eth" + " = $" + dollarValue);
+
+        leftTokens = dstContract_APL.balanceOf(dstContract_APL.address);
+        log("[APL] => tokens supply left: " + leftTokens + " APL");
+        
+        return true;
+    })
+    
+    return true;
+});
+
+
+
+//
+// [X] Submit proposal for more than 20% of ether
+//
+
+it('submit-proposal-for-ether-0', function() {
+    log("");
+    log(" [X] Submit proposal for more than 20% of ether ");
+    
+    return dstContract_APL.submitEtherProposal( sandbox.web3.toWei(200, 'ether'), 
+                                               'http://pastebin.com/raw/w2gSWvgM',
+    {
+       from : '0xcc49bea5129ef2369ff81b0c0200885893979b77',   
+       gas: 400000,
+    })
+
+    .then(function (txHash) {
+
+          return workbench.waitForReceipt(txHash);          
+    })    
+
+    .then(function (parsed) {
+       
+       assert.equal(0, parsed.logs.length)               
+       return true;                       
+    })
+    
+    return true;
+});
+
+
+
+
+it('submit-proposal-for-ether-1', function() {
+    log("");
+    log(" (!) Action: [0xcc49] ask for 20% of ether ");
+    
+    return dstContract_APL.submitEtherProposal( sandbox.web3.toWei(199, 'ether'), 
+                                               'http://pastebin.com/raw/w2gSWvgM',
+    {
+       from : '0xcc49bea5129ef2369ff81b0c0200885893979b77',   
+       gas: 400000,
+    })
+
+    .then(function (txHash) {
+
+          return workbench.waitForReceipt(txHash);          
+    })    
+
+    .then(function (parsed) {
+       
        args = parsed.logs[0].args;       
        
        proposalId = args.id;
        proposalValue = args.value;
-       proposalValue = proposalValue / 1000;
        
        proposalTimeEnds = args.timeEnds;
        proposalURL = args.url;
@@ -418,125 +589,164 @@ it('submit-proposal-1', function() {
        log("==================");
        
        log("proposalId: "       + proposalId);
-       log("proposalValue: "    + proposalValue.toFixed(3));
+       log("proposalValue: "    + proposalValue);
        log("proposalTimeEnds: " + proposalTimeEnds);
        log("proposalURL: "      + proposalURL);
        log("proposalSender: "   + proposalSender);
        
        
-       assert.equal(1000000, proposalValue);
+       assert.equal(199, sandbox.web3.fromWei(proposalValue, 'ether') );
        
        t1 = eventInfo.getNow().toNumber() + 60 * 60 * 24 * 10;
        t2 = proposalTimeEnds;
        assert(t1, t2);
 
-       assert.equal(proposalURL,    "http://pastebin.com/raw/6e9PBTeP");
+       assert.equal(proposalURL,    "http://pastebin.com/raw/w2gSWvgM");
        assert.equal(proposalSender, "0xcc49bea5129ef2369ff81b0c0200885893979b77");
        
        proposal_1 = proposalId;
                
-       value = hackerGold.balanceOf('0xcc49bea5129ef2369ff81b0c0200885893979b77').toNumber() / 1000;
-        
-       log("[0xcc49] => balance: " + value.toFixed(3) + " HKG");       
-       assert.equal(0, value);     
-              */
-       return true;                
+       return true;                       
     })
-
+    
+    return true;
 });
 
 
 
-it('roll-time-proposal-redeem', function(){
+it('roll-time-proposal_1-redeem', function(){
    
-    return workbench.rollTimeTo('04-Mar-2017 14:00 UTC+00')
+    return workbench.rollTimeTo('01-Jan-2017 14:00 UTC+00')
     .then(function(contract) { printDate(); return true; });
 });
 
 
-
-it('redeem-proposal-1', function() {
+it('redeem-propose-for-ether-1', function() {
     log("");
-    log(" (!) Action: [0xcc49] collect 1,000,000.000 HKG value of proposal 1");
-                           
+    log(" (!) Action: [0xcc49] redeem propose_1 ");
+    
     return dstContract_APL.redeemProposalFunds(proposal_1, 
     {
        from : '0xcc49bea5129ef2369ff81b0c0200885893979b77',   
-       gas : 350000,       
+       gas: 400000,
     })
 
     .then(function (txHash) {
-    
-        return workbench.waitForReceipt(txHash);        
-        
-    })
-    
+
+          return workbench.waitForReceipt(txHash);          
+    })    
+
     .then(function (parsed) {
-       /*
+       
+       log("");
+       
+       //  event assertion
+       eventName = parsed.logs[0].event;
+       assert.equal('EtherRedeemAccepted', eventName);
+       
        args = parsed.logs[0].args;       
        
-       assert(dstContract_APL.address, args.from);
-       assert("0xcc49bea5129ef2369ff81b0c0200885893979b77", args.to);
-       assert(1000000000, args.value);
-         */
-       return true;                
+       proposalSender = args.sender;
+       assert.equal('0xcc49bea5129ef2369ff81b0c0200885893979b77', args.sender);
+       
+       proposalValue = args.value;
+       assert.equal(199, sandbox.web3.fromWei(proposalValue, 'ether') );
+              
+       return true;                       
     })
+
     
     .then(function () {
-              
-       value = hackerGold.balanceOf('0xcc49bea5129ef2369ff81b0c0200885893979b77').toNumber() / 1000;
+     
+        log("");
         
-       log("[0xcc49] => balance: " + value.toFixed(3) + " HKG");       
-       assert.equal(1000000, value);
-           
-       value = hackerGold.balanceOf(dstContract_APL.address).toNumber() / 1000;
+        log("[APL] Funds Summary:");
+        log("========================");
         
-       log("[APL] => balance: " + value.toFixed(3) + " HKG");       
-       assert.equal(4000000, value);
+        value = hackerGold.balanceOf(dstContract_APL.address).toNumber() / 1000;
+            
+        dollarValue = value / 100;    
+        log("[APL] => collected: " + value.toFixed(3) + " HKG" + " = $" + dollarValue);
+        assert.equal(50000, dollarValue); 
 
-       return true;                
+        weiCollected   = dstContract_APL.getEtherValue().toNumber();        
+        etherCollected = sandbox.web3.fromWei(weiCollected, 'ether');        
+                        
+        dollarValue = etherCollected * 11;    
+        log("[APL] => collected: " + etherCollected + " Eth" + " = $" + dollarValue);
+
+        leftTokens = dstContract_APL.balanceOf(dstContract_APL.address);
+        log("[APL] => tokens supply left: " + leftTokens + " APL");
+        
+        return true;
     })
-
+    
+    return true;
 });
 
 
 
+//
+// [X] Submit proposal for ether before 2 weeks over from last one
+//
 
-it('roll-time-for-new-proposal-submit', function(){
+it('submit-proposal-for-ether-0', function() {
+    log("");
+    log(" [X] Submit proposal for ether before 2 weeks over from last one ");
+    
+    return dstContract_APL.submitEtherProposal( sandbox.web3.toWei(199, 'ether'), 
+                                               'http://pastebin.com/raw/w2gSWvgM',
+    {
+       from : '0xcc49bea5129ef2369ff81b0c0200885893979b77',   
+       gas: 400000,
+    })
+
+    .then(function (txHash) {
+
+          return workbench.waitForReceipt(txHash);          
+    })    
+
+    .then(function (parsed) {
+       
+       assert.equal(0, parsed.logs.length);             
+       return true;                       
+    })
+    
+    return true;
+});
+
+
+
+it('roll-time-proposal_2-submit', function(){
    
-    return workbench.rollTimeTo('08-Mar-2017 14:00 UTC+00')
+    return workbench.rollTimeTo('05-Jan-2017 14:00 UTC+00')
     .then(function(contract) { printDate(); return true; });
 });
 
 
 
-it('submit-proposal-2', function() {
+it('submit-proposal-for-ether-2', function() {
     log("");
-    log(" (!) Action: [0xcc49] ask to recieve 1,000,000.000 (20%) of the HKG collected");
-                           
-    return dstContract_APL.submitHKGProposal(1000000000, "http://pastebin.com/raw/6e9PBTeP", 
+    log(" (!) Action: [0xcc49] ask for 20% of ether ");
+    
+    return dstContract_APL.submitEtherProposal( sandbox.web3.toWei(199, 'ether'), 
+                                               'http://pastebin.com/raw/w2gSWvgM',
     {
        from : '0xcc49bea5129ef2369ff81b0c0200885893979b77',   
-       gas : 350000,       
+       gas: 400000,
     })
 
     .then(function (txHash) {
-    
-        return workbench.waitForReceipt(txHash);        
-        
-    })
-    
+
+          return workbench.waitForReceipt(txHash);          
+    })    
+
     .then(function (parsed) {
        
-        proposal_2 = dstContract_APL.getProposalIdByIndex(1);
-        log(proposal_2);
-       
-       /*
        args = parsed.logs[0].args;       
        
        proposalId = args.id;
        proposalValue = args.value;
-       proposalValue = proposalValue / 1000;
        
        proposalTimeEnds = args.timeEnds;
        proposalURL = args.url;
@@ -547,178 +757,151 @@ it('submit-proposal-2', function() {
        log("==================");
        
        log("proposalId: "       + proposalId);
-       log("proposalValue: "    + proposalValue.toFixed(3));
+       log("proposalValue: "    + proposalValue);
        log("proposalTimeEnds: " + proposalTimeEnds);
        log("proposalURL: "      + proposalURL);
        log("proposalSender: "   + proposalSender);
        
        
-       assert.equal(1000000, proposalValue);
+       assert.equal(199, sandbox.web3.fromWei(proposalValue, 'ether') );
        
        t1 = eventInfo.getNow().toNumber() + 60 * 60 * 24 * 10;
        t2 = proposalTimeEnds;
        assert(t1, t2);
 
-       assert.equal(proposalURL,    "http://pastebin.com/raw/6e9PBTeP");
+       assert.equal(proposalURL,    "http://pastebin.com/raw/w2gSWvgM");
        assert.equal(proposalSender, "0xcc49bea5129ef2369ff81b0c0200885893979b77");
        
        proposal_2 = proposalId;
                
-       value = hackerGold.balanceOf('0xcc49bea5129ef2369ff81b0c0200885893979b77').toNumber() / 1000;
+       return true;                       
+    })
+    
+    return true;
+});
+
+
+
+
+it('object-by-vote-proposal-2', function() {
+    log(""); 
+    log(" (!) Action: [0x3a7e] vote to object proposal 2");
+                           
+    return dstContract_APL.objectProposal(proposal_2, 
+    {
+       from : '0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d',   
+       gas : 450000,       
+    })
+
+    .then(function (txHash) {
+    
+        return workbench.waitForReceipt(txHash);        
         
-       log("[0xcc49] => balance: " + value.toFixed(3) + " HKG");       
-       assert.equal(1000000, value);     
-              */
+    })
+    
+    .then(function (parsed) {
+         
+       log_1 = parsed.logs[0];
+        
+       total  = dstContract_APL.getPreferedQtySold();
+       
+       log("\n");
+       log(log_1.event + ":");
+       log("============");
+       
+       log("proposal.id: " + log_1.args.id);
+       log("voter: " + log_1.args.voter);
+       log("votes: " + log_1.args.votes + " share: " + (log_1.args.votes / total * 100).toFixed(2) + "%");
+       
+       voting = dstContract_APL.votingRightsOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d').toNumber();
+              
+       assert.equal(proposal_2, log_1.args.id);
+       assert.equal(log_1.args.voter, "0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d");
+       assert.equal(log_1.args.votes, voting);
+              
        return true;                
     })
 
 });
 
 
-it('roll-time-proposal-redeem', function(){
+it('roll-time-proposal_2-redeem', function(){
    
-    return workbench.rollTimeTo('18-Mar-2017 14:00 UTC+00')
+    return workbench.rollTimeTo('09-Jan-2017 14:00 UTC+00')
     .then(function(contract) { printDate(); return true; });
 });
 
 
+//
+// [X] Redeem rejected proposal
+//
 
-it('redeem-proposal-2', function() {
+it('redeem-propose-for-ether-2', function() {
     log("");
-    log(" (!) Action: [0xcc49] collect 1,000,000.000 HKG value of proposal 2");
-                           
+    log(" [X] Redeem rejected proposal ");
+    
     return dstContract_APL.redeemProposalFunds(proposal_2, 
     {
        from : '0xcc49bea5129ef2369ff81b0c0200885893979b77',   
-       gas : 350000,       
+       gas: 400000,
     })
 
     .then(function (txHash) {
-    
-        return workbench.waitForReceipt(txHash);        
-        
-    })
-    
+
+          return workbench.waitForReceipt(txHash);          
+    })    
+
     .then(function (parsed) {
-       /*
-       args = parsed.logs[0].args;       
-       
-       assert(dstContract_APL.address, args.from);
-       assert("0xcc49bea5129ef2369ff81b0c0200885893979b77", args.to);
-       assert(1000000000, args.value);
-         */
-       return true;                
-    })
-    
-    .then(function () {
-              
-       value = hackerGold.balanceOf('0xcc49bea5129ef2369ff81b0c0200885893979b77').toNumber() / 1000;
-        
-       log("[0xcc49] => balance: " + value.toFixed(3) + " HKG");       
-       assert.equal(2000000, value);
-           
-       value = hackerGold.balanceOf(dstContract_APL.address).toNumber() / 1000;
-        
-       log("[APL] => balance: " + value.toFixed(3) + " HKG");       
-       assert.equal(3000000, value);
-
-       return true;                
-    })
-
-});
-
-
-
-
-it('roll-time-for-new-proposal-submit', function(){
-   
-    return workbench.rollTimeTo('22-Mar-2017 14:00 UTC+00')
-    .then(function(contract) { printDate(); return true; });
-});
-
-
-
-it('submit-proposal-3', function() {
-    log("");
-    log(" (!) Action: [0xcc49] ask to recieve 1,000,000.000 (20%) of the HKG collected");
-                           
-    return dstContract_APL.submitHKGProposal(1000000000, "http://pastebin.com/raw/6e9PBTeP", 
-    {
-       from : '0xcc49bea5129ef2369ff81b0c0200885893979b77',   
-       gas : 350000,       
-    })
-
-    .then(function (txHash) {
-    
-        return workbench.waitForReceipt(txHash);        
-        
-    })
-    
-    .then(function (parsed) {
-
-       
-        proposal_3 = dstContract_APL.getProposalIdByIndex(2);
-        log(proposal_3);
-       
-
-    
-     /*
-       args = parsed.logs[0].args;       
-       
-       proposalId = args.id;
-       proposalValue = args.value;
-       proposalValue = proposalValue / 1000;
-       
-       proposalTimeEnds = args.timeEnds;
-       proposalURL = args.url;
-       proposalSender = args.sender;
        
        log("");
-       log("Proposal Submitted");
-       log("==================");
-       
-       log("proposalId: "       + proposalId);
-       log("proposalValue: "    + proposalValue.toFixed(3));
-       log("proposalTimeEnds: " + proposalTimeEnds);
-       log("proposalURL: "      + proposalURL);
-       log("proposalSender: "   + proposalSender);
-       
-       
-       assert.equal(1000000, proposalValue);
-       
-       t1 = eventInfo.getNow().toNumber() + 60 * 60 * 24 * 10;
-       t2 = proposalTimeEnds;
-       assert(t1, t2);
-
-       assert.equal(proposalURL,    "http://pastebin.com/raw/6e9PBTeP");
-       assert.equal(proposalSender, "0xcc49bea5129ef2369ff81b0c0200885893979b77");
-       
-       proposal_3 = proposalId;
-               
-       value = hackerGold.balanceOf('0xcc49bea5129ef2369ff81b0c0200885893979b77').toNumber() / 1000;
-        
-       log("[0xcc49] => balance: " + value.toFixed(3) + " HKG");       
-       assert.equal(2000000, value);     
-             */ 
-       return true;                
+       assert.equal(0, parsed.logs.length);
+              
+       return true;                       
     })
 
+    
+    .then(function () {
+     
+        log("");
+        
+        log("[APL] Funds Summary:");
+        log("========================");
+        
+        value = hackerGold.balanceOf(dstContract_APL.address).toNumber() / 1000;
+            
+        dollarValue = value / 100;    
+        log("[APL] => collected: " + value.toFixed(3) + " HKG" + " = $" + dollarValue);
+        assert.equal(50000, dollarValue); 
+
+        weiCollected   = dstContract_APL.getEtherValue().toNumber();        
+        etherCollected = sandbox.web3.fromWei(weiCollected, 'ether');        
+                        
+        dollarValue = etherCollected * 11;    
+        log("[APL] => collected: " + etherCollected + " Eth" + " = $" + dollarValue);
+
+        leftTokens = dstContract_APL.balanceOf(dstContract_APL.address);
+        log("[APL] => tokens supply left: " + leftTokens + " APL");
+        
+        return true;
+    })
+    
+    return true;
 });
 
 
-it('roll-time-proposal-redeem', function(){
+
+it('roll-time-for-total-redeem', function(){
    
-    return workbench.rollTimeTo('01-Apr-2017 14:00 UTC+00')
+    return workbench.rollTimeTo('22-June-2017 14:00 UTC+00')
     .then(function(contract) { printDate(); return true; });
 });
 
 
-
-it('redeem-proposal-3', function() {
+it('collect-all-the-rest-funds', function() {
     log("");
-    log(" (!) Action: [0xcc49] collect 1,000,000.000 HKG value of proposal 3");
+    log(" (!) Action: [0xcc49] collect all the rest of HKG");
                            
-    return dstContract_APL.redeemProposalFunds(proposal_3, 
+    return dstContract_APL.getAllTheFunds( 
     {
        from : '0xcc49bea5129ef2369ff81b0c0200885893979b77',   
        gas : 350000,       
@@ -727,17 +910,18 @@ it('redeem-proposal-3', function() {
     .then(function (txHash) {
     
         return workbench.waitForReceipt(txHash);        
-        
     })
     
     .then(function (parsed) {
-       /*
+       
+       assert.equal(1, parsed.logs.length);
+
        args = parsed.logs[0].args;       
        
        assert(dstContract_APL.address, args.from);
        assert("0xcc49bea5129ef2369ff81b0c0200885893979b77", args.to);
-       assert(1000000000, args.value);
-         */
+       assert(500000000, args.value);
+
        return true;                
     })
     
@@ -746,21 +930,25 @@ it('redeem-proposal-3', function() {
        value = hackerGold.balanceOf('0xcc49bea5129ef2369ff81b0c0200885893979b77').toNumber() / 1000;
         
        log("[0xcc49] => balance: " + value.toFixed(3) + " HKG");       
-       assert.equal(3000000, value);
+       assert.equal(5000000, value);
            
        value = hackerGold.balanceOf(dstContract_APL.address).toNumber() / 1000;
         
        log("[APL] => balance: " + value.toFixed(3) + " HKG");       
-       assert.equal(2000000, value);
+       assert.equal(0, value);
+       
+       weiCollected   = dstContract_APL.getEtherValue().toNumber();        
+       assert.equal(0, weiCollected);
+       
+       etherCollected = sandbox.web3.fromWei(weiCollected, 'ether');        
+                        
+       dollarValue = etherCollected * 11;    
+       log("[APL] => collected: " + etherCollected + " Eth" + " = $" + dollarValue);       
 
        return true;                
     })
 
 });
-
-
-
-
 
 
 

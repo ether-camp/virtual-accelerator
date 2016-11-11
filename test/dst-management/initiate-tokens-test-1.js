@@ -45,6 +45,14 @@ function printDate(){
  
 it('event-info-init', function() {
     
+
+    log('');
+    log(' ***************************');
+    log('  initiate-tokens-test-1.js ');
+    log(' ***************************');
+    log('');
+     
+    
     return contracts.EventInfo.new()
 
         .then(function(contract) {
@@ -94,7 +102,8 @@ it('hacker-gold-init', function() {
 
 it('virtual-exchange-init', function() {
 
-    return contracts.VirtualExchange.new(hackerGold.address)
+    return contracts.VirtualExchange.new(hackerGold.address, 
+                                         eventInfo.address)
 
         .then(function(contract) {
           
