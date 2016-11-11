@@ -54,9 +54,11 @@ contract DSTContract is StandardToken{
     string public symbol = "...";
     
     bool ableToIssueTokens = true; 
-    uint preferedQtySold;
-    uint collectedHKG; 
     
+    uint preferedQtySold;
+
+    uint collectedHKG; 
+    uint collectedEther;    
     
     // Proposal of the funds spending
     mapping (bytes32 => Proposal) proposals;
@@ -106,9 +108,7 @@ contract DSTContract is StandardToken{
     
     ImpeachmentProposal lastImpeachmentProposal;
 
-    
         
-    
     /*
      * 
      *  Set date for early adapters
@@ -127,13 +127,15 @@ contract DSTContract is StandardToken{
     
 
     function() payable {
-        
+                
         // If the hack event is not over return 
         // sent ether.
         if (now < eventInfo.getEventEnd()) {
             throw;
         }
         
+        // there is tokens left from hackathon 
+        if (etherPrice == 0) throw;
         
         uint tokens = msg.value / (1 finney) * etherPrice;
         
@@ -153,9 +155,11 @@ contract DSTContract is StandardToken{
         balances[msg.sender] += tokens;
         balances[this] -= tokens;
         
+        // count collected ether 
+        collectedEther += msg.value; 
+        
         // ... event for transfer
         
-        // ... todo: add counter for this tokens
     }
 
     
@@ -207,7 +211,7 @@ contract DSTContract is StandardToken{
         Approval(this, virtualExchangeAddress, qtyToEmit);
         
         
-        // ... todo: emit event for new tokens + price
+        // ...todo... emit event for new tokens + price
         // DstTokensIssued(indexed uint qtyForOneEther, indexed uint qtyToEmit, indexed uint totalSupply)
     }
 
@@ -230,10 +234,6 @@ contract DSTContract is StandardToken{
       // Validate that the caller is official accelerator HKG Exchange
       if (msg.sender != virtualExchangeAddress) throw;
       
-      // todo: reduce issued tokens from total
-      
-      // todo: preferedQtySold +=...
-    
     
       // Transfer token 
       address sender = tx.origin;
@@ -246,8 +246,7 @@ contract DSTContract is StandardToken{
       preferedQtySold += tokensQty;
       collectedHKG += hkgValue;
       
-      
-                
+                  
       transferFrom(this, 
                    virtualExchangeAddress, tokensQty);
       transfer(sender, tokensQty);        
@@ -256,9 +255,7 @@ contract DSTContract is StandardToken{
         
       return true;
     }
-    
-    
-    
+        
     
     /**
      * 
@@ -305,12 +302,67 @@ contract DSTContract is StandardToken{
      *
      *
      */
-    function disableTokenIssuance() onlyExecutive{
+    function disableTokenIssuance() onlyExecutive {
         ableToIssueTokens = false;
+        
+        DisableTokenIssuance();
+    }
+
+    
+    /**
+     *  burnRemainToken -  
+     *                    
+     *
+     *
+     */
+    function burnRemainToken() onlyExecutive {
+    
+        balances[this] = 0;
         
         // todo: event for this
     }
+    
+    /**
+     *  submitEtherProposal - 
+     *
+     *   @param requestValue - 
+     *   @param url - 
+     */ 
+    function submitEtherProposal(uint requestValue, string url) onlyAfterEnd 
+                                                                onlyExecutive returns (bytes32 resultId, bool resultSucces) {       
+    
+        // ensure there is no more issuence available 
+        if (ableToIssueTokens) throw;
+            
+        // ensure there is no more tokens available 
+        if (balanceOf(this) > 0) throw;
 
+        // Possible to submit a proposal once 2 weeks 
+        if (now < (timeOfLastProposal + 2 weeks)) throw;
+            
+        uint percent = collectedEther / 100;
+            
+        if (requestValue > 20 * percent) throw;
+
+        // if remained value is less than requested gain all.
+        if (requestValue > this.balance) 
+            requestValue = this.balance;    
+            
+        // set id of the proposal
+        // submit proposal to the map
+        bytes32 id = sha3(msg.data, now);
+        uint timeEnds = now + 10 days; 
+            
+        Proposal memory newProposal = Proposal(id, requestValue, url, timeEnds, 0, msg.sender, false, ProposalCurrency.ETHER);
+        proposals[id] = newProposal;
+        listProposals.push(newProposal);
+            
+        timeOfLastProposal = now;                        
+        ProposalRequestSubmitted(id, requestValue, timeEnds, url, msg.sender);
+        
+        return (id, true);
+    }
+    
     
      
     /**
@@ -331,25 +383,22 @@ contract DSTContract is StandardToken{
             throw;
         }
 
-
         // Possible to submit a proposal once 2 weeks 
         if (now < (timeOfLastProposal + 2 weeks)) throw;
 
-                
         uint percent = preferedQtySold / 100;
         
         // validate the ammount is legit
         // first 5 proposals should be less than 20% 
         if (counterProposals <= 5 && 
             requestValue     >  20 * percent) throw;
-        
-        
+                
         // if remained value is less than requested 
         // gain all.
         if (requestValue > getHKGOwned()) 
             requestValue = getHKGOwned();
         
-    
+        
         // set id of the proposal
         // submit proposal to the map
         bytes32 id = sha3(msg.data, now);
@@ -362,7 +411,7 @@ contract DSTContract is StandardToken{
         ++counterProposals;
         timeOfLastProposal = now;                
                 
-        ProposalRequestHKGSubmitted(id, requestValue, timeEnds, url, msg.sender);
+        ProposalRequestSubmitted(id, requestValue, timeEnds, url, msg.sender);
         
         return (id, true);        
     }  
@@ -387,13 +436,14 @@ contract DSTContract is StandardToken{
         // ensure objection time
         if (now >= proposals[id].votindEndTS) throw;
          
+        // ensure not voted  
         if (proposals[id].voted[msg.sender]) throw;
          
          // submit votes
          uint votes = votingRights[msg.sender];
          proposals[id].votesObjecting += votes;
          
-         // todo: .... double check (!!!)
+         // mark voted 
          proposals[id].voted[msg.sender] = true; 
          
          uint idx = getIndexByProposalId(id);
@@ -418,32 +468,38 @@ contract DSTContract is StandardToken{
      * @param id bytes32: the id of the proposal to redeem
      */
     function redeemProposalFunds(bytes32 id) onlyExecutive {
-        
+
         if (proposals[id].id == 0) throw;
         if (proposals[id].submitter != msg.sender) throw;
 
+        // ensure objection time
+        if (now < proposals[id].votindEndTS) throw;
+                           
+    
+            // check already redeemed
+        if (proposals[id].redeemed) throw;
+
+        // check votes objection => 55% of total votes
+        uint objectionThreshold = preferedQtySold / 100 * 55;
+        if (proposals[id].votesObjecting  > objectionThreshold) throw;
+    
+    
         if (proposals[id].proposalCurrency == ProposalCurrency.HKG){
             
-            // ensure objection time
-            if (now < proposals[id].votindEndTS) throw;
-                               
-            // check votes objection => 55% of total votes
-            uint objectionThreshold = preferedQtySold / 100 * 55;
-            if (proposals[id].votesObjecting  > objectionThreshold) throw;
-             
-            // check already redeemed
-            if (proposals[id].redeemed) throw;
-            
-            // execute the proposal 
-            proposals[id].redeemed = true; 
+            // send hacker gold 
             hackerGold.transfer(proposals[id].submitter, proposals[id].value);      
-            
-            
+                        
         } else {
-            
-            // ... TODO: Ether redeem will be here 
+                        
+           // send ether              
+           bool success = proposals[id].submitter.send(proposals[id].value); 
+
+           // rise event
+           EtherRedeemAccepted(proposals[id].submitter, proposals[id].value);                              
         }
         
+        // execute the proposal 
+        proposals[id].redeemed = true; 
     }
     
     
@@ -564,6 +620,10 @@ contract DSTContract is StandardToken{
         return hackerGold.balanceOf(this);
     }
     
+    function getEtherValue() constant returns (uint result){
+        return this.balance;
+    }
+    
     function getExecutive() constant returns (address result){
         return executive;
     }
@@ -572,6 +632,10 @@ contract DSTContract is StandardToken{
         return hkgPrice;
     }
 
+    function getEtherPrice() constant returns (uint result){
+        return etherPrice;
+    }
+    
     function getDSTName() constant returns(string result){
         return name;
     }    
@@ -588,7 +652,6 @@ contract DSTContract is StandardToken{
         return convert(symbol);
     }    
 
-
     function getAddress() constant returns (address result) {
         return selfAddress;
     }
@@ -596,9 +659,9 @@ contract DSTContract is StandardToken{
     function getTotalSupply() constant returns (uint result) {
         return totalSupply;
     } 
-    
-    function getEtherValue() constant returns (uint results) {        
-        return this.balance;
+        
+    function getCollectedEther() constant returns (uint results) {        
+        return collectedEther;
     }
     
     function getCounterProposals() constant returns (uint result){
@@ -656,7 +719,9 @@ contract DSTContract is StandardToken{
     event PriceHKGChange(uint qtyForOneHKG);
     event BuyForHKGTransaction(uint tokensAmount, uint qtyForOneHKG, uint tokensAvailable, uint tokensSold);
     
-    event ProposalRequestHKGSubmitted(bytes32 id, uint value, uint timeEnds, string url, address sender);
+    event ProposalRequestSubmitted(bytes32 id, uint value, uint timeEnds, string url, address sender);
+    
+    event EtherRedeemAccepted(address sender, uint value);
     
     event ObjectedVote(bytes32 id, address voter, uint votes);
     
@@ -665,6 +730,7 @@ contract DSTContract is StandardToken{
     
     event ImpeachmentAccepted(address newExecutive);
 
+    event DisableTokenIssuance();
     
 }
 
