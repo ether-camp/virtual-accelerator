@@ -2,6 +2,8 @@ var assert = require('assert');
 
 var log = console.log;
 
+
+
 var Workbench = require('ethereum-sandbox-workbench');
 var workbench = new Workbench({
   defaults: {
@@ -49,6 +51,12 @@ function printDate(){
  */
  
 it('event-info-init', function() {
+
+    log('');
+    log(' *****************************');
+    log('  requesting-funds-test-2.js  ');
+    log(' *****************************');
+    log('');
     
     return contracts.EventInfo.new()
 

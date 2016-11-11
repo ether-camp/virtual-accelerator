@@ -45,6 +45,14 @@ function printDate(){
  
 it('event-info-init', function() {
     
+
+    log('');
+    log(' ***************************');
+    log('  initiate-tokens-test-1.js ');
+    log(' ***************************');
+    log('');
+     
+    
     return contracts.EventInfo.new()
 
         .then(function(contract) {

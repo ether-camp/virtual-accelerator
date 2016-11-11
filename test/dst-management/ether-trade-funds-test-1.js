@@ -2,6 +2,7 @@ var assert = require('assert');
 
 var log = console.log;
 
+
 var Workbench = require('ethereum-sandbox-workbench');
 var workbench = new Workbench({
   defaults: {
@@ -49,6 +50,12 @@ function printDate(){
  */
  
 it('event-info-init', function() {
+
+    log('');
+    log(' *****************************');
+    log('  ether-trade-funds-test-1.js');
+    log(' *****************************');
+    log('');
     
     return contracts.EventInfo.new()
 
@@ -613,16 +620,6 @@ it('redeem-propose-for-ether-1', function() {
     
     return true;
 });
-
-
-
-// todo: issue tokens for ether 
-// todo: sell part of the tokens 
-// todo: change price
-// todo: sell half of the rest
-// todo: burn the rest 
-// todo: get part of ether for usage 
-
 
 
 

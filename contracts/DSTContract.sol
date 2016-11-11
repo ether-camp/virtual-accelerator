@@ -158,7 +158,7 @@ contract DSTContract is StandardToken{
         // count collected ether 
         collectedEther += msg.value; 
         
-        // ... event for transfer
+        // todo: ... event for transfer
         
     }
 
