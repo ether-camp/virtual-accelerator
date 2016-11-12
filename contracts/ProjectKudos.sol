@@ -214,7 +214,7 @@ contract ProjectKudos {
     }
 
     /**
-     * @dev Returns votes given by speicified user
+     * @dev Returns votes given by specified user
      * to the list of projects ever voted by that user
      *
      * @param giver user's address
