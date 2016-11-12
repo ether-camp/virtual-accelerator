@@ -153,6 +153,7 @@ contract ProjectKudos {
     function grantKudos(address userToGrant, uint reason) onlyOwner {
 
         UserInfo user = users[userToGrant];
+        if (user.kudosLimit == 0) throw; //probably user does not exist then
 
         GrantReason grantReason = grantUintToReason(reason);
 
