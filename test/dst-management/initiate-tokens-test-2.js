@@ -449,12 +449,12 @@ it('issue-apl-tokens-not-by-the-owner', function() {
         dst1Total = dstContract_APL.getTotalSupply().toNumber() / 1000;
 
         log("[APL] => total supply: " + dst1Total.toFixed(3) + " APL");
-        assert("0.000", dst1Total.toFixed(3));
+        assert.equal("0.000", dst1Total.toFixed(3));
 
         veTokens = dstContract_APL.allowance(dstContract_APL.address,
                                           virtualExchange.address).toNumber() / 1000;
         log("[APL] => total on VirtualExchange: " + veTokens.toFixed(3) + " APL");
-        assert("0.000", dst1Total.toFixed(3));
+        assert.equal("0.000", dst1Total.toFixed(3));
 
         return true;
     })
@@ -476,12 +476,12 @@ it('issue-apl-tokens-seria-1', function() {
         dst1Total = dstContract_APL.getTotalSupply().toNumber() / 1000;
 
         log("[APL] => total supply: " + dst1Total.toFixed(3) + " APL");
-        assert(1000000000000, dst1Total);
+        assert.equal(1000000000, dst1Total);
 
         veTokens = dstContract_APL.allowance(dstContract_APL.address,
                                           virtualExchange.address).toNumber() / 1000;
         log("[APL] => total on VirtualExchange: " + veTokens.toFixed(3) + " APL");
-        assert(1000000000000, veTokens);
+        assert.equal(1000000000, veTokens);
 
         return true;
     })

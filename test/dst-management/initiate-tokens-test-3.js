@@ -455,12 +455,12 @@ it('issue-apl-tokens-seria-1', function() {
         dst1Total = dstContract_APL.getTotalSupply().toNumber() / 1000;
 
         log("[APL] => total supply: " + dst1Total.toFixed(3) + " APL");
-        assert(1000000000000, dst1Total);
+        assert.equal(1000000000, dst1Total);
 
         veTokens = dstContract_APL.allowance(dstContract_APL.address,
                                           virtualExchange.address).toNumber() / 1000;
         log("[APL] => total on VirtualExchange: " + veTokens.toFixed(3) + " APL");
-        assert(1000000000000, veTokens);
+        assert.equal(1000000000, veTokens);
 
         return true;
     })
@@ -481,12 +481,12 @@ it('issue-fbx-tokens-seria-1', function() {
         dst1Total = dstContract_FBX.getTotalSupply().toNumber() / 1000;
 
         log("[FBX] => total supply: " + dst1Total.toFixed(3) + " FBX");
-        assert(1000000000000, dst1Total);
+        assert.equal(1000000000, dst1Total);
 
         veTokens = dstContract_FBX.allowance(dstContract_FBX.address,
                                           virtualExchange.address).toNumber() / 1000;
         log("[FBX] => total on VirtualExchange: " + veTokens.toFixed(3) + " FBX");
-        assert(1000000000000, veTokens);
+        assert.equal(1000000000, veTokens);
 
         return true;
     })
@@ -507,12 +507,12 @@ it('issue-gog-tokens-seria-1', function() {
         dst1Total = dstContract_GOG.getTotalSupply().toNumber() / 1000;
 
         log("[GOG] => total supply: " + dst1Total.toFixed(3) + " GOG");
-        assert(1000000000000, dst1Total);
+        assert.equal(1000000000, dst1Total);
 
         veTokens = dstContract_GOG.allowance(dstContract_GOG.address,
                                           virtualExchange.address).toNumber() / 1000;
         log("[GOG] => total on VirtualExchange: " + veTokens.toFixed(3) + " GOG");
-        assert(1000000000000, veTokens);
+        assert.equal(1000000000, veTokens);
 
         return true;
     })
@@ -535,12 +535,12 @@ it('issue-amz-tokens-seria-1', function() {
         dst1Total = dstContract_AMZ.getTotalSupply().toNumber() / 1000;
 
         log("[AMZ] => total supply: " + dst1Total.toFixed(3) + " AMZ");
-        assert(1000000000000, dst1Total);
+        assert.equal(1000000000, dst1Total);
 
         veTokens = dstContract_AMZ.allowance(dstContract_AMZ.address,
                                           virtualExchange.address).toNumber() / 1000;
         log("[AMZ] => total on VirtualExchange: " + veTokens.toFixed(3) + " AMZ");
-        assert(1000000000000, veTokens);
+        assert.equal(1000000000, veTokens);
 
         return true;
     })

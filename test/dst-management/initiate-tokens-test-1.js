@@ -183,12 +183,12 @@ it('issue-mk3-tokens-seria-1', function() {
         dst1Total = dstContract1.getTotalSupply().toNumber() / 1000;
 
         log("[MK3] => total supply: " + dst1Total.toFixed(3) + " MK3");
-        assert(150, dst1Total);
+        assert.equal(150, dst1Total);
 
         veTokens = dstContract1.allowance(dstContract1.address,
                                           virtualExchange.address).toNumber() / 1000;
         log("[MK3] => total on VirtualExchange: " + veTokens.toFixed(3) + " MK3");
-        assert(150, veTokens);
+        assert.equal(150, veTokens);
 
         return true;
     })
@@ -603,6 +603,29 @@ it('disable-token-issuance', function() {
    })
 });
 
+it('issue-mk3-tokens-seria-1-edge-1', function() {
+    log("");
+    log(" (!) Action: [MK3] issue tokens on [VE] balance 150.000 MK3");
+
+    return dstContract1.issuePreferedTokens(0, 15000,
+    {
+       from : '0xcc49bea5129ef2369ff81b0c0200885893979b77',
+    })
+
+    .then(function () {
+
+        dst1Total = dstContract1.getTotalSupply().toNumber() / 1000;
+
+        log("[MK3] => total supply: " + dst1Total.toFixed(3) + " MK3");
+        assert.equal(2400, dst1Total);
+
+        veTokens = dstContract1.allowance(dstContract1.address, virtualExchange.address).toNumber() / 1000;
+        log("[MK3] => total on VirtualExchange: " + veTokens.toFixed(3) + " MK3");
+        assert.equal(0, veTokens);
+
+        return true;
+    })
+});
 
 
 });

@@ -225,12 +225,12 @@ it('issue-apl-tokens-seria-1', function() {
         dst1Total = dstContract_APL.getTotalSupply().toNumber() / 1000;
 
         log("[APL] => total supply: " + dst1Total.toFixed(3) + " APL");
-        assert(1000000000000000, dst1Total);
+        assert.equal(1000000000000, dst1Total);
 
         veTokens = dstContract_APL.allowance(dstContract_APL.address,
                                           virtualExchange.address).toNumber() / 1000;
         log("[APL] => total on VirtualExchange: " + veTokens.toFixed(3) + " APL");
-        assert(1000000000000000, veTokens);
+        assert.equal(1000000000000, veTokens);
 
         return true;
     })
@@ -398,7 +398,7 @@ it('submit-proposal-1', function() {
 
        t1 = eventInfo.getNow().toNumber() + 60 * 60 * 24 * 10;
        t2 = proposalTimeEnds;
-       assert(t1, t2);
+       assert.equal(t1, t2);
 
        assert.equal(proposalURL,    "http://pastebin.com/raw/6e9PBTeP");
        assert.equal(proposalSender, "0xcc49bea5129ef2369ff81b0c0200885893979b77");
