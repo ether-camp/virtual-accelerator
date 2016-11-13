@@ -63,7 +63,7 @@ contract StandardToken is TokenInterface {
      *  @param to    -
      *  @param value -
      *
-     *  @return
+     *  @return -
      */
     function transferFrom(address from, address to, uint256 value) returns (bool success) {
 
@@ -115,7 +115,7 @@ contract StandardToken is TokenInterface {
      *  @param spender - person whom this right been granted.
      *  @param value   - value to spend.
      *
-     *  @return true in case of succes, otherwise failure
+     *  @return true in case of success, otherwise failure
      *
      */
     function approve(address spender, uint256 value) returns (bool success) {
@@ -132,11 +132,11 @@ contract StandardToken is TokenInterface {
 
     /**
      *
-     * allowance() - constant function to check how mouch is
-     *               permited to spend to 3rd person from owner balance
+     * allowance() - constant function to check how much is
+     *               permitted to spend to 3rd person from owner balance
      *
      *  @param owner   - owner of the balance
-     *  @param spender - permited to spend from this balance person
+     *  @param spender - permitted to spend from this balance person
      *
      *  @return - remaining right to spend
      *

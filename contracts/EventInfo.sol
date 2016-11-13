@@ -2,8 +2,8 @@
 pragma solidity ^0.4.0;
 
 /**
- * 
- * EventInfo - imutable class that denotes
+ *
+ * EventInfo - immutable class that denotes
  * the time of the virtual accelerator hack
  * event
  *
