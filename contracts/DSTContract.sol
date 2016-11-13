@@ -12,7 +12,7 @@ pragma solidity ^0.4.2;
  *                +. Funding by HKG during the hackathon event.
  *                +. Funding by Ether after the event is over.
  *
- *               After the funds been collected there is a governence
+ *               After the funds been collected there is a governance
  *               mechanism managed by proposition to withdraw funds
  *               for development usage.
  *
@@ -21,9 +21,9 @@ pragma solidity ^0.4.2;
  *               propositions they find as non effective.
  *
  *               In very radical occasions the backers may loose
- *               the trust in the team completelly, in that case
+ *               the trust in the team completely, in that case
  *               there is an option to propose impeachment process
- *               completelly removing the execute and assigning new
+ *               completely removing the execute and assigning new
  *               person to manage the funds.
  *
  */
@@ -35,7 +35,7 @@ contract DSTContract is StandardToken{
 
     EventInfo eventInfo;
 
-    // Indicateds where the DST is threaded
+    // Indicates where the DST is traded
     address virtualExchangeAddress;
 
     HackerGold hackerGold;
@@ -110,7 +110,7 @@ contract DSTContract is StandardToken{
 
     /**
      *
-     *  DSTContract: ctor for DST token and governence contract
+     *  DSTContract: ctor for DST token and governance contract
      *
      *  @param eventInfoAddr EventInfo: address of object denotes events
      *                                  milestones
@@ -118,7 +118,7 @@ contract DSTContract is StandardToken{
      *
      *  @param dstName string: dstName: real name of the team
      *
-     *  @param dstSymbol string: 3 letter symbold of the team
+     *  @param dstSymbol string: 3 letter symbol of the team
      *
      */
     function DSTContract(EventInfo eventInfoAddr, HackerGold hackerGoldAddr, string dstName, string dstSymbol){
@@ -188,7 +188,7 @@ contract DSTContract is StandardToken{
 
     /**
      *
-     * issuePreferedTokens - prefered tokens issued on the hackathon event
+     * issuePreferedTokens - preferred tokens issued at the hackathon event
      *                       grant special rights
      *
      *  @param qtyForOneHKG uint: price DST tokens for one 1 HKG
@@ -201,12 +201,12 @@ contract DSTContract is StandardToken{
                                                  onlyBeforeEnd
                                                  onlyAfterTradingStart {
 
-        // the issuer of the token disabled futer issuance
+        // the issuer of the token disabled further issuance
         if (!ableToIssueTokens) {
             throw;
         }
 
-        // no issuence is allowed before enlisted on the
+        // no issuance is allowed before enlisted on the
         // exchange
         if (virtualExchangeAddress == 0x0) throw;
 
@@ -216,7 +216,7 @@ contract DSTContract is StandardToken{
 
 
         // now spender can use balance in
-        // ammount of value from owner balance
+        // amount of value from owner balance
         allowed[this][virtualExchangeAddress] += qtyToEmit;
 
         // rise event about the transaction
@@ -241,7 +241,7 @@ contract DSTContract is StandardToken{
     function buyForHackerGold(uint hkgValue) onlyBeforeEnd
                                              returns (bool success) {
 
-      // validate that the caller is official accelerator HKG Exchange
+      // validate that the caller is the official accelerator HKG Exchange
       if (msg.sender != virtualExchangeAddress) throw;
 
 
@@ -434,10 +434,10 @@ contract DSTContract is StandardToken{
     /**
      * objectProposal - object previously submitted proposal,
      *                  the objection right is obtained by
-     *                  purchasing prefered tokens on time of
+     *                  purchasing preferred tokens on time of
      *                  the hackathon.
      *
-     *  @param id bytes32 : the id of the proposla to redeem
+     *  @param id bytes32 : the id of the proposal to redeem
      */
      function objectProposal(bytes32 id){
 
