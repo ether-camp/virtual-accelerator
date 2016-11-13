@@ -23,7 +23,7 @@ pragma solidity ^0.4.2;
  *               In very radical occasions the backers may loose
  *               the trust in the team completely, in that case
  *               there is an option to propose impeachment process
- *               completely removing the execute and assigning new
+ *               completely removing the executive and assigning new
  *               person to manage the funds.
  *
  */
