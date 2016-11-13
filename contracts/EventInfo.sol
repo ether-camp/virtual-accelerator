@@ -6,45 +6,45 @@ pragma solidity ^0.4.0;
  * EventInfo - imutable class that denotes
  * the time of the virtual accelerator hack
  * event
- * 
+ *
  */
 contract EventInfo{
-    
-    
+
+
     uint constant HACKATHON_5_WEEKS = 60 * 60 * 24 * 7 * 5;
     uint constant T_1_WEEK = 60 * 60 * 24 * 7;
 
     uint eventStart = 1479391200; // Thu, 17 Nov 2016 14:00:00 GMT
     uint eventEnd = eventStart + HACKATHON_5_WEEKS;
-    
-    
+
+
     /**
      * getEventStart - return the start of the event time
-     */ 
-    function getEventStart() constant returns (uint result){        
+     */
+    function getEventStart() constant returns (uint result){
        return eventStart;
-    } 
-    
+    }
+
     /**
      * getEventEnd - return the end of the event time
-     */ 
-    function getEventEnd() constant returns (uint result){        
+     */
+    function getEventEnd() constant returns (uint result){
        return eventEnd;
-    } 
-    
-    
+    }
+
+
     /**
-     * getVotingStart - the voting starts 1 week after the 
+     * getVotingStart - the voting starts 1 week after the
      *                  event starts
-     */ 
+     */
     function getVotingStart() constant returns (uint result){
         return eventStart+ T_1_WEEK;
     }
 
     /**
-     * getTradingStart - the DST tokens trading starts 1 week 
+     * getTradingStart - the DST tokens trading starts 1 week
      *                   after the event starts
-     */ 
+     */
     function getTradingStart() constant returns (uint result){
         return eventStart+ T_1_WEEK;
     }
@@ -52,8 +52,8 @@ contract EventInfo{
     /**
      * getNow - helper class to check what time the contract see
      */
-    function getNow() constant returns (uint result){        
+    function getNow() constant returns (uint result){
        return now;
-    } 
-    
+    }
+
 }
