@@ -182,7 +182,7 @@ it('issue-mk3-tokens-seria-1', function() {
 
         dst1Total = dstContract1.getTotalSupply().toNumber() / 1000;
 
-        log("[MK3] => total suply: " + dst1Total.toFixed(3) + " MK3");
+        log("[MK3] => total supply: " + dst1Total.toFixed(3) + " MK3");
         assert(150, dst1Total);
 
         veTokens = dstContract1.allowance(dstContract1.address,
@@ -253,7 +253,7 @@ it('approve-hkg-spend-on-exchange-1', function() {
 
 
 
-it('buy-all-dst-suply-seria-1', function() {
+it('buy-all-dst-supply-seria-1', function() {
     log("");
     log(" (!) Action: [0x3a7e] buy tokens [MK3] for 150.000 HKG");
 
@@ -364,7 +364,7 @@ it('issue-mk3-tokens-seria-2', function() {
 });
 
 
-it('buy-all-dst-suply-seria-2-1', function() {
+it('buy-all-dst-supply-seria-2-1', function() {
     log("");
     log(" (!) Action: [0x3a7e] buy [MK3] for 500.000 HKG");
 
@@ -413,7 +413,7 @@ it('buy-all-dst-suply-seria-2-1', function() {
 
 
 
-it('buy-all-dst-suply-seria-2-2', function() {
+it('buy-all-dst-supply-seria-2-2', function() {
     log("");
     log(" (!) Action: [0x3a7e] buy [MK3] for 125.000 HKG");
 
@@ -485,7 +485,7 @@ it('issue-mk3-tokens-seria-3', function() {
         assert.equal(2400 , dst1Total);
 
         issued = dstContract1.balanceOf(dstContract1.address).toNumber() / 1000;
-        log("[MK3] => total suply: " + issued.toFixed(3) + " MK3");
+        log("[MK3] => total supply: " + issued.toFixed(3) + " MK3");
         assert.equal(1000 , issued);
 
         return true;
@@ -493,7 +493,7 @@ it('issue-mk3-tokens-seria-3', function() {
 });
 
 
-it('buy-all-dst-suply-seria-3-1', function() {
+it('buy-all-dst-supply-seria-3-1', function() {
     log("");
     log(" (!) Action: [0x3a7e] buy [MK3] tokens for: 990.000 Ether");
 
@@ -520,9 +520,9 @@ it('buy-all-dst-suply-seria-3-1', function() {
         log("[0x3a7e] => voting: " + voting + " votes - " + voting / total * 100 + "%");
         assert.equal(1400000 , voting);
 
-        tokensSuply = dstContract1.balanceOf(dstContract1.address).toNumber();
-        log("[MK3] available suply: " + tokensSuply + " MK3");
-        assert.equal(10000 , tokensSuply);
+        tokensSupply = dstContract1.balanceOf(dstContract1.address).toNumber();
+        log("[MK3] available supply: " + tokensSupply + " MK3");
+        assert.equal(10000 , tokensSupply);
 
         return true;
     })
@@ -531,7 +531,7 @@ it('buy-all-dst-suply-seria-3-1', function() {
 
 
 
-it('buy-all-dst-suply-seria-3-2', function() {
+it('buy-all-dst-supply-seria-3-2', function() {
     log("");
     log(" (!) Action: [0x3a7e] buy [MK3] tokens for: 10.000 Ether");
 
@@ -558,9 +558,9 @@ it('buy-all-dst-suply-seria-3-2', function() {
         log("[0x3a7e] => voting: " + voting + " votes - " + voting / total * 100 + "%");
         assert.equal(1400000 , voting);
 
-        tokensSuply = dstContract1.balanceOf(dstContract1.address).toNumber();
-        log("[MK3] available supply: " + tokensSuply + " MK3");
-        assert.equal(0 , tokensSuply);
+        tokensSupply = dstContract1.balanceOf(dstContract1.address).toNumber();
+        log("[MK3] available supply: " + tokensSupply + " MK3");
+        assert.equal(0 , tokensSupply);
 
         return true;
     })

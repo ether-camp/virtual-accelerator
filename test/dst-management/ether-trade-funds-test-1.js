@@ -230,7 +230,7 @@ it('issue-apl-tokens-seria-1', function() {
 
         dst1Total = dstContract_APL.getTotalSupply().toNumber() / 1000;
 
-        log("[APL] => total suply: " + dst1Total.toFixed(3) + " APL");
+        log("[APL] => total supply: " + dst1Total.toFixed(3) + " APL");
         assert(1000000000000000, dst1Total);
 
         veTokens = dstContract_APL.allowance(dstContract_APL.address,
@@ -316,9 +316,9 @@ it('buy-apl-by-3a7e', function() {
         log("[0x3a7e] => VirtualExchange balance: " + veTokens.toFixed(3) + " HKG");
         assert.equal(95000000 , veTokens);
 
-        availableSuply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
-        log("[APL] => available suply: " + availableSuply + " APL");
-        assert.equal(995000000000 , availableSuply);
+        availableSupply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
+        log("[APL] => available supply: " + availableSupply + " APL");
+        assert.equal(995000000000 , availableSupply);
 
         return true;
     })

@@ -454,7 +454,7 @@ it('issue-apl-tokens-seria-1', function() {
 
         dst1Total = dstContract_APL.getTotalSupply().toNumber() / 1000;
 
-        log("[APL] => total suply: " + dst1Total.toFixed(3) + " APL");
+        log("[APL] => total supply: " + dst1Total.toFixed(3) + " APL");
         assert(1000000000000, dst1Total);
 
         veTokens = dstContract_APL.allowance(dstContract_APL.address,
@@ -480,7 +480,7 @@ it('issue-fbx-tokens-seria-1', function() {
 
         dst1Total = dstContract_FBX.getTotalSupply().toNumber() / 1000;
 
-        log("[FBX] => total suply: " + dst1Total.toFixed(3) + " FBX");
+        log("[FBX] => total supply: " + dst1Total.toFixed(3) + " FBX");
         assert(1000000000000, dst1Total);
 
         veTokens = dstContract_FBX.allowance(dstContract_FBX.address,
@@ -506,7 +506,7 @@ it('issue-gog-tokens-seria-1', function() {
 
         dst1Total = dstContract_GOG.getTotalSupply().toNumber() / 1000;
 
-        log("[GOG] => total suply: " + dst1Total.toFixed(3) + " GOG");
+        log("[GOG] => total supply: " + dst1Total.toFixed(3) + " GOG");
         assert(1000000000000, dst1Total);
 
         veTokens = dstContract_GOG.allowance(dstContract_GOG.address,
@@ -534,7 +534,7 @@ it('issue-amz-tokens-seria-1', function() {
 
         dst1Total = dstContract_AMZ.getTotalSupply().toNumber() / 1000;
 
-        log("[AMZ] => total suply: " + dst1Total.toFixed(3) + " AMZ");
+        log("[AMZ] => total supply: " + dst1Total.toFixed(3) + " AMZ");
         assert(1000000000000, dst1Total);
 
         veTokens = dstContract_AMZ.allowance(dstContract_AMZ.address,
@@ -700,9 +700,9 @@ it('buy-apl-by-3a7e', function() {
         log("[0x3a7e] => VirtualExchange balance: " + veTokens.toFixed(3) + " HKG");
         assert.equal(1700000 , veTokens);
 
-        availableSuply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
-        log("[APL] => available suply: " + availableSuply + " APL");
-        assert.equal(700000000 , availableSuply);
+        availableSupply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
+        log("[APL] => available supply: " + availableSupply + " APL");
+        assert.equal(700000000 , availableSupply);
 
         return true;
     })
@@ -802,8 +802,8 @@ it('buy-apl-by-2980', function() {
         log("[0x2980] => VirtualExchange balance: " + veTokens.toFixed(3) + " HKG");
         assert.equal(600000 , veTokens);
 
-        availableSuply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
-        log("[APL] => available suply: " + availableSuply + " APL");
+        availableSupply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
+        log("[APL] => available supply: " + availableSupply + " APL");
 
 
         log("");
@@ -876,9 +876,9 @@ it('buy-fbx-by-696b', function() {
         log("[0x696b] => VirtualExchange balance: " + veTokens.toFixed(3) + " HKG");
         assert.equal(1520000 , veTokens);
 
-        availableSuply = dstContract_FBX.balanceOf(dstContract_FBX.address).toNumber() / 1000;
-        log("[FBX] => available suply: " + availableSuply + " FBX");
-        assert.equal(520000000 , availableSuply);
+        availableSupply = dstContract_FBX.balanceOf(dstContract_FBX.address).toNumber() / 1000;
+        log("[FBX] => available supply: " + availableSupply + " FBX");
+        assert.equal(520000000 , availableSupply);
 
         return true;
     })
@@ -929,9 +929,9 @@ it('buy-fbx-by-0xcd2a', function() {
         log("[0x696b] => VirtualExchange balance: " + veTokens.toFixed(3) + " HKG");
         assert.equal(1480000 , veTokens);
 
-        availableSuply = dstContract_FBX.balanceOf(dstContract_FBX.address).toNumber() / 1000;
-        log("[FBX] => available suply: " + availableSuply + " FBX");
-        assert.equal(0 , availableSuply);
+        availableSupply = dstContract_FBX.balanceOf(dstContract_FBX.address).toNumber() / 1000;
+        log("[FBX] => available supply: " + availableSupply + " FBX");
+        assert.equal(0 , availableSupply);
 
         log("");
         log(" Voting Summary: ");
@@ -1001,9 +1001,9 @@ it('buy-gog-by-3a7e', function() {
         log("[0x3a7e] => VirtualExchange balance: " + veTokens.toFixed(3) + " HKG");
         assert.equal(1600000 , veTokens);
 
-        availableSuply = dstContract_GOG.balanceOf(dstContract_GOG.address).toNumber() / 1000;
-        log("[GOG] => available suply: " + availableSuply + " GOG");
-        assert.equal(900000000 , availableSuply);
+        availableSupply = dstContract_GOG.balanceOf(dstContract_GOG.address).toNumber() / 1000;
+        log("[GOG] => available supply: " + availableSupply + " GOG");
+        assert.equal(900000000 , availableSupply);
 
         return true;
     })
@@ -1077,9 +1077,9 @@ it('buy-gog-by-3a7e', function() {
         log("[0x3a7e] => VirtualExchange balance: " + veTokens.toFixed(3) + " HKG");
         assert.equal(1300000 , veTokens);
 
-        availableSuply = dstContract_GOG.balanceOf(dstContract_GOG.address).toNumber() / 1000;
-        log("[GOG] => available suply: " + availableSuply + " GOG");
-        assert.equal(300000000 , availableSuply);
+        availableSupply = dstContract_GOG.balanceOf(dstContract_GOG.address).toNumber() / 1000;
+        log("[GOG] => available supply: " + availableSupply + " GOG");
+        assert.equal(300000000 , availableSupply);
 
         return true;
     })
@@ -1154,9 +1154,9 @@ it('buy-gog-by-3a7e', function() {
         log("[0x3a7e] => VirtualExchange balance: " + veTokens.toFixed(3) + " HKG");
         assert.equal(1000000 , veTokens);
 
-        availableSuply = dstContract_GOG.balanceOf(dstContract_GOG.address).toNumber() / 1000;
-        log("[GOG] => available suply: " + availableSuply + " GOG");
-        assert.equal(0 , availableSuply);
+        availableSupply = dstContract_GOG.balanceOf(dstContract_GOG.address).toNumber() / 1000;
+        log("[GOG] => available supply: " + availableSupply + " GOG");
+        assert.equal(0 , availableSupply);
 
 
         log("");
@@ -1246,7 +1246,7 @@ it('issue-apl-tokens-seria-2', function() {
         assert.equal(1001000000 , dst1Total);
 
         issued = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
-        log("[APL] => available suply: " + issued.toFixed(3) + " APL");
+        log("[APL] => available supply: " + issued.toFixed(3) + " APL");
         assert.equal(1000000 , issued);
 
         return true;
@@ -1271,7 +1271,7 @@ it('issue-fbx-tokens-seria-2', function() {
         assert.equal(1001000000 , dst1Total);
 
         issued = dstContract_FBX.balanceOf(dstContract_FBX.address).toNumber() / 1000;
-        log("[FBX] => available suply: " + issued.toFixed(3) + " FBX");
+        log("[FBX] => available supply: " + issued.toFixed(3) + " FBX");
         assert.equal(1000000 , issued);
 
         return true;
@@ -1296,7 +1296,7 @@ it('issue-gog-tokens-seria-2', function() {
         assert.equal(1001000000 , dst1Total);
 
         issued = dstContract_GOG.balanceOf(dstContract_GOG.address).toNumber() / 1000;
-        log("[GOG] => available suply: " + issued.toFixed(3) + " GOG");
+        log("[GOG] => available supply: " + issued.toFixed(3) + " GOG");
         assert.equal(1000000 , issued);
 
         return true;
@@ -1307,7 +1307,7 @@ it('issue-gog-tokens-seria-2', function() {
 
 
 
-it('buy-all-apl-suply-seria-2', function() {
+it('buy-all-apl-supply-seria-2', function() {
     log("");
     log(" (!) Action: [0xdedb] buy [APL] tokens for: 10000.000 Ether");
 
@@ -1334,9 +1334,9 @@ it('buy-all-apl-suply-seria-2', function() {
         log("[0xdedb] => voting: " + voting + " votes - " + voting / total * 100 + "%");
         assert.equal(0, voting / total * 100);
 
-        tokensSuply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber();
-        log("[APL] => available suply: " + tokensSuply + " APL");
-        assert.equal(0, tokensSuply);
+        tokensSupply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber();
+        log("[APL] => available supply: " + tokensSupply + " APL");
+        assert.equal(0, tokensSupply);
 
         log("");
 
@@ -1360,7 +1360,7 @@ it('buy-all-apl-suply-seria-2', function() {
 
 
 
-it('buy-all-fbx-suply-seria-2', function() {
+it('buy-all-fbx-supply-seria-2', function() {
     log("");
     log(" (!) Action: [0xdedb] buy [FBX] tokens for: 50000.000 Ether");
 
@@ -1389,9 +1389,9 @@ it('buy-all-fbx-suply-seria-2', function() {
         log("[0xdedb] => voting: " + voting + " votes - " + voting / total * 100 + "%");
         assert.equal(0, voting / total * 100);
 
-        tokensSuply = dstContract_FBX.balanceOf(dstContract_FBX.address).toNumber();
-        log("[FBX] => available suply: " + tokensSuply + " FBX");
-        assert.equal(0, tokensSuply);
+        tokensSupply = dstContract_FBX.balanceOf(dstContract_FBX.address).toNumber();
+        log("[FBX] => available supply: " + tokensSupply + " FBX");
+        assert.equal(0, tokensSupply);
 
         log("");
 
@@ -1414,7 +1414,7 @@ it('buy-all-fbx-suply-seria-2', function() {
 
 
 
-it('buy-all-gog-suply-seria-2', function() {
+it('buy-all-gog-supply-seria-2', function() {
     log("");
     log(" (!) Action: [0xdedb] buy [GOG] tokens for: 4000 Ether");
 
@@ -1443,9 +1443,9 @@ it('buy-all-gog-suply-seria-2', function() {
         log("[0xdedb] => voting: " + voting + " votes - " + voting / total * 100 + "%");
         assert.equal(0, voting / total * 100);
 
-        tokensSuply = dstContract_GOG.balanceOf(dstContract_GOG.address).toNumber();
-        log("[GOG] => available suply: " + tokensSuply + " GOG");
-        assert.equal(0, tokensSuply);
+        tokensSupply = dstContract_GOG.balanceOf(dstContract_GOG.address).toNumber();
+        log("[GOG] => available supply: " + tokensSupply + " GOG");
+        assert.equal(0, tokensSupply);
 
         log("");
 

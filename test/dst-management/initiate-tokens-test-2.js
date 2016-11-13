@@ -448,7 +448,7 @@ it('issue-apl-tokens-not-by-the-owner', function() {
 
         dst1Total = dstContract_APL.getTotalSupply().toNumber() / 1000;
 
-        log("[APL] => total suply: " + dst1Total.toFixed(3) + " APL");
+        log("[APL] => total supply: " + dst1Total.toFixed(3) + " APL");
         assert("0.000", dst1Total.toFixed(3));
 
         veTokens = dstContract_APL.allowance(dstContract_APL.address,
@@ -475,7 +475,7 @@ it('issue-apl-tokens-seria-1', function() {
 
         dst1Total = dstContract_APL.getTotalSupply().toNumber() / 1000;
 
-        log("[APL] => total suply: " + dst1Total.toFixed(3) + " APL");
+        log("[APL] => total supply: " + dst1Total.toFixed(3) + " APL");
         assert(1000000000000, dst1Total);
 
         veTokens = dstContract_APL.allowance(dstContract_APL.address,
@@ -564,9 +564,9 @@ it('buy-apl-by-3a7e', function() {
         log("[0x3a7e] => VirtualExchange balance: " + veTokens.toFixed(3) + " HKG");
         assert.equal(750000 , veTokens);
 
-        availableSuply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
-        log("[APL] => available suply: " + availableSuply + " APL");
-        assert.equal(750000000 , availableSuply);
+        availableSupply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
+        log("[APL] => available supply: " + availableSupply + " APL");
+        assert.equal(750000000 , availableSupply);
 
         return true;
     })
@@ -617,8 +617,8 @@ it('buy-apl-by-2980', function() {
         log("[0x2980] => VirtualExchange balance: " + veTokens.toFixed(3) + " HKG");
         assert.equal(700000 , veTokens);
 
-        availableSuply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
-        log("[APL] => available suply: " + availableSuply + " APL");
+        availableSupply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
+        log("[APL] => available supply: " + availableSupply + " APL");
 
         return true;
     })
@@ -668,8 +668,8 @@ it('buy-apl-by-696b', function() {
         log("[0x2980] => VirtualExchange balance: " + veTokens.toFixed(3) + " HKG");
         assert.equal(950000 , veTokens);
 
-        availableSuply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
-        log("[APL] => available suply: " + availableSuply + " APL");
+        availableSupply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
+        log("[APL] => available supply: " + availableSupply + " APL");
 
         return true;
     })
@@ -719,8 +719,8 @@ it('buy-apl-by-cd2a', function() {
         log("[0xcd2a] => VirtualExchange balance: " + veTokens.toFixed(3) + " HKG");
         assert.equal(600000, veTokens);
 
-        availableSuply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
-        log("[APL] => available suply: " + availableSuply + " APL");
+        availableSupply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
+        log("[APL] => available supply: " + availableSupply + " APL");
 
         return true;
     })
@@ -758,9 +758,9 @@ it('buy-apl-by-cd2a', function() {
         log ("[APL] => total: " + total + " votes");
         assert.equal(1000000000000, total);
 
-        availableSuply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
-        log("[APL] => available suply: " + availableSuply + " APL");
-        assert.equal(0, availableSuply);
+        availableSupply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
+        log("[APL] => available supply: " + availableSupply + " APL");
+        assert.equal(0, availableSupply);
 
 
         etherCollected =
@@ -806,7 +806,7 @@ it('issue-apl-tokens-seria-2', function() {
         assert.equal(1001000000 , dst1Total);
 
         issued = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
-        log("[APL] => available suply: " + issued.toFixed(3) + " APL");
+        log("[APL] => available supply: " + issued.toFixed(3) + " APL");
         assert.equal(1000000 , issued);
 
         return true;
@@ -815,7 +815,7 @@ it('issue-apl-tokens-seria-2', function() {
 
 
 
-it('buy-all-apl-suply-seria-2', function() {
+it('buy-all-apl-supply-seria-2', function() {
     log("");
     log(" (!) Action: [0x3a7e] buy [APL] tokens for: 10000.000 Ether");
 
@@ -842,9 +842,9 @@ it('buy-all-apl-suply-seria-2', function() {
         log("[0x3a7e] => voting: " + voting + " votes - " + voting / total * 100 + "%");
         assert.equal(25, voting / total * 100);
 
-        tokensSuply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber();
-        log("[APL] => available suply: " + tokensSuply + " APL");
-        assert.equal(0, tokensSuply);
+        tokensSupply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber();
+        log("[APL] => available supply: " + tokensSupply + " APL");
+        assert.equal(0, tokensSupply);
 
         log("");
 
