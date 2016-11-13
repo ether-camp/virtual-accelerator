@@ -559,7 +559,7 @@ it('buy-all-dst-suply-seria-3-2', function() {
         assert.equal(1400000 , voting);
 
         tokensSuply = dstContract1.balanceOf(dstContract1.address).toNumber();
-        log("[MK3] available suply: " + tokensSuply + " MK3");
+        log("[MK3] available supply: " + tokensSuply + " MK3");
         assert.equal(0 , tokensSuply);
 
         return true;
