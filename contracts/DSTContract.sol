@@ -12,7 +12,7 @@ pragma solidity ^0.4.2;
  *                +. Funding by HKG during the hackathon event.
  *                +. Funding by Ether after the event is over.
  *
- *               After the funds been collected there is a governance
+ *               After the funds been collected there are a governance
  *               mechanism managed by proposition to withdraw funds
  *               for development usage.
  *
