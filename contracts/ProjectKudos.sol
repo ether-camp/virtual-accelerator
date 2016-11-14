@@ -1,4 +1,4 @@
-pragma solidity ^0.4.0;
+pragma solidity ^0.4.4;
 
 /**
  * @title Project Kudos
@@ -122,7 +122,11 @@ contract ProjectKudos {
      *  @param projectCode code of the project, must be less than or equal to 32 bytes
      *  @param kudos - votes to be given
      */
-    function giveKudos(string projectCode, uint kudos) duringVote {
+    function giveKudos(string projectCode, uint kudos) {
+
+        // throw if called not during the vote period
+        if (now < votePeriod.start) throw;
+        if (now >= votePeriod.end) throw;        
         
         UserInfo giver = users[msg.sender];
 
@@ -323,15 +327,6 @@ contract ProjectKudos {
     // ********************* //
     // *     Modifiers     * //
     // ********************* //
-    
-    /**
-     * @dev Throws if called not during the vote period
-     */
-    modifier duringVote() {
-        if (now < votePeriod.start) throw;
-        if (now >= votePeriod.end) throw;
-        _;
-    }
     
     /**
      * @dev Throws if called not by contract's owner

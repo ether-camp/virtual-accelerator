@@ -7,7 +7,7 @@ var workbench = new Workbench({
   defaults: {
     from: '0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826'
   },
-  solcVersion: '0.4.2'
+  solcVersion: '0.4.4'
 });
 
 workbench.startTesting(['ProjectKudos'], function(contracts) {
