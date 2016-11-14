@@ -2,13 +2,13 @@ pragma solidity ^0.4.4;
 
 /**
  * @title Project Kudos
- * 
+ *
  * Events voting system of the Virtual Accelerator.
  * Includes the voting for both judges and fans.
- * 
+ *
  */
 contract ProjectKudos {
-    
+
     // votes limit for judge
     uint KUDOS_LIMIT_JUDGE = 1000;
 
@@ -36,36 +36,36 @@ contract ProjectKudos {
         mapping(uint => bool) grant;
     }
 
-    // keeps links between user's votes 
+    // keeps links between user's votes
     // and projects he voted for
     struct UserIndex {
         bytes32[] projects;
         uint[] kudos;
         mapping(bytes32 => uint) kudosIdx;
     }
-    
-    // keeps time frames for vote period 
+
+    // keeps time frames for vote period
     struct VotePeriod {
         uint start;
         uint end;
     }
-    
+
     // contract creator's address
     address owner;
-    
+
     // vote period
     VotePeriod votePeriod;
 
     // user votes mapping
     mapping(address => UserInfo) users;
 
-    // user index, 
+    // user index,
     // helps to get votes given by one user for every project
     mapping(address => UserIndex) usersIndex;
 
     // project votes mapping
     mapping(bytes32 => ProjectInfo) projects;
-    
+
     // emitted when vote is done
     event Vote(
         // address of voter
@@ -75,15 +75,15 @@ contract ProjectKudos {
         // votes given
         uint indexed count
     );
-    
+
     /**
      * @dev Contract's constructor.
      * Stores contract's owner and sets up vote period
      */
     function ProjectKudos() {
-        
+
         owner = msg.sender;
-        
+
         votePeriod = VotePeriod(
             1479996000,     // GMT: 24-Nov-2016 14:00, Voting starts, 1st week passed
             1482415200      // GMT: 22-Dec-2016 14:00, Voting ends, Hackathon ends
@@ -94,25 +94,25 @@ contract ProjectKudos {
      * @dev Registers voter to the event.
      * Executable only by contract's owner.
      *
-     * @param userAddres address of the user to register
+     * @param userAddress address of the user to register
      * @param isJudge should be true if user is judge, false otherwise
      */
-    function register(address userAddres, bool isJudge) onlyOwner {
-                            
-        UserInfo user = users[userAddres];
+    function register(address userAddress, bool isJudge) onlyOwner {
+
+        UserInfo user = users[userAddress];
 
         if (user.kudosLimit > 0) throw;
 
         if (isJudge)
             user.kudosLimit = KUDOS_LIMIT_JUDGE;
-        else 
+        else
             user.kudosLimit = KUDOS_LIMIT_USER;
-        
+
         user.isJudge = isJudge;
-        
-        users[userAddres] = user;
+
+        users[userAddress] = user;
     }
-    
+
     /**
      *  @dev Gives votes to the project.
      *  Can only be executed within vote period.
@@ -130,7 +130,7 @@ contract ProjectKudos {
         UserInfo giver = users[msg.sender];
 
         if (giver.kudosGiven + kudos > giver.kudosLimit) throw;
-        
+
         bytes32 code = strToBytes(projectCode);
         ProjectInfo project = projects[code];
 
@@ -140,50 +140,51 @@ contract ProjectKudos {
 
         // save index of user voting history
         updateUsersIndex(code, project.kudosByUser[msg.sender]);
-        
+
         Vote(msg.sender, sha3(projectCode), kudos);
     }
 
     /**
      * @dev Grants extra kudos for identity proof.
      *
-     * @param userToGrant address of user to grant additional 
+     * @param userToGrant address of user to grant additional
      * votes for social proof
      * 
      * @param reason granting reason,  0 - Facebook, 1 - Twitter
      */         
     function grantKudos(address userToGrant, uint reason) onlyOwner {
-    
+
         UserInfo user = users[userToGrant];
-    
+
+        if (user.kudosLimit == 0) throw; //probably user does not exist then
+
         if (reason != GRANT_REASON_FACEBOOK &&        // Facebook
             reason != GRANT_REASON_TWITTER) throw;    // Twitter
-    
+
         // if user is judge his identity is known
-        // not reasonble to grant more kudos for social 
+        // not reasonble to grant more kudos for social
         // proof.
         if (user.isJudge) throw;
-        
+
         // if not granted for that reason yet
         if (user.grant[reason]) throw;
-        
+
         // grant 100 votes
         user.kudosLimit += SOCIAL_PROOF_KUDOS;
         
-        // mark reason 
         user.grant[reason] = true;
     }
-    
-    
+
+
     // ********************* //
     // *   Constant Calls  * //
     // ********************* //
-    
+
     /**
      * @dev Returns total votes given to the project
-     * 
+     *
      * @param projectCode project's code
-     * 
+     *
      * @return number of give votes
      */
     function getProjectKudos(string projectCode) constant returns(uint) {
@@ -195,10 +196,10 @@ contract ProjectKudos {
     /**
      * @dev Returns an array of votes given to the project
      * corresponding to array of users passed in function call
-     * 
+     *
      * @param projectCode project's code
      * @param users array of user addresses
-     * 
+     *
      * @return array of votes given by passed users
      */
     function getProjectKudosByUsers(string projectCode, address[] users) constant returns(uint[]) {
@@ -207,19 +208,19 @@ contract ProjectKudos {
         mapping(address => uint) kudosByUser = project.kudosByUser;
         uint[] memory userKudos = new uint[](users.length);
         for (uint i = 0; i < users.length; i++) {
-            userKudos[i] = kudosByUser[users[i]];    
+            userKudos[i] = kudosByUser[users[i]];
        }
-       
+
        return userKudos;
     }
 
     /**
-     * @dev Returns votes given by speicified user 
+     * @dev Returns votes given by specified user
      * to the list of projects ever voted by that user
-     * 
+     *
      * @param giver user's address
      * @return projects array of project codes represented by bytes32 array
-     * @return kudos array of votes given by user, 
+     * @return kudos array of votes given by user,
      *         index of vote corresponds to index of project from projects array
      */
     function getKudosPerProject(address giver) constant returns (bytes32[] projects, uint[] kudos) {
@@ -230,7 +231,7 @@ contract ProjectKudos {
 
     /**
      * @dev Returns votes allowed to be given by user
-     * 
+     *
      * @param addr user's address
      * @return number of votes left
      */
@@ -241,7 +242,7 @@ contract ProjectKudos {
 
     /**
      * @dev Returns votes given by user
-     * 
+     *
      * @param addr user's address
      * @return number of votes given
      */
@@ -250,22 +251,22 @@ contract ProjectKudos {
         return user.kudosGiven;
     }
 
-   
+
     // ********************* //
     // *   Private Calls   * //
     // ********************* //
-    
+
     /**
      * @dev Private function. Updates users index
-     * 
+     *
      * @param code project code represented by bytes32 array
      * @param kudos votes total given to the project by sender
      */
     function updateUsersIndex(bytes32 code, uint kudos) private {
-        
+
         UserIndex idx = usersIndex[msg.sender];
         uint i = idx.kudosIdx[code];
-        
+
         // add new entry to index
         if (i == 0) {
             i = idx.projects.length + 1;
@@ -282,28 +283,28 @@ contract ProjectKudos {
      * @dev Low level function.
      * Converts string to bytes32 array.
      * Throws if string length is more than 32 bytes
-     * 
+     *
      * @param str string
      * @return bytes32 representation of str
      */
     function strToBytes(string str) private returns (bytes32 ret) {
-        
+
         if (bytes(str).length > 32) throw;
-        
+
         assembly {
             ret := mload(add(str, 32))
         }
-    } 
+    }
 
-    
+
     // ********************* //
     // *     Modifiers     * //
     // ********************* //
-    
+
     /**
      * @dev Throws if called not by contract's owner
      */
-    modifier onlyOwner() { 
+    modifier onlyOwner() {
         if (msg.sender != owner) throw;
         _;
     }
