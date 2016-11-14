@@ -121,7 +121,7 @@ contract ProjectKudos {
      *  @param projectCode code of the project, must be less than or equal to 32 bytes
      *  @param kudos - votes to be given
      */
-    function giveKudos(string projectCode, uint kudos) {
+    function giveKudos(bytes32 projectCode, uint kudos) {
 
         // throw if called not during the vote period
         if (now < votePeriod.start) throw;
@@ -131,17 +131,16 @@ contract ProjectKudos {
 
         if (giver.kudosGiven + kudos > giver.kudosLimit) throw;
 
-        bytes32 code = strToBytes(projectCode);
-        ProjectInfo project = projects[code];
+        ProjectInfo project = projects[projectCode];
 
         giver.kudosGiven += kudos;
         project.kudosTotal += kudos;
         project.kudosByUser[msg.sender] += kudos;
 
         // save index of user voting history
-        updateUsersIndex(code, project.kudosByUser[msg.sender]);
+        updateUsersIndex(projectCode, project.kudosByUser[msg.sender]);
 
-        Vote(msg.sender, sha3(projectCode), kudos);
+        Vote(msg.sender, projectCode, kudos);
     }
 
     /**
@@ -187,9 +186,8 @@ contract ProjectKudos {
      *
      * @return number of give votes
      */
-    function getProjectKudos(string projectCode) constant returns(uint) {
-        bytes32 code = strToBytes(projectCode);
-        ProjectInfo project = projects[code];
+    function getProjectKudos(bytes32 projectCode) constant returns(uint) {
+        ProjectInfo project = projects[projectCode];
         return project.kudosTotal;
     }
 
@@ -202,9 +200,8 @@ contract ProjectKudos {
      *
      * @return array of votes given by passed users
      */
-    function getProjectKudosByUsers(string projectCode, address[] users) constant returns(uint[]) {
-        bytes32 code = strToBytes(projectCode);
-        ProjectInfo project = projects[code];
+    function getProjectKudosByUsers(bytes32 projectCode, address[] users) constant returns(uint[]) {
+        ProjectInfo project = projects[projectCode];
         mapping(address => uint) kudosByUser = project.kudosByUser;
         uint[] memory userKudos = new uint[](users.length);
         for (uint i = 0; i < users.length; i++) {
@@ -277,23 +274,6 @@ contract ProjectKudos {
         }
 
         idx.kudos[i - 1] = kudos;
-    }
-
-    /**
-     * @dev Low level function.
-     * Converts string to bytes32 array.
-     * Throws if string length is more than 32 bytes
-     *
-     * @param str string
-     * @return bytes32 representation of str
-     */
-    function strToBytes(string str) private returns (bytes32 ret) {
-
-        if (bytes(str).length > 32) throw;
-
-        assembly {
-            ret := mload(add(str, 32))
-        }
     }
 
 

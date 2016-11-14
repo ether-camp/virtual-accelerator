@@ -254,7 +254,7 @@ it('vote-during-the-period-2', function() {
 
     assert.equal(args.voter, '0xcc49bea5129ef2369ff81b0c0200885893979b77');
     assert.equal(args.count.toNumber(), 4);
-    assert.equal(args.projectCode, ethUtil.bufferToHex(ethUtil.sha3('TST')));
+    assert.equal(args.projectCode, '0x5453540000000000000000000000000000000000000000000000000000000000'); // 'TST' converted to bytes32
 
     return true;
   })
