@@ -15,6 +15,9 @@ contract ProjectKudos {
     // votes limit for regular user
     uint KUDOS_LIMIT_USER  = 10;
 
+    // additional votes given for social account proof
+    uint SOCIAL_PROOF_KUDOS = 100;
+
     // Grant Reason
     uint GRANT_REASON_FACEBOOK = 0;
     uint GRANT_REASON_TWITTER = 1;
@@ -165,7 +168,7 @@ contract ProjectKudos {
         if (user.grant[reason]) throw;
         
         // grant 100 votes
-        user.kudosLimit += 100;
+        user.kudosLimit += SOCIAL_PROOF_KUDOS;
         
         // mark reason 
         user.grant[reason] = true;
