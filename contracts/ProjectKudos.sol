@@ -15,13 +15,9 @@ contract ProjectKudos {
     // votes limit for regular user
     uint KUDOS_LIMIT_USER  = 10;
 
-    // enumerates reasons 
-    // which additional votes can be granted for
-    enum GrantReason {
-        Facebook,
-        Twitter, 
-        Fake
-    }
+    // Grant Reason
+    uint GRANT_REASON_FACEBOOK = 0;
+    uint GRANT_REASON_TWITTER = 1;
 
     // keeps project votes data
     struct ProjectInfo {
@@ -151,17 +147,14 @@ contract ProjectKudos {
      * @param userToGrant address of user to grant additional 
      * votes for social proof
      * 
-     * @param reason granting reason, 
-     * possible reasons are listed in GrantReason enum
+     * @param reason granting reason,  0 - Facebook, 1 - Twitter
      */         
     function grantKudos(address userToGrant, uint reason) onlyOwner {
     
         UserInfo user = users[userToGrant];
     
-        GrantReason grantReason = grantUintToReason(reason);
-        
-        if (grantReason != GrantReason.Facebook &&
-            grantReason != GrantReason.Twitter) throw;
+        if (reason != GRANT_REASON_FACEBOOK &&        // Facebook
+            reason != GRANT_REASON_TWITTER) throw;    // Twitter
     
         // if user is judge his identity is known
         // not reasonble to grant more kudos for social 
@@ -281,31 +274,7 @@ contract ProjectKudos {
 
         idx.kudos[i - 1] = kudos;
     }
-    
-    /**
-     * @dev Translates GrantReason code to GrantReason
-     * 
-     * @param reason the code of the reason
-     * @return GrantReason corresponding to the code
-     */
-    function grantUintToReason(uint reason) private returns (GrantReason result) {
-        if (reason == 0)  return GrantReason.Facebook;
-        if (reason == 1)  return GrantReason.Twitter;
-        return GrantReason.Fake;
-    }
-    
-    /**
-     * @dev Translates GrantReason to its code
-     * 
-     * @param reason GrantReason instance
-     * @return corresponding reason code
-     */
-    function grantReasonToUint(GrantReason reason) private returns (uint result) {
-        if (reason == GrantReason.Facebook) return 0;
-        if (reason == GrantReason.Twitter)  return 1;
-        return 3;
-    }
-    
+
     /**
      * @dev Low level function.
      * Converts string to bytes32 array.
