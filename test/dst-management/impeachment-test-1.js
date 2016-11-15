@@ -34,6 +34,8 @@ function printDate(){
  *
  * Testing for impeachment:
  *
+ *
+ *
  * todo ... add more ... description
  *
  */
@@ -45,7 +47,6 @@ it('event-info-init', function() {
     log('  impeachment-test-1.js ');
     log(' ***********************');
     log('');
-
 
     return contracts.EventInfo.new()
 
@@ -298,13 +299,13 @@ it('issue-apl-tokens-seria-1', function() {
 
         dst1Total = dstContract_APL.getTotalSupply().toNumber() / 1000;
 
-        log("[APL] => total supply: " + dst1Total.toFixed(3) + " APL");
-        assert.equal(1000000000, dst1Total);
+        log("[APL] => total suply: " + dst1Total.toFixed(3) + " APL");
+        assert(1000000000000, dst1Total);
 
         veTokens = dstContract_APL.allowance(dstContract_APL.address,
                                           virtualExchange.address).toNumber() / 1000;
         log("[APL] => total on VirtualExchange: " + veTokens.toFixed(3) + " APL");
-        assert.equal(1000000000, veTokens);
+        assert(1000000000000, veTokens);
 
         return true;
     })
@@ -464,9 +465,9 @@ it('buy-apl-by-3a7e', function() {
         log("[0x3a7e] => VirtualExchange balance: " + veTokens.toFixed(3) + " HKG");
         assert.equal(1700000 , veTokens);
 
-        availableSupply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
-        log("[APL] => available supply: " + availableSupply + " APL");
-        assert.equal(700000000 , availableSupply);
+        availableSuply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
+        log("[APL] => available suply: " + availableSuply + " APL");
+        assert.equal(700000000 , availableSuply);
 
         return true;
     })
@@ -517,8 +518,8 @@ it('buy-apl-by-2980', function() {
         log("[0x2980] => VirtualExchange balance: " + veTokens.toFixed(3) + " HKG");
         assert.equal(1700000 , veTokens);
 
-        availableSupply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
-        log("[APL] => available supply: " + availableSupply + " APL");
+        availableSuply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
+        log("[APL] => available suply: " + availableSuply + " APL");
 
 
         log("");
@@ -589,8 +590,8 @@ it('buy-apl-by-696b', function() {
         log("[0x696b] => VirtualExchange balance: " + veTokens.toFixed(3) + " HKG");
         assert.equal(1600000 , veTokens);
 
-        availableSupply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
-        log("[APL] => available supply: " + availableSupply + " APL");
+        availableSuply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
+        log("[APL] => available suply: " + availableSuply + " APL");
 
 
         log("");
@@ -624,14 +625,7 @@ it('buy-apl-by-696b', function() {
 });
 
 
-
-it('roll-time-va-ends', function(){
-
-    return workbench.rollTimeTo('22-Dec-2016 14:00 UTC+00')
-    .then(function(contract) { printDate(); return true; });
-});
-
-
+//TODO: if impeachment files are the same until here we should refactor
 it('roll-time-50%-available', function(){
 
     return workbench.rollTimeTo('22-Feb-2017 14:00 UTC+00')
@@ -681,7 +675,7 @@ it('submit-proposal-1', function() {
 
        t1 = eventInfo.getNow().toNumber() + 60 * 60 * 24 * 10;
        t2 = proposalTimeEnds;
-       assert.equal(t1, t2);
+       assert(t1, t2);
 
        assert.equal(proposalURL,    "http://pastebin.com/raw/6e9PBTeP");
        assert.equal(proposalSender, "0xcc49bea5129ef2369ff81b0c0200885893979b77");
@@ -771,9 +765,9 @@ it('redeem-proposal-1', function() {
 
        args = parsed.logs[0].args;
 
-       assert.equal(dstContract_APL.address, args.from);
-       assert.equal("0xcc49bea5129ef2369ff81b0c0200885893979b77", args.to);
-       assert.equal(200000000, args.value);
+       assert(dstContract_APL.address, args.from);
+       assert("0xcc49bea5129ef2369ff81b0c0200885893979b77", args.to);
+       assert(200000000, args.value);
 
        return true;
     })
