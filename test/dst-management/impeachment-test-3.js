@@ -32,11 +32,11 @@ function printDate(){
 
 /**
  *
- * Testing for impeachment:
+ * Testing for self-impeachment:
  *
- * 1. Voting structure 30%, 30%, 30%, 10%
- * 2. Submit impeachment proposal
- * 3. Support the impeachment proposal by 70%
+ *
+ *
+ * todo ... add more ... description
  *
  */
 
@@ -44,7 +44,7 @@ it('event-info-init', function() {
 
     log('');
     log(' ***********************');
-    log('  impeachment-test-1.js ');
+    log('  impeachment-test-3.js ');
     log(' ***********************');
     log('');
 
@@ -117,6 +117,33 @@ it('buy-hkg-for-3a7e', function() {
           value = hackerGold.balanceOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d').toNumber() / 1000;
 
           log("[0x3a7e] => balance: " + value.toFixed(3) + " HKG");
+          assert.equal(2000000, value);
+
+          return true;
+    })
+
+});
+
+it('buy-hkg-for-cc49', function() {
+    log("");
+    log(" (!) Action: [0xcc49] buy [HKG] for 10000 Ether");
+
+    return workbench.sendTransaction({
+      from: '0xcc49bea5129ef2369ff81b0c0200885893979b77',
+      to: hackerGold.address,
+      value: sandbox.web3.toWei(10000, 'ether')
+    })
+
+    .then(function (txHash) {
+
+          return workbench.waitForReceipt(txHash);
+    })
+
+    .then(function (txHash) {
+
+          value = hackerGold.balanceOf('0xcc49bea5129ef2369ff81b0c0200885893979b77').toNumber() / 1000;
+
+          log("[0xcc49] => balance: " + value.toFixed(3) + " HKG");
           assert.equal(2000000, value);
 
           return true;
@@ -546,175 +573,38 @@ it('buy-apl-by-2980', function() {
     })
 });
 
-
-
-
-it('buy-apl-by-696b', function() {
+it('buy-apl-by-cc49', function() {
     log("");
-    log(" (!) Action: [0x696b] buy tokens [APL] for 300,000.000 HKG");
+    log(" (!) Action: [0x2980] buy tokens [APL] for 200,000.000 HKG");
 
 
-    return virtualExchange.buy('APL', 300000000,
+    return virtualExchange.buy('APL', 2000000,
     {
-       from : '0x696ba93ef4254da47ff05b6caa88190db335f1c3',
+       from : '0xcc49bea5129ef2369ff81b0c0200885893979b77',
        gas: 250000,
     })
 
     .then(function (txHash) {
 
           return workbench.waitForReceipt(txHash);
+
     })
 
-    .then(function () {
+    .then(function (parsed) {
+        console.log("logs:" ,parsed.logs[0].args);
+        dst1Balance = dstContract_APL.balanceOf('0xcc49bea5129ef2369ff81b0c0200885893979b77').toNumber() / 1000;
+        voting = dstContract_APL.votingRightsOf('0xcc49bea5129ef2369ff81b0c0200885893979b77').toNumber();
 
-        dst1Balance = dstContract_APL.balanceOf('0x696ba93ef4254da47ff05b6caa88190db335f1c3').toNumber() / 1000;
-
-        log("[0x696b] => balance: " + dst1Balance.toFixed(3) + " APL");
-        assert.equal(300000000 , dst1Balance);
-
-        total  = dstContract_APL.getPreferedQtySold();
-        voting = dstContract_APL.votingRightsOf('0x696ba93ef4254da47ff05b6caa88190db335f1c3');
-
-        log ("[0x696b] => voting: " + voting + " votes - " + voting / total * 100 + "%");
-        assert.equal(300000000000 , voting);
-
-        value = hackerGold.balanceOf('0x696ba93ef4254da47ff05b6caa88190db335f1c3').toNumber() / 1000;
-
-        log("[0x696b] => balance: " + value.toFixed(3) + " HKG");
-        assert.equal(1700000, value);
-
-        log ("[APL] => total: " + total + " votes");
-
-        veTokens = hackerGold.allowance('0x696ba93ef4254da47ff05b6caa88190db335f1c3',
-                                          virtualExchange.address).toNumber() / 1000;
-        log("[0x696b] => VirtualExchange balance: " + veTokens.toFixed(3) + " HKG");
-        assert.equal(1700000 , veTokens);
-
-        availableSuply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
-        log("[APL] => available suply: " + availableSuply + " APL");
-
-
-        log("");
-        log(" Voting Summary: ");
-        log(" =============== ");
-
-        total  = dstContract_APL.getPreferedQtySold();
-        voting = dstContract_APL.votingRightsOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d');
-
-        log ("[0x3a7e] => voting: " + voting + " votes - " + (voting / total * 100).toFixed(2) + "%");
-        assert.equal(33.33, (voting / total * 100).toFixed(2));
-
-        total  = dstContract_APL.getPreferedQtySold();
-        voting = dstContract_APL.votingRightsOf('0x29805ff5b946e7a7c5871c1fb071f740f767cf41');
-
-        log ("[0x2980] => voting: " + voting + " votes - " + (voting / total * 100).toFixed(2) + "%");
-        assert.equal(33.33, (voting / total * 100).toFixed(2));
-
-        total  = dstContract_APL.getPreferedQtySold();
-        voting = dstContract_APL.votingRightsOf('0x696ba93ef4254da47ff05b6caa88190db335f1c3');
-
-        log ("[0x696b] => voting: " + voting + " votes - " + (voting / total * 100).toFixed(2) + "%");
-        assert.equal(33.33, (voting / total * 100).toFixed(2));
-
-        value = hackerGold.balanceOf(dstContract_APL.address).toNumber() / 1000;
-        log("[APL] => collected: " + value.toFixed(3) + " HKG");
-        assert.equal(900000, value);
-
-        return true;
+        log ("[0xcc49] => voting: " + voting + " votes - " + voting / total * 100 + "%");
+        assert.equal(2000000000 , voting);
     })
 });
+
+
+
 
 
 //TODO: if impeachment files are the same until here we should refactor
-it('buy-apl-by-cd2a', function() {
-    log("");
-    log(" (!) Action: [cd2a] buy tokens [APL] for 100,000.000 HKG");
-
-
-    return virtualExchange.buy('APL', 100000000,
-    {
-       from : '0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826',
-       gas: 250000,
-    })
-
-    .then(function (txHash) {
-
-          return workbench.waitForReceipt(txHash);
-    })
-
-    .then(function () {
-
-        dst1Balance = dstContract_APL.balanceOf('0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826').toNumber() / 1000;
-
-        log("[0xcd2a] => balance: " + dst1Balance.toFixed(3) + " APL");
-        assert.equal(100000000 , dst1Balance);
-
-        total  = dstContract_APL.getPreferedQtySold();
-        voting = dstContract_APL.votingRightsOf('0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826');
-
-        log ("[0xcd2a] => voting: " + voting + " votes - " + voting / total * 100 + "%");
-        assert.equal(100000000000 , voting);
-
-        value = hackerGold.balanceOf('0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826').toNumber() / 1000;
-
-        log("[0xcd2a] => balance: " + value.toFixed(3) + " HKG");
-        assert.equal(1900000, value);
-
-        log ("[APL] => total: " + total + " votes");
-
-        veTokens = hackerGold.allowance('0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826',
-                                          virtualExchange.address).toNumber() / 1000;
-        log("[0xcd2a] => VirtualExchange balance: " + veTokens.toFixed(3) + " HKG");
-        assert.equal(1900000 , veTokens);
-
-        availableSuply = dstContract_APL.balanceOf(dstContract_APL.address).toNumber() / 1000;
-        log("[APL] => available suply: " + availableSuply + " APL");
-
-
-        log("");
-        log(" Voting Summary: ");
-        log(" =============== ");
-
-        total  = dstContract_APL.getPreferedQtySold();
-        voting = dstContract_APL.votingRightsOf('0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d');
-
-        log ("[0x3a7e] => voting: " + voting + " votes - " + (voting / total * 100) + "%");
-        assert.equal(30, (voting / total * 100).toFixed(2));
-
-        total  = dstContract_APL.getPreferedQtySold();
-        voting = dstContract_APL.votingRightsOf('0x29805ff5b946e7a7c5871c1fb071f740f767cf41');
-
-        log ("[0x2980] => voting: " + voting + " votes - " + (voting / total * 100) + "%");
-        assert.equal(30, (voting / total * 100).toFixed(2));
-
-        total  = dstContract_APL.getPreferedQtySold();
-        voting = dstContract_APL.votingRightsOf('0x696ba93ef4254da47ff05b6caa88190db335f1c3');
-
-        log ("[0x696b] => voting: " + voting + " votes - " + (voting / total * 100) + "%");
-        assert.equal(30, (voting / total * 100).toFixed(2));
-
-        total  = dstContract_APL.getPreferedQtySold();
-        voting = dstContract_APL.votingRightsOf('0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826');
-
-        log ("[0xcd2a] => voting: " + voting + " votes - " + (voting / total * 100) + "%");
-        assert.equal(10, (voting / total * 100).toFixed(2));
-
-        value = hackerGold.balanceOf(dstContract_APL.address).toNumber() / 1000;
-        log("[APL] => collected: " + value.toFixed(3) + " HKG");
-        assert.equal(1000000, value);
-
-        return true;
-    })
-});
-
-
-it('roll-time-va-ends', function(){
-
-    return workbench.rollTimeTo('22-Dec-2016 14:00 UTC+00')
-    .then(function(contract) { printDate(); return true; });
-});
-
-
 it('roll-time-50%-available', function(){
 
     return workbench.rollTimeTo('22-Feb-2017 14:00 UTC+00')
@@ -774,7 +664,7 @@ it('submit-proposal-1', function() {
        value = hackerGold.balanceOf('0xcc49bea5129ef2369ff81b0c0200885893979b77').toNumber() / 1000;
 
        log("[0xcc49] => balance: " + value.toFixed(3) + " HKG");
-       assert.equal(0, value);
+       assert.equal(2000000, value);
 
        return true;
     })
@@ -856,7 +746,7 @@ it('redeem-proposal-1', function() {
 
        assert(dstContract_APL.address, args.from);
        assert("0xcc49bea5129ef2369ff81b0c0200885893979b77", args.to);
-       assert(200000000, args.value);
+       assert(2200000, args.value);
 
        return true;
     })
@@ -866,12 +756,12 @@ it('redeem-proposal-1', function() {
        value = hackerGold.balanceOf('0xcc49bea5129ef2369ff81b0c0200885893979b77').toNumber() / 1000;
 
        log("[0xcc49] => balance: " + value.toFixed(3) + " HKG");
-       assert.equal(200000, value);
+       assert.equal(2200000, value);
 
        value = hackerGold.balanceOf(dstContract_APL.address).toNumber() / 1000;
 
        log("[APL] => balance: " + value.toFixed(3) + " HKG");
-       assert.equal(800000, value);
+       assert.equal(400000, value);
 
        return true;
     })
@@ -879,21 +769,20 @@ it('redeem-proposal-1', function() {
 });
 
 
-
 it('roll-time-to-start-impeachment', function(){
+
     return workbench.rollTimeTo('22-Mar-2017 14:00 UTC+00')
     .then(function(contract) { printDate(); return true; });
 });
 
 
-
-it('impeachment-proposal-submit-1', function() {
+it('self-impeachment-proposal-submit-1', function() {
     log("");
     log(" (!) Action: [0x3a7e] submit impeachment proposal");
 
     return dstContract_APL.submitImpeachmentProposal("http://pastebin.com/raw/Ehet8yVf", '0xdedb49385ad5b94a16f236a6890cf9e0b1e30392',
     {
-       from : '0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d',
+       from : "0xcc49bea5129ef2369ff81b0c0200885893979b77",
        gas : 250000,
     })
 
@@ -904,7 +793,7 @@ it('impeachment-proposal-submit-1', function() {
     })
 
     .then(function (parsed) {
-
+       console.log(parsed);
        args = parsed.logs[0].args;
 
        log("");
@@ -916,7 +805,7 @@ it('impeachment-proposal-submit-1', function() {
        assert.equal("ImpeachmentProposed", parsed.logs[0].event);
 
        log("Submited by: " +  args.submitter);
-       assert.equal("0x3a7e663c871351bbe7b6dd006cb4a46d75cce61d", args.submitter);
+       assert.equal("0xcc49bea5129ef2369ff81b0c0200885893979b77", args.submitter);
 
        assert.equal("http://pastebin.com/raw/Ehet8yVf",           args.urlDetails);
        assert.equal("0xdedb49385ad5b94a16f236a6890cf9e0b1e30392", args.newExecutive);
@@ -946,121 +835,6 @@ it('impeachment-proposal-submit-1', function() {
     })
 
 });
-
-
-it('impeachment-proposal-support-1', function() {
-    log("");
-    log(" (!) Action: [0x2980] support impeachment proposal");
-
-    return dstContract_APL.supportImpeachment(
-    {
-       from : '0x29805ff5b946e7a7c5871c1fb071f740f767cf41',
-       gas : 250000,
-    })
-
-    .then(function (txHash) {
-
-        return workbench.waitForReceipt(txHash);
-
-    })
-
-    .then(function (parsed) {
-
-       args = parsed.logs[0].args;
-
-       log("");
-
-       log("ImpeachmentSupport (event)");
-       log("==================");
-
-       assert.equal("ImpeachmentSupport", parsed.logs[0].event);
-
-       log("Submited by: " +  args.supportter);
-       assert.equal("0x29805ff5b946e7a7c5871c1fb071f740f767cf41", args.supportter);
-
-       log("[0x2980] submited " + args.votes + " votes");
-       assert.equal(300000000000, args.votes.toNumber());
-
-       return true;
-    })
-
-    .then(function () {
-
-       totalPreferred = dstContract_APL.getPreferedQtySold().toNumber();
-       impeachmentSupport = dstContract_APL.getCurrentImpeachmentVotesSupporting().toNumber();
-
-       impSupport = (impeachmentSupport / totalPreferred) * 100
-
-       log("");
-
-       log("Support for impeachment: " + impSupport + "%");
-       assert.equal(60, impSupport);
-
-       log("Executive for now: " + dstContract_APL.getExecutive());
-       assert.equal('0xcc49bea5129ef2369ff81b0c0200885893979b77' ,dstContract_APL.getExecutive());
-
-       return true;
-    })
-});
-
-
-
-it('impeachment-proposal-support-2', function() {
-    log("");
-    log(" (!) Action: [0xcd2a] support impeachment proposal");
-
-    return dstContract_APL.supportImpeachment(
-    {
-       from : '0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826',
-       gas : 250000,
-    })
-
-    .then(function (txHash) {
-
-        return workbench.waitForReceipt(txHash);
-
-    })
-
-    .then(function (parsed) {
-
-       args = parsed.logs[0].args;
-
-       log("");
-
-       log("ImpeachmentSupport (event)");
-       log("==================");
-
-       assert.equal("ImpeachmentSupport", parsed.logs[0].event);
-
-       log("Submited by: " +  args.supportter);
-       assert.equal("0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826", args.supportter);
-
-       log("[0x2980] submited " + args.votes + " votes");
-       assert.equal(100000000000, args.votes.toNumber());
-
-       return true;
-    })
-
-    .then(function () {
-
-       totalPreferred = dstContract_APL.getPreferedQtySold().toNumber();
-       impeachmentSupport = dstContract_APL.getCurrentImpeachmentVotesSupporting().toNumber();
-
-       impSupport = (impeachmentSupport / totalPreferred) * 100
-
-       log("");
-
-       log("Support for impeachment: " + impSupport + "%");
-       assert.equal(70, impSupport);
-
-       log("Executive for now: " + dstContract_APL.getExecutive());
-       assert.equal('0xdedb49385ad5b94a16f236a6890cf9e0b1e30392' ,dstContract_APL.getExecutive());
-
-       return true;
-    })
-
-});
-
 
 
 

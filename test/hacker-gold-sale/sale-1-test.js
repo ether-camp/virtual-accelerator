@@ -52,10 +52,10 @@ it('init', function() {
         .then(function(){
             
            var balance    = hackerGold.balanceOf('0xcc49bea5129ef2369ff81b0c0200885893979b77').toNumber(); 
-           var totalSuply = hackerGold.getTotalSupply().toNumber();
+           var totalSupply = hackerGold.getTotalSupply().toNumber();
                        
            assert.equal(balance, 0)
-           assert.equal(totalSuply, 0)
+           assert.equal(totalSupply, 0)
            
            return true;  
         })
