@@ -616,7 +616,7 @@ it('submit-proposal-for-ether-1', function() {
 
 it('roll-time-proposal_1-redeem', function(){
    
-    return workbench.rollTimeTo('01-Jan-2017 14:00 UTC+00')
+    return workbench.rollTimeTo('01-Jan-2017 14:01 UTC+00')
     .then(function(contract) { printDate(); return true; });
 });
 
@@ -719,7 +719,7 @@ it('submit-proposal-for-ether-0', function() {
 
 it('roll-time-proposal_2-submit', function(){
    
-    return workbench.rollTimeTo('05-Jan-2017 14:00 UTC+00')
+    return workbench.rollTimeTo('05-Jan-2017 14:02 UTC+00')
     .then(function(contract) { printDate(); return true; });
 });
 
@@ -827,7 +827,7 @@ it('object-by-vote-proposal-2', function() {
 
 it('roll-time-proposal_2-redeem', function(){
    
-    return workbench.rollTimeTo('09-Jan-2017 14:00 UTC+00')
+    return workbench.rollTimeTo('09-Jan-2017 14:03 UTC+00')
     .then(function(contract) { printDate(); return true; });
 });
 
@@ -892,7 +892,7 @@ it('redeem-propose-for-ether-2', function() {
 
 it('roll-time-for-total-redeem', function(){
    
-    return workbench.rollTimeTo('22-June-2017 14:00 UTC+00')
+    return workbench.rollTimeTo('22-June-2017 14:04 UTC+00')
     .then(function(contract) { printDate(); return true; });
 });
 

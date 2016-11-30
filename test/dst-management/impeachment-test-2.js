@@ -827,7 +827,7 @@ it('object-by-vote-proposal-1', function() {
 
 it('roll-time-proposal-redeem', function(){
    
-    return workbench.rollTimeTo('04-Mar-2017 14:00 UTC+00')
+    return workbench.rollTimeTo('04-Mar-2017 14:01 UTC+00')
     .then(function(contract) { printDate(); return true; });
 });
 
@@ -881,7 +881,7 @@ it('redeem-proposal-1', function() {
 
 
 it('roll-time-to-start-impeachment', function(){
-    return workbench.rollTimeTo('22-Mar-2017 14:00 UTC+00')
+    return workbench.rollTimeTo('22-Mar-2017 14:02 UTC+00')
     .then(function(contract) { printDate(); return true; });
 });
 
@@ -921,8 +921,8 @@ it('impeachment-proposal-submit-1', function() {
        assert.equal("http://pastebin.com/raw/Ehet8yVf",           args.urlDetails);     
        assert.equal("0xdedb49385ad5b94a16f236a6890cf9e0b1e30392", args.newExecutive);     
 
-       expectedEndTime = new Date('05-Apr-2017 14:00 UTC+00').getTime() / 1000;
-       assert.equal(expectedEndTime, args.votindEndTS);
+       expectedEndTime = new Date('05-Apr-2017 14:02 UTC+00').getTime() / 1000;
+       assert.equal(Math.floor(expectedEndTime / 60), Math.floor(args.votindEndTS / 60)); // seconds can be different
        
        return true;                
     })

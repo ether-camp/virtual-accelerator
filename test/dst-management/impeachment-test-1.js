@@ -939,7 +939,7 @@ it('impeachment-proposal-submit-1', function() {
        assert.equal("0xdedb49385ad5b94a16f236a6890cf9e0b1e30392", args.newExecutive);     
 
        expectedEndTime = new Date('05-Apr-2017 14:00 UTC+00').getTime() / 1000;
-       assert.equal(expectedEndTime, args.votindEndTS);
+       assert.equal(Math.floor(expectedEndTime / 60), Math.floor(args.votindEndTS / 60)); // seconds can be different
        
        return true;                
     })
@@ -1226,7 +1226,7 @@ it('impeachment-proposal-submit-2', function() {
        assert.equal("0xcc49bea5129ef2369ff81b0c0200885893979b77", args.newExecutive);     
 
        expectedEndTime = new Date('06-May-2017 14:00 UTC+00').getTime() / 1000;
-       assert.equal(expectedEndTime, args.votindEndTS);
+       assert.equal(Math.floor(expectedEndTime / 60), Math.floor(args.votindEndTS / 60)); // seconds can be different
        
        return true;                
     })
