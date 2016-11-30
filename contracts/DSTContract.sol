@@ -166,7 +166,7 @@ contract DSTContract is StandardToken{
         collectedEther += msg.value; 
         
         // rise event
-        BuyForEtherTransaction(msg.sender, collectedEther, balances[this], etherPrice, tokens);
+        BuyForEtherTransaction(msg.sender, collectedEther, totalSupply, etherPrice, tokens);
         
     }
 
@@ -223,7 +223,7 @@ contract DSTContract is StandardToken{
         Approval(this, virtualExchangeAddress, qtyToEmit);
         
         // rise event 
-        DstTokensIssued(hkgPrice, preferedQtySold, balances[this], qtyToEmit);
+        DstTokensIssued(hkgPrice, preferedQtySold, totalSupply, qtyToEmit);
     }
 
     
@@ -260,7 +260,7 @@ contract DSTContract is StandardToken{
       transfer(sender, tokensQty);        
             
       // rise event       
-      BuyForHKGTransaction(sender, preferedQtySold, balances[this], hkgPrice, tokensQty);
+      BuyForHKGTransaction(sender, preferedQtySold, totalSupply, hkgPrice, tokensQty);
         
       return true;
     }
@@ -290,7 +290,7 @@ contract DSTContract is StandardToken{
          totalSupply    += qtyToEmit;
          
          // rise event  
-         DstTokensIssued(qtyForOneEther, totalSupply, balances[this], qtyToEmit);
+         DstTokensIssued(qtyForOneEther, totalSupply, totalSupply, qtyToEmit);
     }
      
     
