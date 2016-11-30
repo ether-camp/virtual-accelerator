@@ -344,7 +344,7 @@ it('enlist-apl', function() {
     
    .then(function() {
                 
-      exist = virtualExchange.isExistByString(dstContract_APL.getDSTSymbol()); 
+      exist = virtualExchange.isExistByBytes(dstContract_APL.getDSTSymbolBytes()); 
       
       log("[APL] => enlisted: " + exist);
       assert.equal(true, exist);
@@ -372,7 +372,7 @@ it('enlist-fbx', function() {
     
    .then(function() {
                 
-      exist = virtualExchange.isExistByString(dstContract_FBX.getDSTSymbol()); 
+      exist = virtualExchange.isExistByBytes(dstContract_FBX.getDSTSymbolBytes()); 
       
       log("[FBX] => enlisted: " + exist);
       assert.equal(true, exist);
@@ -400,7 +400,7 @@ it('enlist-gog', function() {
     
    .then(function() {
                 
-      exist = virtualExchange.isExistByString(dstContract_GOG.getDSTSymbol()); 
+      exist = virtualExchange.isExistByBytes(dstContract_GOG.getDSTSymbolBytes()); 
       
       log("[GOG] => enlisted: " + exist);
       assert.equal(true, exist);
@@ -429,7 +429,7 @@ it('enlist-amz', function() {
     
    .then(function() {
                 
-      exist = virtualExchange.isExistByString(dstContract_AMZ.getDSTSymbol()); 
+      exist = virtualExchange.isExistByBytes(dstContract_AMZ.getDSTSymbolBytes()); 
       
       log("[AMZ] => enlisted: " + exist);
       assert.equal(true, exist);

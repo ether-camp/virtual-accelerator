@@ -276,7 +276,7 @@ it('enlist-apl', function() {
     
    .then(function() {
                 
-      exist = virtualExchange.isExistByString(dstContract_APL.getDSTSymbol()); 
+      exist = virtualExchange.isExistByBytes(dstContract_APL.getDSTSymbolBytes()); 
       
       log("[APL] => enlisted: " + exist);
       assert.equal(true, exist);

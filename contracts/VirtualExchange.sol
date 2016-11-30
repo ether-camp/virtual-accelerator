@@ -65,20 +65,18 @@ contract VirtualExchange{
      *       that will be the way to buy speciphic tokens for 
      *       startup.
      * 
-     * @param companyName - the company that is enlisted on the exchange 
-     *                      and the tokens are available
+     * @param companyNameBytes - the company that is enlisted on the exchange 
+     *                           and the tokens are available
      * 
      * @param hkg - the ammount of hkg to spend for aquastion 
      *
      */
-    function buy(string companyName, uint hkg) onlyBeforeEnd
+    function buy(bytes32 companyNameBytes, uint hkg) onlyBeforeEnd
                                                returns (bool success) {
 
     
-        bytes32 companyNameBytes = convert(companyName);
-
         // check DST exist 
-        if (!isExistByString(companyName)) throw;
+        if (!isExistByBytes(companyNameBytes)) throw;
 
         // validate availability  
         DSTContract dstContract = DSTContract(dstListed[companyNameBytes]);
@@ -107,18 +105,7 @@ contract VirtualExchange{
         // Call DST to transfer tokens 
         dstContract.buyForHackerGold(hkg);            
     }
-    
-    
-    function convert(string key) returns (bytes32 ret) {
-            if (bytes(key).length > 32) {
-                throw;
-            }      
-
-            assembly {
-                ret := mload(add(key, 32))
-            }
-    }    
-    
+        
 
     // **************************** //
     // *     Constant Getters     * //
@@ -127,16 +114,6 @@ contract VirtualExchange{
 
     function isExistByBytes(bytes32 companyNameBytes) constant returns (bool result) {
             
-        if (dstListed[companyNameBytes] == 0x0) 
-            return false;
-        else 
-            return true;                  
-    }
-
-    function isExistByString(string companyName) constant returns (bool result) {
-        
-        bytes32 companyNameBytes = convert(companyName);
-    
         if (dstListed[companyNameBytes] == 0x0) 
             return false;
         else 

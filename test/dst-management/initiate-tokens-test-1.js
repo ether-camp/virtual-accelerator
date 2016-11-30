@@ -157,7 +157,7 @@ it('enlist-mk3', function() {
     
    .then(function() {
                 
-      exist = virtualExchange.isExistByString(dstContract1.getDSTSymbol()); 
+      exist = virtualExchange.isExistByBytes(dstContract1.getDSTSymbolBytes()); 
       
       log("[MK3] => enlisted: " + exist);
       assert.equal(true, exist);
