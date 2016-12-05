@@ -144,7 +144,7 @@ contract DSTContract is StandardToken{
         // there is tokens left from hackathon 
         if (etherPrice == 0) throw;
         
-        uint tokens = msg.value / (1 finney) * etherPrice;
+        uint tokens = msg.value * etherPrice / (1 finney);
         
         // check if demand of tokens is 
         // overflow the supply 
@@ -152,7 +152,7 @@ contract DSTContract is StandardToken{
         if (balances[this] < tokens) {
             
             tokens = balances[this];
-            retEther = msg.value - tokens / etherPrice * (1 finney);
+            retEther = msg.value - tokens * (1 finney) / etherPrice;
         
             // return left ether 
             if (!msg.sender.send(retEther)) throw;
