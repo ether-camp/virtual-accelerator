@@ -147,11 +147,12 @@ contract DSTContract is StandardToken{
         uint tokens = msg.value / (1 finney) * etherPrice;
         
         // check if demand of tokens is 
-        // overflow the suply 
-        if (balances[this] < tokens){
+        // overflow the supply 
+        uint retEther = 0;
+        if (balances[this] < tokens) {
             
             tokens = balances[this];
-            uint retEther = msg.value - tokens / etherPrice * (1 finney);
+            retEther = msg.value - tokens / etherPrice * (1 finney);
         
             // return left ether 
             if (!msg.sender.send(retEther)) throw;
@@ -163,7 +164,7 @@ contract DSTContract is StandardToken{
         balances[this] -= tokens;
         
         // count collected ether 
-        collectedEther += msg.value; 
+        collectedEther += msg.value - retEther; 
         
         // rise event
         BuyForEtherTransaction(msg.sender, collectedEther, totalSupply, etherPrice, tokens);
