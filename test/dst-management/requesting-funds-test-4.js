@@ -746,7 +746,7 @@ it('object-by-vote-proposal-1', function() {
 
 it('roll-time-proposal-redeem', function(){
    
-    return workbench.rollTimeTo('04-Mar-2017 14:00 UTC+00')
+    return workbench.rollTimeTo('04-Mar-2017 14:01 UTC+00')
     .then(function(contract) { printDate(); return true; });
 });
 
@@ -801,7 +801,7 @@ it('redeem-proposal-1', function() {
 
 it('roll-time-for-new-proposal-submit', function(){
    
-    return workbench.rollTimeTo('08-Mar-2017 14:00 UTC+00')
+    return workbench.rollTimeTo('08-Mar-2017 14:02 UTC+00')
     .then(function(contract) { printDate(); return true; });
 });
 
@@ -961,7 +961,7 @@ it('object-by-vote-proposal-2-voter-696b', function() {
 
 it('roll-time-proposal-redeem', function(){
    
-    return workbench.rollTimeTo('18-Mar-2017 14:00 UTC+00')
+    return workbench.rollTimeTo('18-Mar-2017 14:03 UTC+00')
     .then(function(contract) { printDate(); return true; });
 });
 
@@ -1053,7 +1053,7 @@ it('collect-all-the-rest-funds-before-time', function() {
 
 it('roll-time-for-total-redeem', function(){
    
-    return workbench.rollTimeTo('22-June-2017 14:00 UTC+00')
+    return workbench.rollTimeTo('22-June-2017 14:04 UTC+00')
     .then(function(contract) { printDate(); return true; });
 });
 

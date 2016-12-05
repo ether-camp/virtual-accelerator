@@ -31,7 +31,7 @@ contract VirtualExchange{
     /**
      * enlist - enlisting one decentralized startup team to 
      *          the hack event virtual exchange, making the 
-     *          DST initated tokens available for aquasition.
+     *          DST initated tokens available for acquisition.
      * 
      *  @param dstAddress - address of the DSTContract 
      * 
@@ -40,15 +40,16 @@ contract VirtualExchange{
 
         DSTContract dstContract = DSTContract(dstAddress);
 
+        bytes32 symbolBytes = dstContract.getDSTSymbolBytes();
+
         /* Don't enlist 2 with the same name */
-        if (isExistByBytes(dstContract.getDSTSymbolBytes())) throw;
+        if (isExistByBytes(symbolBytes)) throw;
 
         // Only owner of the DST can deploy the DST 
         if (dstContract.getExecutive() != msg.sender) throw;
 
         // All good enlist the company
-        bytes32 nameBytes = dstContract.getDSTSymbolBytes();
-        dstListed[nameBytes] = dstAddress;
+        dstListed[symbolBytes] = dstAddress;
         
         // Indicate to DST which Virtual Exchange is enlisted
         dstContract.setVirtualExchange(address(this));
@@ -62,7 +63,7 @@ contract VirtualExchange{
     /**
      *
      * buy - on the hackathon timeframe that is the function 
-     *       that will be the way to buy speciphic tokens for 
+     *       that will be the way to buy specific tokens for 
      *       startup.
      * 
      * @param companyNameBytes - the company that is enlisted on the exchange 
