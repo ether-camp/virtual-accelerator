@@ -3,7 +3,7 @@ import "HackerGold.sol";
 import "EventInfo.sol";
 import "DSTContract.sol";
 
-pragma solidity ^0.4.2;
+pragma solidity ^0.4.6;
 
 /**
  *  VirtualExchange -  The exchange is a trading system used

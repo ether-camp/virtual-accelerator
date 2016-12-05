@@ -2,7 +2,7 @@ import "StandardToken.sol";
 import "EventInfo.sol";
 import "HackerGold.sol";
 
-pragma solidity ^0.4.2;
+pragma solidity ^0.4.6;
 
 /*
  * DSTContract - DST stands for decentralized startup team.
