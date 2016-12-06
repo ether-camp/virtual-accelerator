@@ -181,7 +181,7 @@ contract DSTContract is StandardToken{
      function setHKGPrice(uint qtyForOneHKG) onlyExecutive  {
          
          hkgPrice = qtyForOneHKG;
-         PriceHKGChange(qtyForOneHKG);
+         PriceHKGChange(qtyForOneHKG, preferedQtySold, totalSupply);
      }
      
      
@@ -733,7 +733,7 @@ contract DSTContract is StandardToken{
     // ****************** //        
 
     
-    event PriceHKGChange(uint qtyForOneHKG);
+    event PriceHKGChange(uint indexed qtyForOneHKG, uint indexed tokensSold, uint indexed totalSupply);
     event BuyForHKGTransaction(address indexed buyer, uint indexed tokensSold, uint indexed totalSupply, uint qtyForOneHKG, uint tokensAmount);
     event BuyForEtherTransaction(address indexed buyer, uint indexed tokensSold, uint indexed totalSupply, uint qtyForOneEther, uint tokensAmount);
 
