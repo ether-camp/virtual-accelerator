@@ -626,6 +626,7 @@ contract DSTContract is StandardToken{
     }
     
     function setVirtualExchange(address virtualExchangeAddr){
+        if (virtualExchangeAddress != 0x0) throw;
         virtualExchangeAddress = virtualExchangeAddr;
     }
 
