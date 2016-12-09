@@ -2,7 +2,7 @@ import "StandardToken.sol";
 import "EventInfo.sol";
 import "HackerGold.sol";
 
-pragma solidity ^0.4.2;
+pragma solidity ^0.4.6;
 
 /*
  * DSTContract - DST stands for decentralized startup team.
@@ -29,13 +29,18 @@ pragma solidity ^0.4.2;
  */
 contract DSTContract is StandardToken{
 
+    // Zeros after the point
+    uint DECIMAL_ZEROS = 1000;
+    // Proposal lifetime
+    uint PROPOSAL_LIFETIME = 10 days;
+    // Proposal funds threshold, in percents
+    uint PROPOSAL_FUNDS_TH = 20;
 
-    address   selfAddress;
     address   executive; 
         
     EventInfo eventInfo;
     
-    // Indicateds where the DST is threaded
+    // Indicated where the DST is traded
     address virtualExchangeAddress;
     
     HackerGold hackerGold;
@@ -123,7 +128,6 @@ contract DSTContract is StandardToken{
      */ 
     function DSTContract(EventInfo eventInfoAddr, HackerGold hackerGoldAddr, string dstName, string dstSymbol){
     
-      selfAddress = this; 
       executive   = msg.sender;  
       name        = dstName;
       symbol      = dstSymbol;
@@ -133,25 +137,21 @@ contract DSTContract is StandardToken{
     }
     
 
-    function() payable {
-                
-        // If the hack event is not over return 
-        // sent ether.
-        if (now < eventInfo.getEventEnd()) {
-            throw;
-        }
+    function() payable
+               onlyAfterEnd {
         
         // there is tokens left from hackathon 
         if (etherPrice == 0) throw;
         
-        uint tokens = msg.value / (1 finney) * etherPrice;
+        uint tokens = msg.value * etherPrice * DECIMAL_ZEROS / (1 ether);
         
         // check if demand of tokens is 
-        // overflow the suply 
-        if (balances[this] < tokens){
+        // overflow the supply 
+        uint retEther = 0;
+        if (balances[this] < tokens) {
             
             tokens = balances[this];
-            uint retEther = msg.value - tokens / etherPrice * (1 finney);
+            retEther = msg.value - tokens / etherPrice * (1 finney);
         
             // return left ether 
             if (!msg.sender.send(retEther)) throw;
@@ -163,7 +163,7 @@ contract DSTContract is StandardToken{
         balances[this] -= tokens;
         
         // count collected ether 
-        collectedEther += msg.value; 
+        collectedEther += msg.value - retEther; 
         
         // rise event
         BuyForEtherTransaction(msg.sender, collectedEther, totalSupply, etherPrice, tokens);
@@ -181,7 +181,7 @@ contract DSTContract is StandardToken{
      function setHKGPrice(uint qtyForOneHKG) onlyExecutive  {
          
          hkgPrice = qtyForOneHKG;
-         PriceHKGChange(qtyForOneHKG);
+         PriceHKGChange(qtyForOneHKG, preferedQtySold, totalSupply);
      }
      
      
@@ -200,11 +200,6 @@ contract DSTContract is StandardToken{
                                                  onlyIfAbleToIssueTokens
                                                  onlyBeforeEnd
                                                  onlyAfterTradingStart {
-        
-        // the issuer of the token disabled futer issuance                                                        
-        if (!ableToIssueTokens) {
-            throw;
-        }                
                 
         // no issuence is allowed before enlisted on the
         // exchange 
@@ -216,7 +211,7 @@ contract DSTContract is StandardToken{
         
         
         // now spender can use balance in 
-        // ammount of value from owner balance
+        // amount of value from owner balance
         allowed[this][virtualExchangeAddress] += qtyToEmit;
         
         // rise event about the transaction
@@ -277,13 +272,8 @@ contract DSTContract is StandardToken{
      */
     function issueTokens(uint qtyForOneEther, 
                          uint qtyToEmit) onlyAfterEnd 
-                                         onlyExecutive {
-         
-        // If the user already declared end 
-        // of issuence
-        if (!ableToIssueTokens) {
-            throw;
-        }
+                                         onlyExecutive
+                                         onlyIfAbleToIssueTokens {
          
          balances[this] += qtyToEmit;
          etherPrice = qtyForOneEther;
@@ -354,7 +344,7 @@ contract DSTContract is StandardToken{
             
         uint percent = collectedEther / 100;
             
-        if (requestValue > 20 * percent) throw;
+        if (requestValue > PROPOSAL_FUNDS_TH * percent) throw;
 
         // if remained value is less than requested gain all.
         if (requestValue > this.balance) 
@@ -363,7 +353,7 @@ contract DSTContract is StandardToken{
         // set id of the proposal
         // submit proposal to the map
         bytes32 id = sha3(msg.data, now);
-        uint timeEnds = now + 10 days; 
+        uint timeEnds = now + PROPOSAL_LIFETIME; 
             
         Proposal memory newProposal = Proposal(id, requestValue, url, timeEnds, 0, msg.sender, false, ProposalCurrency.ETHER);
         proposals[id] = newProposal;
@@ -401,10 +391,10 @@ contract DSTContract is StandardToken{
 
         uint percent = preferedQtySold / 100;
         
-        // validate the ammount is legit
+        // validate the amount is legit
         // first 5 proposals should be less than 20% 
         if (counterProposals <= 5 && 
-            requestValue     >  20 * percent) throw;
+            requestValue     >  PROPOSAL_FUNDS_TH * percent) throw;
                 
         // if remained value is less than requested 
         // gain all.
@@ -415,7 +405,7 @@ contract DSTContract is StandardToken{
         // set id of the proposal
         // submit proposal to the map
         bytes32 id = sha3(msg.data, now);
-        uint timeEnds = now + 10 days; 
+        uint timeEnds = now + PROPOSAL_LIFETIME; 
         
         Proposal memory newProposal = Proposal(id, requestValue, url, timeEnds, 0, msg.sender, false, ProposalCurrency.HKG);
         proposals[id] = newProposal;
@@ -636,6 +626,7 @@ contract DSTContract is StandardToken{
     }
     
     function setVirtualExchange(address virtualExchangeAddr){
+        if (virtualExchangeAddress != 0x0) throw;
         virtualExchangeAddress = virtualExchangeAddr;
     }
 
@@ -676,7 +667,7 @@ contract DSTContract is StandardToken{
     }    
 
     function getAddress() constant returns (address result) {
-        return selfAddress;
+        return this;
     }
     
     function getTotalSupply() constant returns (uint result) {
@@ -743,7 +734,7 @@ contract DSTContract is StandardToken{
     // ****************** //        
 
     
-    event PriceHKGChange(uint qtyForOneHKG);
+    event PriceHKGChange(uint indexed qtyForOneHKG, uint indexed tokensSold, uint indexed totalSupply);
     event BuyForHKGTransaction(address indexed buyer, uint indexed tokensSold, uint indexed totalSupply, uint qtyForOneHKG, uint tokensAmount);
     event BuyForEtherTransaction(address indexed buyer, uint indexed tokensSold, uint indexed totalSupply, uint qtyForOneEther, uint tokensAmount);
 
