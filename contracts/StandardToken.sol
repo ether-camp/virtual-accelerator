@@ -57,13 +57,14 @@ contract StandardToken is TokenInterface {
 
     
     /**
-     * transferFrom() - 
+     * transferFrom() - used to move allowed funds from other owner
+     *                  account 
      *
-     *  @param from  - 
-     *  @param to    - 
-     *  @param value - 
+     *  @param from  - move funds from account
+     *  @param to    - move funds to account
+     *  @param value - move the value 
      *
-     *  @return 
+     *  @return - return true on success false otherwise 
      */
     function transferFrom(address from, address to, uint256 value) returns (bool success) {
     
@@ -74,7 +75,7 @@ contract StandardToken is TokenInterface {
     
             // do the actual transfer
             balances[from] -= value;    
-            balances[to] =+ value;            
+            balances[to] += value;            
             
 
             // addjust the permision, after part of 
@@ -119,6 +120,8 @@ contract StandardToken is TokenInterface {
      * 
      */
     function approve(address spender, uint256 value) returns (bool success) {
+        
+        
         
         // now spender can use balance in 
         // ammount of value from owner balance
