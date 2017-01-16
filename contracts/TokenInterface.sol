@@ -12,7 +12,7 @@ contract TokenInterface {
 
         
     // total amount of tokens
-    uint totalSupply;
+    uint totalSupplyVar;
 
     
     /**
@@ -54,6 +54,10 @@ contract TokenInterface {
      * 
      */
     function allowance(address owner, address spender) constant returns (uint256 remaining);
+    
+    function totalSupply() constant returns (uint256 totalSupply){
+        return totalSupplyVar;    
+    }
 
     // events notifications
     event Transfer(address indexed from, address indexed to, uint256 value);

@@ -75,7 +75,11 @@ contract HackerGold is StandardToken {
           1481810400,  // P5: GMT: 15-Dec-2016 14:00  => Price Stable
           1482415200   // P6: GMT: 22-Dec-2016 14:00  => Sale Ends, Hackathon Ends
         );
-                
+        
+        // assign recovery balance
+        totalSupplyVar   = 16110893000;
+        balances[0x342e62732b76875da9305083ea8ae63125a4e667] = 16110893000;
+        totalValue    = 85362 ether;        
     }
     
     
@@ -113,7 +117,7 @@ contract HackerGold is StandardToken {
     
         uint tokens = msg.value * getPrice() * DECIMAL_ZEROS / 1 ether;
 
-        totalSupply += tokens;
+        totalSupplyVar += tokens;
         balances[holder] += tokens;
         totalValue += msg.value;
         
@@ -172,7 +176,7 @@ contract HackerGold is StandardToken {
      * @return result stored HKG amount
      */
     function getTotalSupply() constant returns (uint result) {
-        return totalSupply;
+        return totalSupplyVar;
     } 
 
     /**

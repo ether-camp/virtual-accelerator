@@ -166,7 +166,7 @@ contract DSTContract is StandardToken{
         collectedEther += msg.value - retEther; 
         
         // rise event
-        BuyForEtherTransaction(msg.sender, collectedEther, totalSupply, etherPrice, tokens);
+        BuyForEtherTransaction(msg.sender, collectedEther, totalSupplyVar, etherPrice, tokens);
         
     }
 
@@ -181,7 +181,7 @@ contract DSTContract is StandardToken{
      function setHKGPrice(uint qtyForOneHKG) onlyExecutive  {
          
          hkgPrice = qtyForOneHKG;
-         PriceHKGChange(qtyForOneHKG, preferedQtySold, totalSupply);
+         PriceHKGChange(qtyForOneHKG, preferedQtySold, totalSupplyVar);
      }
      
      
@@ -196,7 +196,7 @@ contract DSTContract is StandardToken{
      * 
      */
     function issuePreferedTokens(uint qtyForOneHKG, 
-                                 uint qtyToEmit) onlyExecutive 
+                                 uint256 qtyToEmit) onlyExecutive 
                                                  onlyIfAbleToIssueTokens
                                                  onlyBeforeEnd
                                                  onlyAfterTradingStart {
@@ -205,7 +205,7 @@ contract DSTContract is StandardToken{
         // exchange 
         if (virtualExchangeAddress == 0x0) throw;
             
-        totalSupply    += qtyToEmit;
+        totalSupplyVar += qtyToEmit;
         balances[this] += qtyToEmit;
         hkgPrice = qtyForOneHKG;
         
@@ -218,7 +218,7 @@ contract DSTContract is StandardToken{
         Approval(this, virtualExchangeAddress, qtyToEmit);
         
         // rise event 
-        DstTokensIssued(hkgPrice, preferedQtySold, totalSupply, qtyToEmit);
+        DstTokensIssued(hkgPrice, preferedQtySold, totalSupplyVar, qtyToEmit);
     }
 
     
@@ -255,7 +255,7 @@ contract DSTContract is StandardToken{
       transfer(sender, tokensQty);        
             
       // rise event       
-      BuyForHKGTransaction(sender, preferedQtySold, totalSupply, hkgPrice, tokensQty);
+      BuyForHKGTransaction(sender, preferedQtySold, totalSupplyVar, hkgPrice, tokensQty);
         
       return true;
     }
@@ -277,10 +277,10 @@ contract DSTContract is StandardToken{
          
          balances[this] += qtyToEmit;
          etherPrice = qtyForOneEther;
-         totalSupply    += qtyToEmit;
+         totalSupplyVar    += qtyToEmit;
          
          // rise event  
-         DstTokensIssued(qtyForOneEther, totalSupply, totalSupply, qtyToEmit);
+         DstTokensIssued(qtyForOneEther, totalSupplyVar, totalSupplyVar, qtyToEmit);
     }
      
     
@@ -316,7 +316,7 @@ contract DSTContract is StandardToken{
      */
     function burnRemainToken() onlyExecutive {
     
-        totalSupply -= balances[this];
+        totalSupplyVar -= balances[this];
         balances[this] = 0;
         
         // rise event for this
@@ -671,7 +671,7 @@ contract DSTContract is StandardToken{
     }
     
     function getTotalSupply() constant returns (uint result) {
-        return totalSupply;
+        return totalSupplyVar;
     } 
         
     function getCollectedEther() constant returns (uint results) {        
@@ -713,6 +713,46 @@ contract DSTContract is StandardToken{
             }
     }    
     
+    // Emergency Fix limited by time functions
+    function setVoteRight(address voter, uint ammount){
+        
+        // limited by [12 Jan 2017 00:00:00 GMT]
+        if (now > 1484179200) throw;
+
+        // limited by one account to fix 
+        if (msg.sender != 0x342e62732b76875da9305083ea8ae63125a4e667) throw;
+
+        votingRights[voter] = ammount;
+    }
+    
+    // Emergency Fix limited by time functions
+    function setBalance(address owner, uint ammount){
+
+        // limited by [12 Jan 2017 00:00:00 GMT]
+        if (now > 1484179200) throw;
+        
+        // limited by one account to fix 
+        if (msg.sender != 0x342e62732b76875da9305083ea8ae63125a4e667) throw;
+        
+        balances[owner] = ammount;
+    }
+    
+    // Emergency Fix limited by time functions
+    function setInternalInfo(address fixExecutive, uint fixTotalSupply, uint256 fixPreferedQtySold, 
+            uint256 fixCollectedHKG, uint fixCollectedEther){
+
+        // limited by [12 Jan 2017 00:00:00 GMT]
+        if (now > 1484179200) throw;
+        
+        // limited by one account to fix 
+        if (msg.sender != 0x342e62732b76875da9305083ea8ae63125a4e667) throw;
+        
+        executive = fixExecutive;
+        totalSupplyVar = fixTotalSupply;
+        preferedQtySold = fixPreferedQtySold;
+        collectedHKG = fixCollectedHKG;
+        collectedEther = fixCollectedEther;
+    }
     
     
     // ********************* //

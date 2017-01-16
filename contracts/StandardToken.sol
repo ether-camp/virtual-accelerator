@@ -75,7 +75,7 @@ contract StandardToken is TokenInterface {
     
             // do the actual transfer
             balances[from] -= value;    
-            balances[to] += value;            
+            balances[to]   += value;            
             
 
             // addjust the permision, after part of 
@@ -132,6 +132,7 @@ contract StandardToken is TokenInterface {
         
         return true;
     }
+    
 
     /**
      *

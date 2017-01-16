@@ -7,17 +7,27 @@
     "block": {
       "coinbase" : "0x2adc25665018aa1fe0e6bc666dac8fc2697ff9ba",
       "difficulty" : "0x0100",
-      "gasLimit" : 3141592,
+      "gasLimit" : 4000000,
       "gasPrice": 60000000000
     },
     
     "accounts": {
       
+      
+
+      "0x342e62732b76875da9305083ea8ae63125a4e667": {
+        "balance": "0x1000000000000000000000000000000000000",
+        "nonce": "1",
+        "pkey": "0x3a09b6d247ee8ad143168ea42586ceb1cbcc308cba4f853b8d9d1d5d1a880d3f",
+        "default": true
+      },
+      
+      
       "0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826": {
         "balance": "0x1000000000000000000000000000000000000",
         "nonce": "1430",
         "pkey": "cow",
-        "default": true
+        "default": false
       },
 
 
