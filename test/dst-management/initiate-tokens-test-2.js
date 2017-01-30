@@ -492,7 +492,7 @@ it('issue-apl-tokens-seria-1', function() {
 // [X] Action [0xdedb] buy [APL] tokens on [VE] with no HKG  .
 // ...  
 
-it('buy-apl-by-3a7e', function() {
+it('buy-apl-by-0xdedb-with-no-hkg', function() {
     log("");
     log(" [X] Action [0xdedb] buy [APL] tokens on [VE] with no HKG");
 
